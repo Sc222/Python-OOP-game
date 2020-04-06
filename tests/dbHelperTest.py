@@ -6,4 +6,3 @@ class DbHelperTest(unittest.TestCase):
     def setUp(self):
         self.dbHelper = DbHelper()
 
-    def test

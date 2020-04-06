@@ -5,6 +5,10 @@ from main.monster_info import MonsterInfo
 from main.leaderboard_record import LeaderboardRecord
 from main.player import Player
 from main.level import Level
+from main.background import Background
+from main.monster import Monster
+from main.terrain_info import TerrainInfo
+from main.terrain import Terrain
 
 
 # здесь будут методы для работы с базой данных
@@ -83,4 +87,14 @@ class DbHelper:
         for terrain in terrains:
             terrain.levelId = levelId
             terrain.save()
+
+    def ClearAllBase(self):
+        Level.delete().execute()
+        Background.delete().execute()
+        LeaderboardRecord.delete().execute()
+        MonsterInfo.delete().execute()
+        BackgroundInfo.delete().execute()
+        Monster.delete().execute()
+        TerrainInfo.delete().execute()
+        Terrain.delete().execute()
 
