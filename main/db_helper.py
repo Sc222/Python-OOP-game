@@ -1,6 +1,4 @@
-from main.background import Background
-from main.terrain import Terrain
-from main.monster import Monster
+from main.level_dto import LevelDto
 from main.background_info import BackgroundInfo
 from main.terrain_info import TerrainInfo
 from main.monster_info import MonsterInfo
@@ -13,9 +11,9 @@ from main.level import Level
 class DbHelper:
 
     def GetLeaderboards(self, leveId):
-        leaderboards = LeaderboardRecord\
-            .select()\
-            .where(LeaderboardRecord.levelId == leveId)\
+        leaderboards = LeaderboardRecord \
+            .select() \
+            .where(LeaderboardRecord.levelId == leveId) \
             .order_by(LeaderboardRecord.score.desc())
         return leaderboards
 
@@ -28,11 +26,28 @@ class DbHelper:
         return leaderboardRecord.save()
 
     def GetMonstersInfo(self):
-        return MonsterInfo.select()
+        return list(MonsterInfo.select())
 
     def GetTerrainsInfo(self):
-        return TerrainInfo.select()
+        return list(TerrainInfo.select())
 
     def GetBackgroundsInfo(self):
-        return BackgroundInfo.select()
+        return list(BackgroundInfo.select())
 
+    def RegisterUser(self, nickname, password):
+        player = Player(nickname, password)
+        player.save()
+
+    def GetUser(self, nickname, password):
+        players = Player.select().where(Player.nickname == nickname)
+        player = players[0]
+        if player.password == password:
+            return player
+        return None
+
+    def GetLevel(self, levelId):
+        level = Level.select().where(Level.id == levelId)
+        backgroundsInfo = self.GetBackgroundsInfo()
+        monstersInfo = self.GetMonstersInfo()
+        terrainsInfo = self.GetTerrainsInfo()
+        return LevelDto(level, backgroundsInfo, monstersInfo, terrainsInfo)
