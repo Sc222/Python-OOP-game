@@ -2,7 +2,7 @@ from peewee import *
 
 
 class Player(Model):
-    nickname = TextField()
+    nickname = TextField(unique=True)
     password = TextField()  # хранится не пароль, а его хэш
     unlockedLevel = IntegerField()  # максимальный разблок. уровень
     hp = IntegerField()
