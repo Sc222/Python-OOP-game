@@ -28,11 +28,26 @@ class DbHelper:
     def GetMonstersInfo(self):
         return list(MonsterInfo.select())
 
+    # нужно запускать только 1 раз при инициализации сервера
+    def CreateMonsterInfo(self, image, hp, attack, defence):
+        monsterInfo = MonsterInfo(image=image, hp=hp, attack=attack, defence=defence)
+        return monsterInfo.save()
+
     def GetTerrainsInfo(self):
         return list(TerrainInfo.select())
 
+    # нужно запускать только 1 раз при инициализации сервера
+    def CreateTerrainInfo(self, image):
+        terrainInfo = TerrainInfo(image=image)
+        return terrainInfo.save()
+
     def GetBackgroundsInfo(self):
         return list(BackgroundInfo.select())
+
+    # нужно запускать только 1 раз при инициализации сервера
+    def CreateBackgroundInfo(self, image):
+        backgroundInfo = BackgroundInfo(image=image)
+        return backgroundInfo.save()
 
     def RegisterUser(self, nickname, password):
         player = Player(nickname, password)
@@ -51,3 +66,21 @@ class DbHelper:
         monstersInfo = self.GetMonstersInfo()
         terrainsInfo = self.GetTerrainsInfo()
         return LevelDto(level, backgroundsInfo, monstersInfo, terrainsInfo)
+
+    # нужно запускать только 1 раз при инициализации сервера
+    # note: levelId у элементов списка не нужно задавать
+    # todo - сделать сохранение список за 1 один запрос к базе данных
+    def CreateLevel(self, sizeX, sizeY, backgrounds, monsters, terrains):
+        level = Level(sizeX=sizeX, sizeY=sizeY)
+        level.save()
+        levelId = level.id
+        for background in backgrounds:
+            background.levelId = levelId
+            background.save()
+        for monster in monsters:
+            monster.levelId = levelId
+            monster.save()
+        for terrain in terrains:
+            terrain.levelId = levelId
+            terrain.save()
+
