@@ -4,7 +4,7 @@ from main.level import Level
 
 class Monster(Model):
     levelId = ForeignKeyField(Level, backref='monsters')
-    type = TextField()
+    type = IntegerField()
     x = IntegerField()
     y = IntegerField()
 

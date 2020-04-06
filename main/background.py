@@ -4,7 +4,7 @@ from main.level import Level
 
 class Background(Model):
     levelId = ForeignKeyField(Level, backref='backgrounds')
-    type = TextField()
+    type = IntegerField()
     x = IntegerField()
     y = IntegerField()
 
