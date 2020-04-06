@@ -1,9 +1,7 @@
 from peewee import *
-from main.monster import Monster
 
 
 class MonsterInfo(Model):
-    type = ForeignKeyField(Monster, backref='monstersInfo')
     image = TextField()  # путь до картинки (картинки будут храниться локально)
     hp = IntegerField()
     attack = IntegerField()

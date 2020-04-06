@@ -4,7 +4,7 @@ from main.level import Level
 
 class Terrain(Model):
     levelId = ForeignKeyField(Level, backref='terrains')
-    type = TextField()
+    type = IntegerField()
     x = IntegerField()
     y = IntegerField()
 
