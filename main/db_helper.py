@@ -1,6 +1,7 @@
+from peewee import SqliteDatabase
+
 from main.level_dto import LevelDto
 from main.background_info import BackgroundInfo
-from main.terrain_info import TerrainInfo
 from main.monster_info import MonsterInfo
 from main.leaderboard_record import LeaderboardRecord
 from main.player import Player
@@ -12,7 +13,22 @@ from main.terrain import Terrain
 
 
 # здесь будут методы для работы с базой данных
+# todo КЛАСС DATABASE НУЖНО ПЕРЕДАВАТЬ ЧЕРЕЗ КОНСТРУКТОР И ПОТОМ ПЕРЕДАВАТЬ ВО ВСЕ КЛАССЫ
 class DbHelper:
+
+    def CreateAllTables(self):
+        database = SqliteDatabase('database.db', pragmas={'foreign_keys': 1})
+        database.connect()
+        database.create_tables(
+            [Player,
+             LeaderboardRecord,
+             Level,
+             Terrain,
+             Background,
+             Monster,
+             TerrainInfo,
+             BackgroundInfo,
+             MonsterInfo])
 
     def GetLeaderboards(self, leveId):
         leaderboards = LeaderboardRecord \
@@ -21,12 +37,12 @@ class DbHelper:
             .order_by(LeaderboardRecord.score.desc())
         return leaderboards
 
-    def UpdateLeaderboardRecord(self, id, leveId, playerId, newScore):
-        leaderboardRecord = LeaderboardRecord(id=id, leveId=leveId, playerId=playerId, score=newScore)
+    def UpdateLeaderboardRecord(self, id, levelId, playerId, newScore):
+        leaderboardRecord = LeaderboardRecord(id=id, levelId=levelId, playerId=playerId, score=newScore)
         return leaderboardRecord.save()  # мы передаем id, поэтому save делает UPDATE вместо CREATE
 
-    def CreateLeaderboardRecord(self, leveId, playerId, newScore):
-        leaderboardRecord = LeaderboardRecord(leveId=leveId, playerId=playerId, score=newScore)
+    def CreateLeaderboardRecord(self, levelId, playerId, newScore):
+        leaderboardRecord = LeaderboardRecord(levelId=levelId, playerId=playerId, score=newScore)
         return leaderboardRecord.save()
 
     def GetMonstersInfo(self):
@@ -53,8 +69,10 @@ class DbHelper:
         backgroundInfo = BackgroundInfo(image=image)
         return backgroundInfo.save()
 
+    #TODO НАМ ЕЩЕ НАДО МЕТОД UPDATE USER
     def RegisterUser(self, nickname, password):
-        player = Player(nickname, password)
+        player = Player(nickname=nickname, password=password,
+                        unlockedLevel=1, hp=10, attack=10, defence=10, playerLevel=1, xp=0)
         player.save()
 
     def GetUser(self, nickname, password):
@@ -97,4 +115,3 @@ class DbHelper:
         Monster.delete().execute()
         TerrainInfo.delete().execute()
         Terrain.delete().execute()
-

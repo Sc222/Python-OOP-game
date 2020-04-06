@@ -4,3 +4,4 @@ work in progress
 - [ ] 2 этап - api к базе данных 
   - для установки скачать проект и в терминале ввести ``pip install requirements.txt``
   - [документация ORM-системы](http://docs.peewee-orm.com/en/latest/index.html)
+  - нужно реализовать метод ```UpdateUser```

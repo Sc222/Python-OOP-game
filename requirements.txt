@@ -1,1 +1,2 @@
+testfixtures
 peewee==3.13.2
