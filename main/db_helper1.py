@@ -10,17 +10,19 @@ from main.level import Level
 
 
 # здесь будут методы для работы с базой данных
-class Dbhelper1():
+class Dbhelper1:
 
-    def RegisterUser(self,userName, password):
+    def RegisterUser(self, userName, password):
         player = Player(userName, password)
         player.save()
 
-    def GetUser(self,userName,password):
+    def GetUser(self, userName, password):
         players = Player.select().where(Player.nickname == userName)
         player = players[0]
-        return player
+        if player.password == password:
+            return player
+        return None
 
-    def GetLevel(self,levelId):
-        level = Level.select().where(Level.id==levelId)
-        #я хуй его знает
+    def GetLevel(self, levelId):
+        level = Level.select().where(Level.id == levelId)
+        # я хуй его знает
