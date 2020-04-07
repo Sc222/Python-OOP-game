@@ -69,6 +69,16 @@ class DbHelperTest(unittest.TestCase):
                     TerrainInfo(id=3, image="wall.png")]
         compare(result, expected)
 
+    def test_UpdatePlayer(self):
+        self.dbHelper.RegisterUser("user", "qwerty")
+        self.dbHelper.UpdateUser("user",228,228,228,228,228)
+        user: Player = self.dbHelper.GetUser("user", "qwerty")
+        self.assertEqual(user.xp,228)
+        self.assertEqual(user.hp, 228)
+        self.assertEqual(user.defence, 228)
+        self.assertEqual(user.attack, 228)
+        self.assertEqual(user.playerLevel, 228)
+
     def test_CreateLevel(self):
         self.dbHelper.CreateLevel(5, 5, [], [], [])
         expected: Level = Level(sizeX=5, sizeY=5, id=1)
@@ -83,4 +93,6 @@ class DbHelperTest(unittest.TestCase):
         self.dbHelper.CreateLevel(5,5,backgrounds,[],[])
         result = list(Background.select())
         compare(result, backgrounds)
+        
+
 

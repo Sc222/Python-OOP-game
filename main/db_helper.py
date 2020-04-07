@@ -75,6 +75,15 @@ class DbHelper:
                         unlockedLevel=1, hp=10, attack=10, defence=10, playerLevel=1, xp=0)
         player.save()
 
+    def UpdateUser(self,nickname,hp,xp,defence,attack,level):
+        player = Player.select().where(Player.nickname == nickname)[0]
+        player.xp = xp
+        player.hp = hp
+        player.defence = defence
+        player.attack = attack
+        player.playerLevel = level
+        player.save()
+
     def GetUser(self, nickname, password):
         players = Player.select().where(Player.nickname == nickname)
         player = players[0]
