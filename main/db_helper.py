@@ -106,13 +106,13 @@ class DbHelper:
             terrain.levelId = levelId
             terrain.save()
 
-    def ClearAllBase(self):
-        print("delete lvl " + str(Level.delete().execute()))
+    def ClearAllBase(self): # порядок важен
+        print("delete leaderboards " + str(LeaderboardRecord.delete().execute()))
         print("delete player " + str(Player.delete().execute()))
         print("delete bg " + str(Background.delete().execute()))
-        print("delete leaderboards " +str( LeaderboardRecord.delete().execute()))
-        print("delete monster info " + str(MonsterInfo.delete().execute()))
-        print("delete bg info " +str( BackgroundInfo.delete().execute()))
         print("delete monsters " + str(Monster.delete().execute()))
+        print("delete terrain " + str(Terrain.delete().execute()))
+        print("delete lvl " + str(Level.delete().execute()))
         print("delete terrain info " + str(TerrainInfo.delete().execute()))
-        print("delete terrain " +str( Terrain.delete().execute()))
+        print("delete monster info " + str(MonsterInfo.delete().execute()))
+        print("delete bg info " + str(BackgroundInfo.delete().execute()))

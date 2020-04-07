@@ -16,7 +16,6 @@ class DbHelperTest(unittest.TestCase):
         self.dbHelper.CreateAllTables()
 
     def tearDown(self):
-        pass
         self.dbHelper.ClearAllBase()
 
     def test_AddUser(self):
@@ -79,15 +78,9 @@ class DbHelperTest(unittest.TestCase):
         self.assertEqual(len(levels), 1)
         compare(result, expected)
 
-    # def test_CreateLevelWithBackground(self):
-    #     self.dbHelper.ClearAllBase()
-    #     backgrounds = [Background(type=x+y,x=x,y=y) for x in range(5) for y in range(5)]
-    #     self.assertEqual(1, 1)
-    #     self.dbHelper.CreateLevel(5,5,backgrounds,[],[])
-    #     result = list(Background.select())
-    #     compare(result, backgrounds)
+    def test_CreateLevelWithBackground(self):
+        backgrounds = [Background(type=x+y,x=x,y=y) for x in range(5) for y in range(5)]
+        self.dbHelper.CreateLevel(5,5,backgrounds,[],[])
+        result = list(Background.select())
+        compare(result, backgrounds)
 
-# def test_create(self):
-#    self.dbHelper.CreateLeaderboardRecord(0, 1, 100)
-#    records = list(self.dbHelper.GetLeaderboards(0))
-#    self.assertEqual(len(records), 1, "leaderboard wasn't created")
