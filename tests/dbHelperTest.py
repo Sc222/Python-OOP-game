@@ -13,10 +13,10 @@ from main.terrain_info import TerrainInfo
 class DbHelperTest(unittest.TestCase):
     def setUp(self):
         self.dbHelper = DbHelper()
-        self.dbHelper.ClearAllBase()
         self.dbHelper.CreateAllTables()
 
     def tearDown(self):
+        pass
         self.dbHelper.ClearAllBase()
 
     def test_AddUser(self):
