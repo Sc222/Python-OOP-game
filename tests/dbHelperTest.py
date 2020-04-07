@@ -3,6 +3,8 @@ from main.db_helper import DbHelper
 from main.monster_info import MonsterInfo
 from main.player import Player
 from testfixtures import compare
+from main.level import Level
+from main.background import Background
 import unittest
 
 from main.terrain_info import TerrainInfo
@@ -11,6 +13,7 @@ from main.terrain_info import TerrainInfo
 class DbHelperTest(unittest.TestCase):
     def setUp(self):
         self.dbHelper = DbHelper()
+        self.dbHelper.ClearAllBase()
         self.dbHelper.CreateAllTables()
 
     def tearDown(self):
@@ -66,6 +69,23 @@ class DbHelperTest(unittest.TestCase):
                     TerrainInfo(id=2, image="tree.png"),
                     TerrainInfo(id=3, image="wall.png")]
         compare(result, expected)
+
+    def test_CreateLevel(self):
+        self.dbHelper.CreateLevel(5, 5, [], [], [])
+        expected: Level = Level(sizeX=5, sizeY=5, id=1)
+        levels = Level.select()
+        result = levels[0]
+        self.assertEqual(result.id, 1)
+        self.assertEqual(len(levels), 1)
+        compare(result, expected)
+
+    # def test_CreateLevelWithBackground(self):
+    #     self.dbHelper.ClearAllBase()
+    #     backgrounds = [Background(type=x+y,x=x,y=y) for x in range(5) for y in range(5)]
+    #     self.assertEqual(1, 1)
+    #     self.dbHelper.CreateLevel(5,5,backgrounds,[],[])
+    #     result = list(Background.select())
+    #     compare(result, backgrounds)
 
 # def test_create(self):
 #    self.dbHelper.CreateLeaderboardRecord(0, 1, 100)
