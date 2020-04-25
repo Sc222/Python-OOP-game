@@ -1,5 +1,5 @@
 from peewee import *
-from main.player import Player
+from main.database.player import Player
 
 
 class LeaderboardRecord(Model):

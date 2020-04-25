@@ -1,13 +1,13 @@
 from peewee import *
-from main.level import Level
+from main.database.level import Level
 
 
-class Background(Model):
-    levelId = ForeignKeyField(Level, backref='backgrounds')
+class Terrain(Model):
+    levelId = ForeignKeyField(Level, backref='terrains')
     type = IntegerField()
     x = IntegerField()
     y = IntegerField()
 
     class Meta:
-        table_name = 'backgrounds'
+        table_name = 'terrains'
         database = SqliteDatabase('database.db', pragmas={'foreign_keys': 1})

@@ -1,13 +1,13 @@
-from main.background_info import BackgroundInfo
-from main.db_helper import DbHelper
-from main.monster_info import MonsterInfo
-from main.player import Player
+from main.database.background_info import BackgroundInfo
+from main.database.db_helper import DbHelper
+from main.database.monster_info import MonsterInfo
+from main.database.player import Player
 from testfixtures import compare
-from main.level import Level
-from main.background import Background
+from main.database.level import Level
+from main.database.background import Background
 import unittest
 
-from main.terrain_info import TerrainInfo
+from main.database.terrain_info import TerrainInfo
 
 
 class DbHelperTest(unittest.TestCase):

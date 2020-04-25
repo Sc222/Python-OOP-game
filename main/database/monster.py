@@ -1,5 +1,5 @@
 from peewee import *
-from main.level import Level
+from main.database.level import Level
 
 
 class Monster(Model):
