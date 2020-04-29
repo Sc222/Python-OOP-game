@@ -2,6 +2,8 @@ from enum import Enum
 
 import pygame
 
+from game_utils import Camera
+
 
 class CreatureState(Enum):
     idle = 0
@@ -15,32 +17,23 @@ class CreatureState(Enum):
 class PlayerSprite(pygame.sprite.Sprite):
 
     def __init__(self, position, size, images):  # images is a dictionary of image lists (key is animation name)
-        """
-        Animated sprite object.
-
-        Args:
-            position: x, y coordinate on the screen to place the AnimatedSprite.
-            images: Images to use in the animation.
-        """
         super(PlayerSprite, self).__init__()
-        self.animation_time = 70
+        self.animation_time = 70 #todo выставлять время анимации в зависимости от числа кадров в текущей анимации
         self.current_time = 0
         self.curr_index = 0
         self.curr_state = "idle_front_right"
         self.rect = pygame.Rect(position, size)
         self.images = images
         self.image = images[self.curr_state][self.curr_index]  # 'image' is the current image of the animation.
-        self.velocity = pygame.math.Vector2(0, 0)
+        self.velocity = pygame.math.Vector2()
         self.current_frame = 0
+        self.x=self.rect.centerx
+        self.y=self.rect.centery
 
-    def update_time_dependent(self, dt, state: CreatureState):
-        """
-        Updates the image of Sprite every 6 frame (approximately every 0.1 second if frame rate is 60).
-        """
-        #print(state.name)
-
+    def update_time_dependent(self, dt, state: CreatureState,camera:Camera):
         prev_state = self.curr_state
         self.curr_state = state.name  ##todo comment this
+        print("update : "+str(self.velocity.x)+" "+str(self.velocity.y))
 
         if self.velocity.x > 0:  # Use the right images if sprite is moving right.
             self.curr_state = self.curr_state + "_" + "front" + "_" + "right"
@@ -58,10 +51,6 @@ class PlayerSprite(pygame.sprite.Sprite):
                 self.curr_state = self.curr_state + "_front_right"
             elif prev_state.endswith("_front_left"):  ##todo back_left back_right etc\
                 self.curr_state = self.curr_state + "_front_left"
-
-        #if prev_state!=self.curr_state: ##todo is it needed?
-        #    self.curr_index=0
-
        # print(dt)
         self.current_time += dt
        # print(str(self.current_time)+ "anim: "+str(self.animation_time))
@@ -72,20 +61,25 @@ class PlayerSprite(pygame.sprite.Sprite):
             #print(self.curr_state)
             self.image = self.images[self.curr_state][self.curr_index]
 
-        self.rect.move_ip(*self.velocity)
-
-    def update(self, dt, state: CreatureState):
+        #self.rect.move_ip(*self.velocity)
+        self.x+=self.velocity.x
+        self.y+=self.velocity.y
+       # self.rect.x+=camera.x
+       # self.rect.y+=camera.y
+#
+    def update(self, dt, state: CreatureState,camera:Camera):
         """This is the method that's being called when 'all_sprites.update(dt)' is called."""
-        self.update_time_dependent(dt, state)
+        self.update_time_dependent(dt, state,camera)
 
 
 # здесь игровая логика
 class Player:
-    def __init__(self, nickname, hp, attack, defence, playerLevel, xp, playerSprite):
+    def __init__(self, nickname, hp, attack, defence, speed, playerLevel, xp, playerSprite):
         self.nickname = nickname
         self.hp = hp
         self.attack = attack
         self.defence = defence
+        self.speed = speed
         self.playerLevel = playerLevel
         self.xp = xp
         self.playerSprite = playerSprite
