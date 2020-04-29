@@ -1,4 +1,6 @@
 import os
+import re
+
 import pygame
 
 
@@ -29,9 +31,13 @@ def load_folder_images(path, scale):
     """
     Загружает все картинки из папки.
     В папке не должно быть других файлов.
+    Картинки сортируются по имени, поэтому именоваться они должны в порядке анимации
+    и имя файла должно состоять только из цифр (1,2,3,4...)
     """
     images = []
-    for file_name in os.listdir(path):
+    files = os.listdir(path)
+    files.sort(key=lambda f: int(re.sub('\D', '', f)))
+    for file_name in files:
         img = pygame.image.load(path + os.sep + file_name).convert_alpha()
         images.append(pygame.transform.scale(img, (img.get_width() * scale, img.get_height() * scale)))
     return images
