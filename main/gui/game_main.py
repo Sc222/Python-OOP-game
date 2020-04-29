@@ -81,6 +81,7 @@ playerState = CreatureState.idle
 is_attack = 0
 
 while True:
+
     dt = clock.tick(FPS)
 
     if not is_attack:
