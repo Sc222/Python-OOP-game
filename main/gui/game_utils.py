@@ -47,7 +47,7 @@ class Resources:
     player = "player"
     backgrounds = ["grass", "pond_top", "pond_right", "pond_left", "pond_bottom"]
     terrain = ["house", "pine", "oak", "birch", "flower_purple", "fern", "bush"]
-    player_anims_name = ["walk_front_", "idle_front_"]  # все папки должны иметь название ""+right
+    player_anims_name = ["walk_", "idle_", "attack_"]  # все папки должны иметь название ""+right
     bg_imgs = []
     terrain_imgs = []
     player_imgs = {}
@@ -91,7 +91,7 @@ class Parser:
 
     def parse_map_to_static_draw_objects(self, images, game_map, center_x, center_y, y_offset=0):
         result_ls = list()
-        for row_nb, row in enumerate(game_map):  # draw surface
+        for row_nb, row in enumerate(game_map):
             for col_nb, tile in enumerate(row):
                 tile = int(tile)
                 if tile != 0:

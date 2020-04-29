@@ -6,6 +6,9 @@ from game_utils import Camera
 from player import PlayerSprite
 from player import CreatureState
 from player import Player
+from pygame.constants import MOUSEBUTTONDOWN, BUTTON_LEFT
+
+from gui_overlay import GameOverlay
 
 pygame.init()
 
@@ -31,20 +34,22 @@ TILEWIDTH_HALF = TILEWIDTH / 2
 
 MOUSE_IDLE_DELTA = 40  # когда разница в координатах меньше этого числа игрок стоит на месте
 
-# todo move to file
-
-
+# todo move large setup to fie
 camera = Camera(SCALEDWIDTH, SCALEDHEGHT, 0, 0)
 
 resources = Resources("data", SCALE)
 parser = Parser(SCALE)
+
 center_x = display.get_rect().centerx
 center_y = display.get_rect().centery
 
-playerSprite = PlayerSprite((center_x - 18 * SCALE / 2, center_y - 24 * SCALE / 2), (18 * SCALE, 24 * SCALE),
+playerSprite = PlayerSprite((center_x - 24 * SCALE / 2, center_y - 24 * SCALE / 2), (24 * SCALE, 24 * SCALE),
                             resources.player_imgs)
 playerDraw = pygame.sprite.RenderPlain(playerSprite)
-player = Player("sc222", 10, 20, 30, 3, 1, 0, playerSprite)
+player = Player("sc222", 10, 20, 20, 30, 3, 1, 0, playerSprite)
+
+gui = GameOverlay(3, player.hp, player.mana, center_x,
+                  center_y)  # todo store items somewhere #gui scale is smaller than game scale
 
 # todo это временно, в финальной версии уровень будет грузиться из базы данных
 map_bg = open(os.path.join("demo", "background.txt"), "r").read().split()
@@ -61,74 +66,57 @@ def draw():
     for terrain in terrain_draw_ls:
         display.blit(terrain.image, terrain.get_draw_coordinates(camera))
 
+    # todo ЭЛЕМЕНТЫ ВНЕ КАМЕРЫ НЕ ДОЛЖНЫ РИСОВАТЬСЯ!!!
+    # todo draw clouds
     # todo player should be drawed in priority before far objets and after close objects
     # todo (использовать ordered render из примера)
     # todo player isometric speed IS DIFFERENT (use cos \ sin \ web)
     playerDraw.draw(display)
+    gui.draw(display, player.hp, player.mana, None)  # todo store items somewhere
     screen.blit(display, (0, 0))
 
 
 draw()
 playerState = CreatureState.idle
-value = 0
+is_attack = 0
 
 while True:
-    mousex, mousey = pygame.mouse.get_pos()
-    mousex = mousex
-    mousey = mousey
-
-    playerDx = playerSprite.rect.centerx - mousex
-    playerDy = playerSprite.rect.centery - mousey
-    if abs(playerDx) > MOUSE_IDLE_DELTA:
-        playerSprite.velocity.x = -playerDx
-    else:
-        playerSprite.velocity.x = 0
-
-    if abs(playerDy) > MOUSE_IDLE_DELTA:
-        playerSprite.velocity.y = -playerDy
-    else:
-        playerSprite.velocity.y = 0
-
-    if playerSprite.velocity.x != 0 or playerSprite.velocity.y != 0:
-        playerState = CreatureState.walk
-        playerSprite.velocity.normalize_ip()
-        playerSprite.velocity *= player.speed
-    else:
-        playerState = CreatureState.idle
-
     dt = clock.tick(FPS)
-    value += 1
-    if value == 10:
-        value = 0
-        print("mouse: " + str(mousex) + " " + str(mousey))
-        # print("cam: " + str(camera.x) + " " + str(camera.y))
-        print("player: " + str(playerSprite.rect.centerx) + " " + str(playerSprite.rect.centery))
-    # print(playerSprite.rect.centery)
-    # if playerSprite.rect.centerx + camera.x > 90:
-    #     camera.x -= 1
-    # elif playerSprite.rect.centerx + camera.x < 90:
-    #     camera.x += 1
-    # if playerSprite.rect.centery + camera.y > 60:
-    #     camera.y -= 1
-    # elif playerSprite.rect.centery + camera.y < 60:
-    #     camera.y += 1
 
-    # if 10*1.4142*3-playerSprite.rect.centerx<10:
-    #     camera_scroll.x-=1
+    if not is_attack:
+        mousex, mousey = pygame.mouse.get_pos()
+        playerDx = playerSprite.rect.centerx - mousex
+        playerDy = playerSprite.rect.centery - mousey
+        if abs(playerDx) > MOUSE_IDLE_DELTA:
+            playerSprite.velocity.x = -playerDx
+        else:
+            playerSprite.velocity.x = 0
 
-    # if playerSprite.rect.y > 100:
-    #     camera_scroll.x -= 1
-    # camera_scroll.x=center_x-playerSprite.rect.x
-    #  for surface in surface_draw_ls:
-    #      display.blit(surface.image, surface.get_draw_coordinates(camera_scroll))  # display the actual tile
-    #      screen.blit(pygame.transform.scale(display, (WINDOWWIDTH, WINDOWHEIGHT)), (0, 0))
+        if abs(playerDy) > MOUSE_IDLE_DELTA:
+            playerSprite.velocity.y = -playerDy
+        else:
+            playerSprite.velocity.y = 0
+
+        if playerSprite.velocity.x != 0 or playerSprite.velocity.y != 0:
+            playerState = CreatureState.walk
+            playerSprite.velocity.normalize_ip()
+            playerSprite.velocity *= player.speed
+        else:
+            playerState = CreatureState.idle
+
+    if is_attack and playerSprite.is_animation_end():
+        is_attack = False
 
     for event in pygame.event.get():
-        pass
+        if event.type == MOUSEBUTTONDOWN:
+            if event.button == BUTTON_LEFT:
+                is_attack = True
+                playerSprite.velocity.x = 0
+                playerSprite.velocity.y = 0
+                playerState = CreatureState.attack
 
     camera.x = WINDOWWIDTH / 2 - playerSprite.x
     camera.y = WINDOWHEIGHT / 2 - playerSprite.y
     playerSprite.update(dt, playerState, camera)
     draw()
-
     pygame.display.flip()

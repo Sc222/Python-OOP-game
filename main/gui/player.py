@@ -21,7 +21,7 @@ class PlayerSprite(pygame.sprite.Sprite):
         self.animation_time = 70  # todo выставлять время анимации в зависимости от числа кадров в текущей анимации
         self.current_time = 0
         self.curr_index = 0
-        self.curr_state = "idle_front_right"
+        self.curr_state = "idle_right"
         self.rect = pygame.Rect(position, size)
         self.images = images
         self.image = images[self.curr_state][self.curr_index]  # 'image' is the current image of the animation.
@@ -29,29 +29,20 @@ class PlayerSprite(pygame.sprite.Sprite):
         self.x = self.rect.centerx
         self.y = self.rect.centery
 
+    def is_animation_end(self):
+        return self.curr_index==len(self.images[self.curr_state])-1
+
     def update_time_dependent(self, dt, state: CreatureState, camera: Camera):
         prev_state = self.curr_state
-        self.curr_state = state.name  ##todo comment this
+        prev_state_dir=prev_state.split("_")[1]
         print("update : " + str(self.velocity.x) + " " + str(self.velocity.y))
-        print(prev_state)
+        print(prev_state_dir)
         print(state.name)
 
-        if self.velocity.x > 0:  # Use the right images if sprite is moving right.
-            self.curr_state = self.curr_state + "_" + "front" + "_" + "right"
-        elif self.velocity.x < 0:
-            self.curr_state = self.curr_state + "_" + "front" + "_" + "left"
+        if state==CreatureState.idle or state==CreatureState.attack: # у idle и attack направление зависит от предыдущего состояния
+            self.curr_state=state.name+"_"+prev_state_dir
         else:
-            if prev_state.endswith("_front_right"):  ##todo ВЫНЕСТИ В МЕТОД
-                self.curr_state = self.curr_state + "_front_right"
-            elif prev_state.endswith("_front_left"):  ##todo back_left back_right etc\
-                self.curr_state = self.curr_state + "_front_left"
-
-        if self.velocity.x == 0 and self.velocity.y == 0:  ##idle depends on previous state
-            self.curr_state = "idle"
-            if prev_state.endswith("_front_right"):
-                self.curr_state = self.curr_state + "_front_right"
-            elif prev_state.endswith("_front_left"):  ##todo back_left back_right etc\
-                self.curr_state = self.curr_state + "_front_left"
+            self.curr_state = state.name+"_right" if self.velocity.x>0 else state.name+"_left"
 
         self.current_time += dt
         if prev_state != self.curr_state:  # когда начинается другая анимация счетчик сбрасывается
@@ -73,9 +64,10 @@ class PlayerSprite(pygame.sprite.Sprite):
 
 # здесь игровая логика
 class Player:
-    def __init__(self, nickname, hp, attack, defence, speed, playerLevel, xp, playerSprite):
+    def __init__(self, nickname, hp, mana, attack, defence, speed, playerLevel, xp, playerSprite):
         self.nickname = nickname
         self.hp = hp
+        self.mana=mana
         self.attack = attack
         self.defence = defence
         self.speed = speed
