@@ -124,28 +124,7 @@ while True:
     #      screen.blit(pygame.transform.scale(display, (WINDOWWIDTH, WINDOWHEIGHT)), (0, 0))
 
     for event in pygame.event.get():
-        ##TODO CODE QUIT
-        if event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_RIGHT:
-                playerState = CreatureState.walk
-
-                playerSprite.velocity.x = 1
-            elif event.key == pygame.K_LEFT:
-                playerState = CreatureState.walk
-                playerSprite.velocity.x = -1
-            elif event.key == pygame.K_DOWN:
-                playerState = CreatureState.walk
-                playerSprite.velocity.y = 1
-            elif event.key == pygame.K_UP:
-                playerState = CreatureState.walk
-                playerSprite.velocity.y = -1
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_RIGHT or event.key == pygame.K_LEFT:
-                playerState = CreatureState.idle
-                playerSprite.velocity.x = 0
-            elif event.key == pygame.K_DOWN or event.key == pygame.K_UP:
-                playerState = CreatureState.idle
-                playerSprite.velocity.y = 0
+        pass
 
     camera.x = WINDOWWIDTH / 2 - playerSprite.x
     camera.y = WINDOWHEIGHT / 2 - playerSprite.y
