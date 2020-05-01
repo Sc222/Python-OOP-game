@@ -81,11 +81,11 @@ def draw():
     display.fill(SKY)
 
     # todo here
-    for background in filter(camera.should_draw, background_draw_ls):
+    for background in filter(camera.is_visible, background_draw_ls):
         #print(background.get_draw_coordinates(camera))
         display.blit(background.image, background.get_draw_coordinates(camera))
 
-    for terrain in filter(camera.should_draw, terrain_draw_ls):
+    for terrain in filter(camera.is_visible, terrain_draw_ls):
         display.blit(terrain.image, terrain.get_draw_coordinates(camera))
         pygame.draw.rect(display, TR, terrain.get_taken_place_rect(camera,SCALE),5)
 
@@ -145,7 +145,7 @@ while True:
             playerState = CreatureState.walk
             playerSprite.velocity.normalize_ip()
             playerSprite.velocity *= player.speed
-            for terr in terrain_draw_ls:
+            for terr in filter(camera.is_visible, terrain_draw_ls):
                 move_rect = player.collide_rect.move(playerSprite.velocity.x, playerSprite.velocity.y)
 
                 if move_rect.colliderect(terr.get_taken_place_rect(camera,SCALE)):

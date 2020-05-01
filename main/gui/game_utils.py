@@ -43,7 +43,7 @@ class Camera:
         self.x_shift += x_movement
         self.y_shift += y_movement
 
-    def should_draw(self, draw_object: StaticDrawObject):
+    def is_visible(self, draw_object: StaticDrawObject):
         return self.visible_rect.colliderect(draw_object.get_visibility_rect(self))
 
 
