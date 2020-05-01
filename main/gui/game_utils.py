@@ -2,24 +2,49 @@ import os
 import re
 
 import pygame
+from pygame.rect import Rect
 
 
-class Camera:
-    def __init__(self, width, height, x, y):
-        self.width = width
-        self.height = height
-        self.x = x
-        self.y = y
-
-
+# object for drawing terrain and background
 class StaticDrawObject:
-    def __init__(self, image, draw_x, draw_y):
+    def __init__(self, image, draw_x, draw_y, y_offset):
         self.image = image  # устанавливаем имя
         self.draw_x = draw_x
         self.draw_y = draw_y
+        self.y_offset = y_offset
 
-    def get_draw_coordinates(self, cam_scroll: Camera):
-        return self.draw_x + cam_scroll.x, self.draw_y + cam_scroll.y
+    def get_draw_coordinates(self, camera):
+        return self.draw_x + camera.x_shift, self.draw_y + camera.y_shift + self.y_offset
+
+    def get_dimensions(self):
+        return self.image.get_rect().width, self.image.get_rect().height
+
+    # для отрисовки видимых объектов (не учитывает сдвиг по y, учитывает положение камеры)
+    def get_visibility_rect(self, camera):
+        coordinates = (self.draw_x + camera.x_shift, self.draw_y + camera.y_shift)
+        return Rect(coordinates, self.get_dimensions())
+
+    # для проверки могут ли сущности двигаться в определенном направлении
+    # одинаков для всех препятсвий и совпадает с размером клетки травы
+    # не учитывает сдвиг по y, не учитывает положение камеры
+    def get_taken_place_rect(self,camera,scale):
+        visibility_rect = self.get_visibility_rect(camera).inflate(-20*scale,-27*scale).move(0,4*scale)
+        return visibility_rect
+
+
+class Camera:
+
+    def __init__(self, x_shift: int, y_shift: int, visible_rect: Rect):
+        self.x_shift = x_shift
+        self.y_shift = y_shift
+        self.visible_rect = visible_rect
+
+    def update(self, x_movement: int, y_movement: int):
+        self.x_shift += x_movement
+        self.y_shift += y_movement
+
+    def should_draw(self, draw_object: StaticDrawObject):
+        return self.visible_rect.colliderect(draw_object.get_visibility_rect(self))
 
 
 def load_image(path, scale):
@@ -46,7 +71,7 @@ def load_folder_images(path, scale):
 class Resources:
     player = "player"
     backgrounds = ["grass", "pond_top", "pond_right", "pond_left", "pond_bottom"]
-    terrain = ["house", "pine", "oak", "birch", "flower_purple", "fern", "bush"]
+    terrain = ["house", "pine", "oak", "birch", "flower_purple", "fern", "bush","invisible"]
     player_anims_name = ["walk_", "idle_", "attack_"]  # все папки должны иметь название ""+right
     bg_imgs = []
     terrain_imgs = []
@@ -89,19 +114,16 @@ class Parser:
         self.TILE_SIZE_HALF *= scale
         self.TERRAIN_SHIFT *= scale
 
-    def parse_map_to_static_draw_objects(self, images, game_map, center_x, center_y, y_offset=0):
+    def parse_map_to_static_draw_objects(self, images, game_map, center_x, center_y, extra_y_offset=0):
         result_ls = list()
-        for row_nb, row in enumerate(game_map):
-            for col_nb, tile in enumerate(row):
+        for map_x, row in enumerate(game_map):
+            for map_y, tile in enumerate(row):
                 tile = int(tile)
                 if tile != 0:
                     tile_image = images[tile - 1]
-                    cart_x = row_nb * self.TILE_SIZE_HALF
-                    cart_y = col_nb * self.TILE_SIZE_HALF
-                    iso_x = (cart_x - cart_y)
-                    iso_y = (cart_x + cart_y) / 2
-                    centered_x = center_x - self.TILE_SIZE_HALF + iso_x
-                    centered_y = center_y / 2 - self.TILE_SIZE + iso_y + y_offset * self.scale
-                    print(center_x, center_y)
-                    result_ls.append(StaticDrawObject(tile_image, centered_x, centered_y))
+                    x_shift = center_x - self.TILE_SIZE_HALF
+                    y_shift = center_y*0.5-self.TILE_SIZE
+                    centered_x = x_shift + (map_x-map_y)*self.TILE_SIZE_HALF
+                    centered_y = y_shift + (map_x+map_y)*0.5*self.TILE_SIZE_HALF
+                    result_ls.append(StaticDrawObject(tile_image, centered_x, centered_y, extra_y_offset * self.scale))
         return result_ls

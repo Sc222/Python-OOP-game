@@ -35,9 +35,6 @@ class PlayerSprite(pygame.sprite.Sprite):
     def update_time_dependent(self, dt, state: CreatureState, camera: Camera):
         prev_state = self.curr_state
         prev_state_dir=prev_state.split("_")[1]
-        print("update : " + str(self.velocity.x) + " " + str(self.velocity.y))
-        print(prev_state_dir)
-        print(state.name)
 
         if state==CreatureState.idle or state==CreatureState.attack: # у idle и attack направление зависит от предыдущего состояния
             self.curr_state=state.name+"_"+prev_state_dir
@@ -54,8 +51,6 @@ class PlayerSprite(pygame.sprite.Sprite):
             self.image = self.images[self.curr_state][self.curr_index]
 
         # self.rect.move_ip(*self.velocity)
-        self.x += self.velocity.x
-        self.y += self.velocity.y
 
     def update(self, dt, state: CreatureState, camera: Camera):
         """This is the method that's being called when 'all_sprites.update(dt)' is called."""
@@ -64,7 +59,7 @@ class PlayerSprite(pygame.sprite.Sprite):
 
 # здесь игровая логика
 class Player:
-    def __init__(self, nickname, hp, mana, attack, defence, speed, playerLevel, xp, playerSprite):
+    def __init__(self, nickname, hp, mana, attack, defence, speed, playerLevel, xp, playerSprite, collide_rect):
         self.nickname = nickname
         self.hp = hp
         self.mana=mana
@@ -74,4 +69,4 @@ class Player:
         self.playerLevel = playerLevel
         self.xp = xp
         self.playerSprite = playerSprite
-        # self.collision_rect = collision_rect todo is collision rect needed or sprite rect is enough?
+        self.collide_rect = collide_rect
