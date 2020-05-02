@@ -1,16 +1,17 @@
-import os, pygame
+import os
+import pygame
 from pygame.rect import Rect
+from main.gui import main_menu
 from main.gui.constants import *
 from main.gui.game_utils import Parser, Camera
 from main.gui.gui_overlay import GameOverlay
-from main.gui import main_menu
 from main.gui.player import PlayerSprite, Player
 
 
 class Game:
 
     def __init__(self, res, screen, clock):
-        self.is_opened=True
+        self.is_opened = True
         self.res = res
         self.screen = screen
         self.clock = clock
@@ -29,7 +30,7 @@ class Game:
         self.player = Player("sc222", 10, 20, 20, 30, 5, 1, 0, self.playerSprite, player_collide_rect)
 
         # todo debug size for render demo
-        #self.camera = Camera(0, 0, Rect(300, 200, 300, 200))
+        # self.camera = Camera(0, 0, Rect(300, 200, 300, 200))
         self.camera = Camera(0, 0, Rect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT))
 
         # todo store items somewhere
@@ -43,8 +44,6 @@ class Game:
         # todo это временно, в финальной версии уровень будет грузиться из базы данных
         map_bg = open(os.path.join(self.res.directory, "demo", "background.txt"), "r").read().split()
         map_terrain = open(os.path.join(self.res.directory, "demo", "terrain.txt"), "r").read().split()
-
-        # todo 2d list for storing map obstacles
         parser = Parser()
         self.background_draw_ls = parser.map_to_draw_objects(res.load_backgrounds(), map_bg, self.c_x, self.c_y)
         self.terrain_draw_ls = parser.map_to_draw_objects(res.load_terrain(), map_terrain, self.c_x, self.c_y,
@@ -69,7 +68,6 @@ class Game:
                 if event.button == pygame.BUTTON_LEFT:
                     self.player.perform_attack()
 
-
     def update(self, dt):
         self.camera.update(-self.player.velocity.x, -self.player.velocity.y)
         self.player.update(dt)
@@ -87,7 +85,7 @@ class Game:
         for terrain in filter(self.camera.is_visible, self.terrain_draw_ls):
             terrain.draw(self.display)
             # todo debug draw
-            pygame.draw.rect(self.display, TR, terrain.get_taken_place_rect(SCALE), 5)
+            # pygame.draw.rect(self.display, TR, terrain.get_taken_place_rect(SCALE), 5)
 
         # todo draw clouds
         # todo player should be drawed in priority before far objects and after close objects
@@ -97,10 +95,10 @@ class Game:
         self.playerSprite.draw(self.display)
 
         # todo debug draw
-        move_rect = self.player.collide_rect.move(self.player.velocity.x * MOVE_COLLIDE_RECT_OFFSET,
-                                                  self.player.velocity.y * MOVE_COLLIDE_RECT_OFFSET)
-        pygame.draw.rect(self.display, PL, move_rect, 5)
-        #pygame.draw.rect(self.display, DEBUG, self.camera.visible_rect, 5)
+        # move_rect = self.player.collide_rect.move(self.player.velocity.x * MOVE_COLLIDE_RECT_OFFSET,
+        #                                          self.player.velocity.y * MOVE_COLLIDE_RECT_OFFSET)
+        # pygame.draw.rect(self.display, PL, move_rect, 5)
+        # pygame.draw.rect(self.display, DEBUG, self.camera.visible_rect, 5)
 
         self.gui.draw(self.display, self.player.hp, self.player.mana, None)  # todo store items somewhere
         self.screen.blit(self.display, (0, 0))

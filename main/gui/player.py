@@ -1,8 +1,5 @@
 from enum import Enum
-
 import pygame
-from pygame.surface import Surface
-
 from main.gui.constants import MOUSE_IDLE_DELTA, MOVE_COLLIDE_RECT_OFFSET, SCALE
 
 
@@ -24,7 +21,7 @@ class PlayerSprite(pygame.sprite.Sprite):
 
     def __init__(self, position, size, images):  # images is a dictionary of image lists (key is animation name)
         super(PlayerSprite, self).__init__()
-        self.animation_time = 70  # todo выставлять время анимации в зависимости от числа кадров в текущей анимации
+        self.animation_time = 70
         self.current_time = 0
         self.curr_index = 0
         self.curr_state = "idle_right"
@@ -48,21 +45,21 @@ class PlayerSprite(pygame.sprite.Sprite):
             self.image = self.images[self.curr_state][self.curr_index]
 
     def draw(self, display):
-        display.blit(self.image,(self.rect.x,self.rect.y))
+        display.blit(self.image, (self.rect.x, self.rect.y))
 
 
 # здесь игровая логика
 class Player:
-    def __init__(self, nickname, hp, mana, attack, defence, speed, playerLevel, xp, playerSprite, collide_rect):
+    def __init__(self, nickname, hp, mana, attack, defence, speed, level, xp, sprite, collide_rect):
         self.nickname = nickname
         self.hp = hp
         self.mana = mana
         self.attack = attack
         self.defence = defence
         self.speed = speed
-        self.playerLevel = playerLevel
+        self.playerLevel = level
         self.xp = xp
-        self.playerSprite = playerSprite
+        self.playerSprite = sprite
         self.collide_rect = collide_rect
         self.state = CreatureState.idle
         self.direction = CreatureDirection.right

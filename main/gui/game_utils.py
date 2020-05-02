@@ -66,7 +66,7 @@ def load_folder_images(path, scale=SCALE):
     """
     images = []
     files = os.listdir(path)
-    files.sort(key=lambda f: int(re.sub('\D', '', f)))
+    files.sort(key=lambda f: int(re.sub(r'\D', '', f)))
     for file_name in files:
         img = pygame.image.load(path + os.sep + file_name).convert_alpha()
         images.append(pygame.transform.scale(img, (img.get_width() * scale, img.get_height() * scale)))
@@ -139,7 +139,7 @@ class Resources:
         return result
 
     def load_font(self, size):
-        return pygame.font.Font(os.path.join(self.directory,self.gui,self.font), size)
+        return pygame.font.Font(os.path.join(self.directory, self.gui, self.font), size)
 
 
 class Parser:

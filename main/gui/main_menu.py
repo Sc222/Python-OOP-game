@@ -18,9 +18,6 @@ class MainMenu:
         scroll_width = self.background_image.get_width()
         self.background_left = ScrollingBackground(self.background_image, scroll_width * (-1), 0, scroll_width)
         self.background_right = ScrollingBackground(self.background_image, 0, 0, scroll_width)
-       # title_game = thorpy.make_text(GAME_NAME, 150)
-       # title_game.set_font(FONT)
-       # title_game.set_topleft((115, 50))
         button_play = create_button(resources.load_button_images("play"), self.start_transformation)
         button_play.set_topleft((50 - 5, 250))
         button_leaderboards = create_button(resources.load_button_images("leaderboards"), self.launch_leaderboards)
@@ -39,7 +36,7 @@ class MainMenu:
         print("launch game")
         self.is_opened = False
         self.player_menu.stop_transformation()
-        game = game_main.Game(self.resources,self.screen,self.clock)
+        game = game_main.Game(self.resources, self.screen, self.clock)
         game.launch()
 
     def launch_leaderboards(self):
@@ -59,7 +56,7 @@ class MainMenu:
                 if event.type == pygame.QUIT:
                     self.is_opened = False
                     break
-                self.menu.react(event)  # the menu automatically integrate your elements
+                self.menu.react(event)
             if self.player_menu.is_transformation_finished():
                 self.launch_game()
             self.background_left.update(dt)
@@ -70,5 +67,5 @@ class MainMenu:
             self.player_menu.draw(self.screen)
             self.container.blit()
             self.container.update()
-            render_text(self.screen,font_resource, (115, 50),GAME_NAME)
+            render_text(self.screen, font_resource, (115, 50), GAME_NAME)
             pygame.display.flip()

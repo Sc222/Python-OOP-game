@@ -75,7 +75,7 @@ class DbHelper:
                         unlockedLevel=1, hp=10, attack=10, defence=10, playerLevel=1, xp=0)
         player.save()
 
-    def UpdateUser(self,nickname,hp,xp,defence,attack,level):
+    def UpdateUser(self, nickname, hp, xp, defence, attack, level):
         player = Player.select().where(Player.nickname == nickname)[0]
         player.xp = xp
         player.hp = hp
@@ -91,8 +91,8 @@ class DbHelper:
             return player
         return None
 
-    def GetLevel(self, levelId):
-        level = Level.select().where(Level.id == levelId)
+    def GetLevel(self, level_id):
+        level = Level.select().where(Level.id == level_id)
         backgroundsInfo = self.GetBackgroundsInfo()
         monstersInfo = self.GetMonstersInfo()
         terrainsInfo = self.GetTerrainsInfo()
@@ -101,8 +101,8 @@ class DbHelper:
     # нужно запускать только 1 раз при инициализации сервера
     # note: levelId у элементов списка не нужно задавать
     # todo - сделать сохранение список за 1 один запрос к базе данных
-    def CreateLevel(self, sizeX, sizeY, backgrounds, monsters, terrains):
-        level = Level(sizeX=sizeX, sizeY=sizeY)
+    def CreateLevel(self, size_x, size_y, backgrounds, monsters, terrains):
+        level = Level(sizeX=size_x, sizeY=size_y)
         level.save()
         levelId = level.id
         for background in backgrounds:
@@ -115,7 +115,8 @@ class DbHelper:
             terrain.levelId = levelId
             terrain.save()
 
-    def ClearAllBase(self): # порядок важен
+    def ClearAllBase(self):
+        # порядок важен
         print("delete leaderboards " + str(LeaderboardRecord.delete().execute()))
         print("delete player " + str(Player.delete().execute()))
         print("delete bg " + str(Background.delete().execute()))
