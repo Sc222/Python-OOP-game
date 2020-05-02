@@ -50,13 +50,14 @@ center_y = display.get_rect().centery
 PLAYER_SIZE=24*SCALE
 PLAYER_COLLIDE_WIDTH= 6 * SCALE
 PLAYER_COLLUDE_HEIGHT=5*SCALE
+MOVE_COLLIDE_RECT_OFFSET = 2 # cкорость движения по осям умножается на это число и хитбокс сдвигается
 playerSprite = PlayerSprite((center_x - PLAYER_SIZE / 2, center_y -PLAYER_SIZE / 2), (PLAYER_SIZE, PLAYER_SIZE),
                             resources.player_imgs)
 playerCollideRect = Rect((center_x - PLAYER_COLLIDE_WIDTH / 2, center_y - PLAYER_COLLUDE_HEIGHT / 2 + PLAYER_SIZE / 2 - 5 * SCALE, PLAYER_COLLIDE_WIDTH, PLAYER_COLLUDE_HEIGHT))
 playerDraw = pygame.sprite.RenderPlain(playerSprite)
 player = Player("sc222", 10, 20, 20, 30, 5, 1, 0, playerSprite,playerCollideRect)
 
-camera = Camera(0, 0, Rect(300, 200, 300, 200))
+camera = Camera(0, 0, Rect(300, 200, 300, 200)) #todo debug size for render demo
 
 gui = GameOverlay(3, player.hp, player.mana, center_x,
                   center_y)  # todo store items somewhere #gui scale is smaller than game scale
@@ -96,7 +97,7 @@ def draw():
     # todo player isometric speed IS DIFFERENT (use cos \ sin \ web)
 
     playerDraw.draw(display)
-    move_rect = player.collide_rect.move(playerSprite.velocity.x, playerSprite.velocity.y)
+    move_rect = player.collide_rect.move(playerSprite.velocity.x*MOVE_COLLIDE_RECT_OFFSET, playerSprite.velocity.y*MOVE_COLLIDE_RECT_OFFSET)
     pygame.draw.rect(display, PL, move_rect, 5)
     pygame.draw.rect(display, DEBUG, camera.visible_rect, 5)
     gui.draw(display, player.hp, player.mana, None)  # todo store items somewhere
@@ -146,12 +147,13 @@ while True:
             playerSprite.velocity.normalize_ip()
             playerSprite.velocity *= player.speed
             for terr in filter(camera.is_visible, terrain_draw_ls):
-                move_rect = player.collide_rect.move(playerSprite.velocity.x, playerSprite.velocity.y)
+                move_rect = player.collide_rect.move(playerSprite.velocity.x*MOVE_COLLIDE_RECT_OFFSET, playerSprite.velocity.y*MOVE_COLLIDE_RECT_OFFSET)
 
                 if move_rect.colliderect(terr.get_taken_place_rect(camera,SCALE)):
                     print("collides with: ")
                     playerSprite.velocity.x=0
                     playerSprite.velocity.y=0
+                    playerState = CreatureState.idle
 
         else:
             playerState = CreatureState.idle
