@@ -28,7 +28,9 @@ class Game:
 
         self.player = Player("sc222", 10, 20, 20, 30, 5, 1, 0, self.playerSprite, player_collide_rect)
 
-        self.camera = Camera(0, 0, Rect(300, 200, 300, 200))  # todo debug size for render demo
+        # todo debug size for render demo
+        #self.camera = Camera(0, 0, Rect(300, 200, 300, 200))
+        self.camera = Camera(0, 0, Rect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT))
 
         # todo store items somewhere
         self.gui = GameOverlay(self.res.load_game_overlay_images(), self.player.hp, self.player.mana, self.c_x,
@@ -84,6 +86,7 @@ class Game:
 
         for terrain in filter(self.camera.is_visible, self.terrain_draw_ls):
             terrain.draw(self.display)
+            # todo debug draw
             pygame.draw.rect(self.display, TR, terrain.get_taken_place_rect(SCALE), 5)
 
         # todo draw clouds
@@ -92,10 +95,13 @@ class Game:
         # TODO МЕНЮ ПАУЗЫ
 
         self.playerSprite.draw(self.display)
+
+        # todo debug draw
         move_rect = self.player.collide_rect.move(self.player.velocity.x * MOVE_COLLIDE_RECT_OFFSET,
                                                   self.player.velocity.y * MOVE_COLLIDE_RECT_OFFSET)
         pygame.draw.rect(self.display, PL, move_rect, 5)
-        pygame.draw.rect(self.display, DEBUG, self.camera.visible_rect, 5)
+        #pygame.draw.rect(self.display, DEBUG, self.camera.visible_rect, 5)
+
         self.gui.draw(self.display, self.player.hp, self.player.mana, None)  # todo store items somewhere
         self.screen.blit(self.display, (0, 0))
 
