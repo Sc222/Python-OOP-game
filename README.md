@@ -24,7 +24,7 @@
 
 #### Столкновение с объектами
 ![](https://github.com/Sc222/Python-OOP-game/blob/master/data/demo/demo%20collision.gif?raw=true)
-> Реализована обработка столкновений с объектами
+> Реализована обработка столкновений с объектами, здоровье, мана и инвентарь отрисовываются на основе данных класса игрока
 
 #### Дальность прорисовки
 ![](https://github.com/Sc222/Python-OOP-game/blob/master/data/demo/demo%20render%20distance.gif?raw=true)
