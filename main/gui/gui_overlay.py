@@ -37,8 +37,8 @@ class GameOverlay:
 
     def draw_hp_and_mana(self, display, hp, mana):
         # todo draw mana and hp
-        hp_draw_width = hp // self.max_hp * self.bar_filled
-        mana_draw_width = mana // self.max_mana * self.bar_filled
+        hp_draw_width = int((hp / self.max_hp) * self.bar_filled)
+        mana_draw_width = int((mana / self.max_mana) * self.bar_filled)
 
         display.blit(self.bars, self.bars_pos)
         display.blit(pygame.transform.scale(self.hp_bar, (hp_draw_width, self.hp_bar.get_height())), self.hp_bar_pos)

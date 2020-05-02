@@ -1,4 +1,3 @@
-import math
 import os
 
 import pygame
@@ -8,17 +7,17 @@ from pygame.rect import Rect
 from main.gui.constants import *
 from main.gui.game_utils import Parser, Resources, Camera
 from main.gui.gui_overlay import GameOverlay
-from main.gui.player import PlayerSprite, Player, CreatureState
+from main.gui.player import PlayerSprite, Player
 
 pygame.init()
 clock = pygame.time.Clock()
 screen = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), 0, 32)  # set the display mode, window title and FPS clock
-display = pygame.Surface((WINDOWWIDTH, WINDOWHEIGHT))  # todo surface size - game x*32 +16 , game y*16+32
-pygame.display.set_caption('Map Rendering Demo')
+display = pygame.Surface((WINDOWWIDTH, WINDOWHEIGHT))
+pygame.display.set_caption('Python OOP Game')
 FPSCLOCK = pygame.time.Clock()
 # todo move large setup to fie
-resources = Resources("data", SCALE)
-parser = Parser(SCALE)
+resources = Resources("data")
+parser = Parser()
 center_x = display.get_rect().centerx
 center_y = display.get_rect().centery
 playerSprite = PlayerSprite((center_x - PLAYER_SIZE / 2, center_y - PLAYER_SIZE / 2), (PLAYER_SIZE, PLAYER_SIZE),
@@ -45,9 +44,18 @@ terrain_draw_ls = parser.parse_map_to_static_draw_objects(resources.terrain_imgs
                                                           TERRAIN_SHIFT)
 
 
-def update():
-    camera.update(-playerSprite.velocity.x, -playerSprite.velocity.y)
-    playerSprite.update(dt, playerState, camera)
+def process_input():
+    player.perform_movement(pygame.mouse.get_pos(), filter(camera.is_visible, terrain_draw_ls))
+
+    for event in pygame.event.get():
+        if event.type == MOUSEBUTTONDOWN:
+            if event.button == BUTTON_LEFT:
+                player.perform_attack()
+
+
+def update(dt):
+    camera.update(-player.velocity.x, -player.velocity.y)
+    player.update(dt)
     for background in background_draw_ls:
         background.update(camera)
     for terrain in terrain_draw_ls:
@@ -65,15 +73,13 @@ def draw():
         terrain.draw(display)
         pygame.draw.rect(display, TR, terrain.get_taken_place_rect(SCALE), 5)
 
-    # todo ЭЛЕМЕНТЫ ВНЕ КАМЕРЫ НЕ ДОЛЖНЫ РИСОВАТЬСЯ!!!
     # todo draw clouds
     # todo player should be drawed in priority before far objets and after close objects
     # todo (использовать ordered render из примера)
-    # todo player isometric speed IS DIFFERENT (use cos \ sin \ web)
 
     playerDraw.draw(display)
-    move_rect = player.collide_rect.move(playerSprite.velocity.x * MOVE_COLLIDE_RECT_OFFSET,
-                                         playerSprite.velocity.y * MOVE_COLLIDE_RECT_OFFSET)
+    move_rect = player.collide_rect.move(player.velocity.x * MOVE_COLLIDE_RECT_OFFSET,
+                                         player.velocity.y * MOVE_COLLIDE_RECT_OFFSET)
     pygame.draw.rect(display, PL, move_rect, 5)
     pygame.draw.rect(display, DEBUG, camera.visible_rect, 5)
     gui.draw(display, player.hp, player.mana, None)  # todo store items somewhere
@@ -81,77 +87,15 @@ def draw():
 
 
 draw()
-playerState = CreatureState.idle
-is_attack = 0
 
 while True:
-    mousex, mousey = pygame.mouse.get_pos()
-
-    xx = playerSprite.x - 210 + camera.x_shift
-    yy = playerSprite.y - 70 + camera.y_shift
-
-    cellx = math.floor((2 * yy + xx - center_x - center_y + 5 * TILEWIDTH_HALF) / (2 * TILEWIDTH_HALF))
-    celly = math.floor((2 * yy - xx + center_x - center_y + 3 * TILEWIDTH_HALF) / (2 * TILEWIDTH_HALF))
-    print(cellx, celly)
-
+    # xx = playerSprite.x - 210 + camera.x_shift
+    # yy = playerSprite.y - 70 + camera.y_shift
+    # cellx = math.floor((2 * yy + xx - center_x - center_y + 5 * TILEWIDTH_HALF) / (2 * TILEWIDTH_HALF))
+    # celly = math.floor((2 * yy - xx + center_x - center_y + 3 * TILEWIDTH_HALF) / (2 * TILEWIDTH_HALF))
+    # print(cellx, celly)
     dt = clock.tick(FPS)
-
-    if not is_attack:
-        mousex, mousey = pygame.mouse.get_pos()
-
-        xx = mousex - center_x + camera.x_shift
-        yy = mousey - center_y / 2 + camera.y_shift
-
-        cellx = math.floor((xx / TILEWIDTH_HALF + yy / TILEHEIGHT_HALF) / 2)
-        celly = math.floor((yy / TILEHEIGHT_HALF - (xx / TILEWIDTH_HALF)) / 2)
-        print(cellx, celly)
-
-        playerDx = playerSprite.rect.centerx - mousex
-        playerDy = playerSprite.rect.centery - mousey
-        if abs(playerDx) > MOUSE_IDLE_DELTA:
-            playerSprite.velocity.x = -playerDx
-        else:
-            playerSprite.velocity.x = 0
-
-        if abs(playerDy) > MOUSE_IDLE_DELTA:
-            playerSprite.velocity.y = -playerDy
-        else:
-            playerSprite.velocity.y = 0
-
-        if playerSprite.velocity.x != 0 or playerSprite.velocity.y != 0:
-            playerState = CreatureState.walk
-            playerSprite.velocity.normalize_ip()
-            playerSprite.velocity *= player.speed
-            for terr in filter(camera.is_visible, terrain_draw_ls):
-                move_rect_x = player.collide_rect.move(playerSprite.velocity.x * MOVE_COLLIDE_RECT_OFFSET,
-                                                       0)
-                move_rect_y = player.collide_rect.move(0,
-                                                       playerSprite.velocity.y * MOVE_COLLIDE_RECT_OFFSET)
-                collide_x = move_rect_x.colliderect(terr.get_taken_place_rect(SCALE))
-                collide_y = move_rect_y.colliderect(terr.get_taken_place_rect(SCALE))
-                if collide_x:
-                    print("collides x")
-                    playerSprite.velocity.x = 0
-                if collide_y:
-                    print("collides y")
-                    playerSprite.velocity.y = 0
-                if collide_x and collide_y:
-                    playerState = CreatureState.idle
-
-        else:
-            playerState = CreatureState.idle
-
-    if is_attack and playerSprite.is_animation_end():
-        is_attack = False
-
-    for event in pygame.event.get():
-        if event.type == MOUSEBUTTONDOWN:
-            if event.button == BUTTON_LEFT:
-                is_attack = True
-                playerSprite.velocity.x = 0
-                playerSprite.velocity.y = 0
-                playerState = CreatureState.attack
-
-    update()
+    process_input()
+    update(dt)
     draw()
     pygame.display.flip()

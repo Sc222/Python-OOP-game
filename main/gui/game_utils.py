@@ -6,6 +6,9 @@ from pygame.rect import Rect
 
 
 # object for drawing terrain and background
+from main.gui.constants import SCALE
+
+
 class StaticDrawObject:
     def __init__(self, image, start_x, start_y, y_offset):
         self.image = image  # устанавливаем имя
@@ -23,7 +26,7 @@ class StaticDrawObject:
     # для проверки могут ли сущности двигаться в определенном направлении
     # одинаков для всех препятсвий и совпадает с размером клетки травы
     # не учитывает сдвиг по y, не учитывает положение камеры
-    def get_taken_place_rect(self, scale):
+    def get_taken_place_rect(self, scale=SCALE):
         visibility_rect = self.get_visibility_rect().inflate(-20 * scale, -27 * scale).move(0, 4 * scale)
         return visibility_rect
 
@@ -50,12 +53,12 @@ class Camera:
         return self.visible_rect.colliderect(draw_object.get_visibility_rect())
 
 
-def load_image(path, scale):
+def load_image(path, scale=SCALE):
     img = pygame.image.load(path).convert_alpha()
     return pygame.transform.scale(img, (img.get_width() * scale, img.get_height() * scale))
 
 
-def load_folder_images(path, scale):
+def load_folder_images(path, scale=SCALE):
     """
     Загружает все картинки из папки.
     В папке не должно быть других файлов.
@@ -80,7 +83,7 @@ class Resources:
     terrain_imgs = []
     player_imgs = {}
 
-    def __init__(self, directory, scale):
+    def __init__(self, directory, scale=SCALE):
         self.directory = directory
         self.scale = scale
         self.load_backgrounds()
@@ -111,7 +114,7 @@ class Parser:
     TILE_SIZE_HALF = TILE_SIZE / 2
     TERRAIN_SHIFT = -6
 
-    def __init__(self, scale):
+    def __init__(self, scale=SCALE):
         self.scale = scale
         self.TILE_SIZE *= scale
         self.TILE_SIZE_HALF *= scale
