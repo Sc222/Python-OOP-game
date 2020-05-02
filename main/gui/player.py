@@ -2,7 +2,7 @@ from enum import Enum
 
 import pygame
 
-from game_utils import Camera
+from main.gui.game_utils import Camera
 
 
 class CreatureState(Enum):

@@ -1,56 +1,26 @@
 import math
 import os
-import pygame
-from game_utils import Resources
-from game_utils import Parser
-from game_utils import Camera
-from player import PlayerSprite
-from player import CreatureState
-from player import Player
-from pygame.constants import MOUSEBUTTONDOWN, BUTTON_LEFT
 
-from gui_overlay import GameOverlay
+import pygame
+from pygame.constants import MOUSEBUTTONDOWN, BUTTON_LEFT
 from pygame.rect import Rect
 
-pygame.init()
+from main.gui.constants import *
+from main.gui.game_utils import Parser, Resources, Camera
+from main.gui.gui_overlay import GameOverlay
+from main.gui.player import PlayerSprite, Player, CreatureState
 
-FPS = 60
+pygame.init()
 clock = pygame.time.Clock()
-TERRAIN_SHIFT = -6
-WINDOWWIDTH = 900
-WINDOWHEIGHT = 600
-SCALE = 5
 screen = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), 0, 32)  # set the display mode, window title and FPS clock
 display = pygame.Surface((WINDOWWIDTH, WINDOWHEIGHT))  # todo surface size - game x*32 +16 , game y*16+32
 pygame.display.set_caption('Map Rendering Demo')
 FPSCLOCK = pygame.time.Clock()
-
-SKY = (0, 205, 249)
-DEBUG = (255, 0, 64)
-PL = (0, 255, 0)
-TR = (0, 0, 255)
-
-TILECOLLIDEWIDTH = 21 * SCALE
-TILEWIDTH = 32 * SCALE  # holds the tile width and height
-TILEHEIGHT = 32 * SCALE
-TILEHEIGHT_HALF = TILEHEIGHT / 2
-TILEWIDTH_HALF = TILEWIDTH / 2
-
-MOUSE_IDLE_DELTA = 40  # когда разница в координатах меньше этого числа игрок стоит на месте
-
 # todo move large setup to fie
-
-
 resources = Resources("data", SCALE)
 parser = Parser(SCALE)
-
 center_x = display.get_rect().centerx
 center_y = display.get_rect().centery
-
-PLAYER_SIZE = 24 * SCALE
-PLAYER_COLLIDE_WIDTH = 6 * SCALE
-PLAYER_COLLUDE_HEIGHT = 5 * SCALE
-MOVE_COLLIDE_RECT_OFFSET = 2  # cкорость движения по осям умножается на это число и хитбокс сдвигается
 playerSprite = PlayerSprite((center_x - PLAYER_SIZE / 2, center_y - PLAYER_SIZE / 2), (PLAYER_SIZE, PLAYER_SIZE),
                             resources.player_imgs)
 playerCollideRect = Rect((center_x - PLAYER_COLLIDE_WIDTH / 2,
@@ -156,7 +126,7 @@ while True:
                 move_rect_x = player.collide_rect.move(playerSprite.velocity.x * MOVE_COLLIDE_RECT_OFFSET,
                                                        0)
                 move_rect_y = player.collide_rect.move(0,
-                                                     playerSprite.velocity.y * MOVE_COLLIDE_RECT_OFFSET)
+                                                       playerSprite.velocity.y * MOVE_COLLIDE_RECT_OFFSET)
                 collide_x = move_rect_x.colliderect(terr.get_taken_place_rect(SCALE))
                 collide_y = move_rect_y.colliderect(terr.get_taken_place_rect(SCALE))
                 if collide_x:
@@ -166,7 +136,7 @@ while True:
                     print("collides y")
                     playerSprite.velocity.y = 0
                 if collide_x and collide_y:
-                    playerState=CreatureState.idle
+                    playerState = CreatureState.idle
 
         else:
             playerState = CreatureState.idle
