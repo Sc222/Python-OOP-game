@@ -4,9 +4,8 @@ import re
 import pygame
 from pygame.rect import Rect
 
-
 # object for drawing terrain and background
-from main.gui.constants import SCALE
+from main.gui.constants import SCALE, GUI_SCALE, PLAYER_MENU_SCALE
 
 
 class StaticDrawObject:
@@ -79,34 +78,55 @@ class Resources:
     backgrounds = ["grass", "pond_top", "pond_right", "pond_left", "pond_bottom"]
     terrain = ["house", "pine", "oak", "birch", "flower_purple", "fern", "bush", "invisible"]
     player_anims_name = ["walk_", "idle_", "attack_"]  # все папки должны иметь название ""+right
-    bg_imgs = []
-    terrain_imgs = []
-    player_imgs = {}
+    menu_player_anims = ["menu_idle", "menu_transform"]  # все папки должны иметь название ""+right
 
     def __init__(self, directory, scale=SCALE):
         self.directory = directory
         self.scale = scale
-        self.load_backgrounds()
-        self.load_terrain()
-        self.load_player()
 
     def load_backgrounds(self):
+        result = []
         for background in self.backgrounds:
             path = os.path.join(self.directory, background) + ".png"
-            self.bg_imgs.append(load_image(path, self.scale))
+            result.append(load_image(path, self.scale))
+        return result
 
     def load_terrain(self):
+        result = []
         for terrain_element in self.terrain:
             path = os.path.join(self.directory, terrain_element) + ".png"
-            self.terrain_imgs.append(load_image(path, self.scale))
+            result.append(load_image(path, self.scale))
+        return result
 
     def load_player(self):
+        result = {}
         for anim in self.player_anims_name:
             path = os.path.join(self.directory, self.player, anim)
             images_right = load_folder_images(path + "right", self.scale)
             images_left = [pygame.transform.flip(image, True, False) for image in images_right]
-            self.player_imgs[anim + "right"] = images_right
-            self.player_imgs[anim + "left"] = images_left
+            result[anim + "right"] = images_right
+            result[anim + "left"] = images_left
+        return result
+
+    def load_menu_player(self):
+        result = {}
+        for anim in self.menu_player_anims:
+            path = os.path.join(self.directory, self.player, anim)
+            images = load_folder_images(path, PLAYER_MENU_SCALE)
+            result[anim] = images
+        return result
+
+    # кнопки лежат в папке gui и имеют название button_name_state (state - normal/pressed/hover)
+    def load_button_images(self, name):
+        result = {}
+        gui_dir = os.path.join(self.directory, "gui", "button_")
+        result["normal"] = load_image(f"{gui_dir}{name}_normal.png", GUI_SCALE)
+        result["pressed"] = load_image(f"{gui_dir}{name}_pressed.png", GUI_SCALE)
+        result["hover"] = load_image(f"{gui_dir}{name}_hover.png", GUI_SCALE)
+        return result
+
+    def load_menu_background(self):
+        return load_image(os.path.join(self.directory, "main_menu_bg.png"), GUI_SCALE)
 
 
 class Parser:

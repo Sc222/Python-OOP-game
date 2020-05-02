@@ -11,8 +11,8 @@ from main.gui.player import PlayerSprite, Player
 
 pygame.init()
 clock = pygame.time.Clock()
-screen = pygame.display.set_mode((WINDOWWIDTH, WINDOWHEIGHT), 0, 32)  # set the display mode, window title and FPS clock
-display = pygame.Surface((WINDOWWIDTH, WINDOWHEIGHT))
+screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), 0, 32)  # set the display mode, window title and FPS clock
+display = pygame.Surface((WINDOW_WIDTH, WINDOW_HEIGHT))
 pygame.display.set_caption('Python OOP Game')
 FPSCLOCK = pygame.time.Clock()
 # todo move large setup to fie
@@ -21,17 +21,22 @@ parser = Parser()
 center_x = display.get_rect().centerx
 center_y = display.get_rect().centery
 playerSprite = PlayerSprite((center_x - PLAYER_SIZE / 2, center_y - PLAYER_SIZE / 2), (PLAYER_SIZE, PLAYER_SIZE),
-                            resources.player_imgs)
+                            resources.load_player())
 playerCollideRect = Rect((center_x - PLAYER_COLLIDE_WIDTH / 2,
                           center_y - PLAYER_COLLUDE_HEIGHT / 2 + PLAYER_SIZE / 2 - 5 * SCALE, PLAYER_COLLIDE_WIDTH,
                           PLAYER_COLLUDE_HEIGHT))
-playerDraw = pygame.sprite.RenderPlain(playerSprite)
+
 player = Player("sc222", 10, 20, 20, 30, 5, 1, 0, playerSprite, playerCollideRect)
+
 
 camera = Camera(0, 0, Rect(300, 200, 300, 200))  # todo debug size for render demo
 
-gui = GameOverlay(3, player.hp, player.mana, center_x,
+gui = GameOverlay(GUI_SCALE, player.hp, player.mana, center_x,
                   center_y)  # todo store items somewhere #gui scale is smaller than game scale
+
+#todo change hp and mana for demo
+player.hp=7
+player.mana=17
 
 # todo это временно, в финальной версии уровень будет грузиться из базы данных
 map_bg = open(os.path.join("demo", "background.txt"), "r").read().split()
@@ -39,8 +44,8 @@ map_terrain = open(os.path.join("demo", "terrain.txt"), "r").read().split()
 
 # todo 2d list for storing map obstacles
 print(center_x, center_y)
-background_draw_ls = parser.parse_map_to_static_draw_objects(resources.bg_imgs, map_bg, center_x, center_y)
-terrain_draw_ls = parser.parse_map_to_static_draw_objects(resources.terrain_imgs, map_terrain, center_x, center_y,
+background_draw_ls = parser.parse_map_to_static_draw_objects(resources.load_backgrounds(), map_bg, center_x, center_y)
+terrain_draw_ls = parser.parse_map_to_static_draw_objects(resources.load_terrain(), map_terrain, center_x, center_y,
                                                           TERRAIN_SHIFT)
 
 
@@ -74,10 +79,10 @@ def draw():
         pygame.draw.rect(display, TR, terrain.get_taken_place_rect(SCALE), 5)
 
     # todo draw clouds
-    # todo player should be drawed in priority before far objets and after close objects
+    # todo player should be drawed in priority before far objects and after close objects
     # todo (использовать ordered render из примера)
 
-    playerDraw.draw(display)
+    playerSprite.draw(display)
     move_rect = player.collide_rect.move(player.velocity.x * MOVE_COLLIDE_RECT_OFFSET,
                                          player.velocity.y * MOVE_COLLIDE_RECT_OFFSET)
     pygame.draw.rect(display, PL, move_rect, 5)
@@ -87,6 +92,7 @@ def draw():
 
 
 draw()
+
 
 while True:
     # xx = playerSprite.x - 210 + camera.x_shift
