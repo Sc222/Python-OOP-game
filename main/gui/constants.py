@@ -1,4 +1,4 @@
-FONT = "D-determination (RUS BY LYAJKA)"
+FONT = "Chiller"
 GAME_NAME = "Mega Nerd"
 DATA_FOLDER = "../../data"
 FPS = 60
