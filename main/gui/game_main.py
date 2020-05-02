@@ -27,8 +27,8 @@ FPSCLOCK = pygame.time.Clock()
 
 SKY = (0, 205, 249)
 DEBUG = (255, 0, 64)
-PL = (0,255,0)
-TR=(0,0,255)
+PL = (0, 255, 0)
+TR = (0, 0, 255)
 
 TILECOLLIDEWIDTH = 21 * SCALE
 TILEWIDTH = 32 * SCALE  # holds the tile width and height
@@ -47,17 +47,19 @@ parser = Parser(SCALE)
 center_x = display.get_rect().centerx
 center_y = display.get_rect().centery
 
-PLAYER_SIZE=24*SCALE
-PLAYER_COLLIDE_WIDTH= 6 * SCALE
-PLAYER_COLLUDE_HEIGHT=5*SCALE
-MOVE_COLLIDE_RECT_OFFSET = 2 # cкорость движения по осям умножается на это число и хитбокс сдвигается
-playerSprite = PlayerSprite((center_x - PLAYER_SIZE / 2, center_y -PLAYER_SIZE / 2), (PLAYER_SIZE, PLAYER_SIZE),
+PLAYER_SIZE = 24 * SCALE
+PLAYER_COLLIDE_WIDTH = 6 * SCALE
+PLAYER_COLLUDE_HEIGHT = 5 * SCALE
+MOVE_COLLIDE_RECT_OFFSET = 2  # cкорость движения по осям умножается на это число и хитбокс сдвигается
+playerSprite = PlayerSprite((center_x - PLAYER_SIZE / 2, center_y - PLAYER_SIZE / 2), (PLAYER_SIZE, PLAYER_SIZE),
                             resources.player_imgs)
-playerCollideRect = Rect((center_x - PLAYER_COLLIDE_WIDTH / 2, center_y - PLAYER_COLLUDE_HEIGHT / 2 + PLAYER_SIZE / 2 - 5 * SCALE, PLAYER_COLLIDE_WIDTH, PLAYER_COLLUDE_HEIGHT))
+playerCollideRect = Rect((center_x - PLAYER_COLLIDE_WIDTH / 2,
+                          center_y - PLAYER_COLLUDE_HEIGHT / 2 + PLAYER_SIZE / 2 - 5 * SCALE, PLAYER_COLLIDE_WIDTH,
+                          PLAYER_COLLUDE_HEIGHT))
 playerDraw = pygame.sprite.RenderPlain(playerSprite)
-player = Player("sc222", 10, 20, 20, 30, 5, 1, 0, playerSprite,playerCollideRect)
+player = Player("sc222", 10, 20, 20, 30, 5, 1, 0, playerSprite, playerCollideRect)
 
-camera = Camera(0, 0, Rect(300, 200, 300, 200)) #todo debug size for render demo
+camera = Camera(0, 0, Rect(300, 200, 300, 200))  # todo debug size for render demo
 
 gui = GameOverlay(3, player.hp, player.mana, center_x,
                   center_y)  # todo store items somewhere #gui scale is smaller than game scale
@@ -67,15 +69,19 @@ map_bg = open(os.path.join("demo", "background.txt"), "r").read().split()
 map_terrain = open(os.path.join("demo", "terrain.txt"), "r").read().split()
 
 # todo 2d list for storing map obstacles
-print(center_x,center_y)
+print(center_x, center_y)
 background_draw_ls = parser.parse_map_to_static_draw_objects(resources.bg_imgs, map_bg, center_x, center_y)
 terrain_draw_ls = parser.parse_map_to_static_draw_objects(resources.terrain_imgs, map_terrain, center_x, center_y,
                                                           TERRAIN_SHIFT)
 
 
-# TODO MOVE TO DRAW UTILS SOMETHING LIKE THIS
-
-# list(filter(lambda x: "n" in x, fruit))
+def update():
+    camera.update(-playerSprite.velocity.x, -playerSprite.velocity.y)
+    playerSprite.update(dt, playerState, camera)
+    for background in background_draw_ls:
+        background.update(camera)
+    for terrain in terrain_draw_ls:
+        terrain.update(camera)
 
 
 def draw():
@@ -83,12 +89,11 @@ def draw():
 
     # todo here
     for background in filter(camera.is_visible, background_draw_ls):
-        #print(background.get_draw_coordinates(camera))
-        display.blit(background.image, background.get_draw_coordinates(camera))
+        background.draw(display)
 
     for terrain in filter(camera.is_visible, terrain_draw_ls):
-        display.blit(terrain.image, terrain.get_draw_coordinates(camera))
-        pygame.draw.rect(display, TR, terrain.get_taken_place_rect(camera,SCALE),5)
+        terrain.draw(display)
+        pygame.draw.rect(display, TR, terrain.get_taken_place_rect(SCALE), 5)
 
     # todo ЭЛЕМЕНТЫ ВНЕ КАМЕРЫ НЕ ДОЛЖНЫ РИСОВАТЬСЯ!!!
     # todo draw clouds
@@ -97,7 +102,8 @@ def draw():
     # todo player isometric speed IS DIFFERENT (use cos \ sin \ web)
 
     playerDraw.draw(display)
-    move_rect = player.collide_rect.move(playerSprite.velocity.x*MOVE_COLLIDE_RECT_OFFSET, playerSprite.velocity.y*MOVE_COLLIDE_RECT_OFFSET)
+    move_rect = player.collide_rect.move(playerSprite.velocity.x * MOVE_COLLIDE_RECT_OFFSET,
+                                         playerSprite.velocity.y * MOVE_COLLIDE_RECT_OFFSET)
     pygame.draw.rect(display, PL, move_rect, 5)
     pygame.draw.rect(display, DEBUG, camera.visible_rect, 5)
     gui.draw(display, player.hp, player.mana, None)  # todo store items somewhere
@@ -114,8 +120,8 @@ while True:
     xx = playerSprite.x - 210 + camera.x_shift
     yy = playerSprite.y - 70 + camera.y_shift
 
-    cellx = math.floor((2*yy+xx-center_x-center_y+5*TILEWIDTH_HALF)/(2*TILEWIDTH_HALF))
-    celly = math.floor((2*yy-xx+center_x-center_y+3*TILEWIDTH_HALF)/(2*TILEWIDTH_HALF))
+    cellx = math.floor((2 * yy + xx - center_x - center_y + 5 * TILEWIDTH_HALF) / (2 * TILEWIDTH_HALF))
+    celly = math.floor((2 * yy - xx + center_x - center_y + 3 * TILEWIDTH_HALF) / (2 * TILEWIDTH_HALF))
     print(cellx, celly)
 
     dt = clock.tick(FPS)
@@ -123,12 +129,12 @@ while True:
     if not is_attack:
         mousex, mousey = pygame.mouse.get_pos()
 
-        xx= mousex - center_x + camera.x_shift
-        yy= mousey - center_y / 2 + camera.y_shift
+        xx = mousex - center_x + camera.x_shift
+        yy = mousey - center_y / 2 + camera.y_shift
 
         cellx = math.floor((xx / TILEWIDTH_HALF + yy / TILEHEIGHT_HALF) / 2)
         celly = math.floor((yy / TILEHEIGHT_HALF - (xx / TILEWIDTH_HALF)) / 2)
-        print(cellx,celly)
+        print(cellx, celly)
 
         playerDx = playerSprite.rect.centerx - mousex
         playerDy = playerSprite.rect.centery - mousey
@@ -147,13 +153,20 @@ while True:
             playerSprite.velocity.normalize_ip()
             playerSprite.velocity *= player.speed
             for terr in filter(camera.is_visible, terrain_draw_ls):
-                move_rect = player.collide_rect.move(playerSprite.velocity.x*MOVE_COLLIDE_RECT_OFFSET, playerSprite.velocity.y*MOVE_COLLIDE_RECT_OFFSET)
-
-                if move_rect.colliderect(terr.get_taken_place_rect(camera,SCALE)):
-                    print("collides with: ")
-                    playerSprite.velocity.x=0
-                    playerSprite.velocity.y=0
-                    playerState = CreatureState.idle
+                move_rect_x = player.collide_rect.move(playerSprite.velocity.x * MOVE_COLLIDE_RECT_OFFSET,
+                                                       0)
+                move_rect_y = player.collide_rect.move(0,
+                                                     playerSprite.velocity.y * MOVE_COLLIDE_RECT_OFFSET)
+                collide_x = move_rect_x.colliderect(terr.get_taken_place_rect(SCALE))
+                collide_y = move_rect_y.colliderect(terr.get_taken_place_rect(SCALE))
+                if collide_x:
+                    print("collides x")
+                    playerSprite.velocity.x = 0
+                if collide_y:
+                    print("collides y")
+                    playerSprite.velocity.y = 0
+                if collide_x and collide_y:
+                    playerState=CreatureState.idle
 
         else:
             playerState = CreatureState.idle
@@ -169,10 +182,6 @@ while True:
                 playerSprite.velocity.y = 0
                 playerState = CreatureState.attack
 
-    # camera.y = WINDOWHEIGHT / 2 - playerSprite.y
-    #print((-playerSprite.velocity.x, -playerSprite.velocity.y))
-    camera.update(-playerSprite.velocity.x, -playerSprite.velocity.y)
-    playerSprite.update(dt, playerState, camera)
-
+    update()
     draw()
     pygame.display.flip()

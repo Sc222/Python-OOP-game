@@ -7,29 +7,32 @@ from pygame.rect import Rect
 
 # object for drawing terrain and background
 class StaticDrawObject:
-    def __init__(self, image, draw_x, draw_y, y_offset):
+    def __init__(self, image, start_x, start_y, y_offset):
         self.image = image  # устанавливаем имя
-        self.draw_x = draw_x
-        self.draw_y = draw_y
+        self.start_x = start_x
+        self.start_y = start_y
         self.y_offset = y_offset
-
-    def get_draw_coordinates(self, camera):
-        return self.draw_x + camera.x_shift, self.draw_y + camera.y_shift + self.y_offset
-
-    def get_dimensions(self):
-        return self.image.get_rect().width, self.image.get_rect().height
+        self.draw_x = start_x
+        self.draw_y = start_y
 
     # для отрисовки видимых объектов (не учитывает сдвиг по y, учитывает положение камеры)
-    def get_visibility_rect(self, camera):
-        coordinates = (self.draw_x + camera.x_shift, self.draw_y + camera.y_shift)
-        return Rect(coordinates, self.get_dimensions())
+    def get_visibility_rect(self):
+        coordinates = (self.draw_x, self.draw_y)
+        return Rect(coordinates, (self.image.get_rect().width, self.image.get_rect().height))
 
     # для проверки могут ли сущности двигаться в определенном направлении
     # одинаков для всех препятсвий и совпадает с размером клетки травы
     # не учитывает сдвиг по y, не учитывает положение камеры
-    def get_taken_place_rect(self,camera,scale):
-        visibility_rect = self.get_visibility_rect(camera).inflate(-20*scale,-27*scale).move(0,4*scale)
+    def get_taken_place_rect(self, scale):
+        visibility_rect = self.get_visibility_rect().inflate(-20 * scale, -27 * scale).move(0, 4 * scale)
         return visibility_rect
+
+    def draw(self, display):
+        display.blit(self.image, (self.draw_x, self.draw_y + self.y_offset))
+
+    def update(self, camera):
+        self.draw_x = self.start_x + camera.x_shift
+        self.draw_y = self.start_y + camera.y_shift
 
 
 class Camera:
@@ -44,7 +47,7 @@ class Camera:
         self.y_shift += y_movement
 
     def is_visible(self, draw_object: StaticDrawObject):
-        return self.visible_rect.colliderect(draw_object.get_visibility_rect(self))
+        return self.visible_rect.colliderect(draw_object.get_visibility_rect())
 
 
 def load_image(path, scale):
@@ -71,7 +74,7 @@ def load_folder_images(path, scale):
 class Resources:
     player = "player"
     backgrounds = ["grass", "pond_top", "pond_right", "pond_left", "pond_bottom"]
-    terrain = ["house", "pine", "oak", "birch", "flower_purple", "fern", "bush","invisible"]
+    terrain = ["house", "pine", "oak", "birch", "flower_purple", "fern", "bush", "invisible"]
     player_anims_name = ["walk_", "idle_", "attack_"]  # все папки должны иметь название ""+right
     bg_imgs = []
     terrain_imgs = []
@@ -122,8 +125,8 @@ class Parser:
                 if tile != 0:
                     tile_image = images[tile - 1]
                     x_shift = center_x - self.TILE_SIZE_HALF
-                    y_shift = center_y*0.5-self.TILE_SIZE
-                    centered_x = x_shift + (map_x-map_y)*self.TILE_SIZE_HALF
-                    centered_y = y_shift + (map_x+map_y)*0.5*self.TILE_SIZE_HALF
+                    y_shift = center_y * 0.5 - self.TILE_SIZE
+                    centered_x = x_shift + (map_x - map_y) * self.TILE_SIZE_HALF
+                    centered_y = y_shift + (map_x + map_y) * 0.5 * self.TILE_SIZE_HALF
                     result_ls.append(StaticDrawObject(tile_image, centered_x, centered_y, extra_y_offset * self.scale))
         return result_ls
