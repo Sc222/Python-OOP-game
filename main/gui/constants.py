@@ -1,4 +1,3 @@
-FONT = "Chiller"
 GAME_NAME = "Mega Nerd"
 DATA_FOLDER = "../../data"
 FPS = 60
@@ -20,6 +19,7 @@ PL_COLLIDE_H = 5 * SCALE
 MOVE_COLLIDE_RECT_OFFSET = 2   # cкорость движения по осям умножается на это число и хитбокс сдвигается
 
 # colors
+MAIN_MENU_HEADER = (0, 105, 170)
 SKY = (0, 205, 249)
 DEBUG = (255, 0, 64)
 PL = (0, 255, 0)

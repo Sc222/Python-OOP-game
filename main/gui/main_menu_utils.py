@@ -2,6 +2,8 @@ import pygame
 from thorpy import Clickable
 from thorpy.painting.painters.imageframe import ImageButton
 
+from main.gui.constants import MAIN_MENU_HEADER
+
 
 def create_button(images, func):
     e = Clickable("", finish=False)
@@ -10,6 +12,13 @@ def create_button(images, func):
     e.set_painter(painter)
     e.finish()
     return e
+
+
+def render_text(screen, font, pos, text):
+    text = font.render(text, False, MAIN_MENU_HEADER)
+    text_rect = text.get_rect()
+    text_rect.move_ip(pos)
+    screen.blit(text, text_rect)
 
 
 class ScrollingBackground(pygame.sprite.Sprite):

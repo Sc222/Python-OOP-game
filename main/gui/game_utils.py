@@ -76,6 +76,7 @@ def load_folder_images(path, scale=SCALE):
 class Resources:
     player = "player"
     gui = "gui"
+    font = "font.otf"
     backgrounds = ["grass", "pond_top", "pond_right", "pond_left", "pond_bottom"]
     terrain = ["house", "pine", "oak", "birch", "flower_purple", "fern", "bush", "invisible"]
     player_anims_name = ["walk_", "idle_", "attack_"]  # все папки должны иметь название ""+right
@@ -136,6 +137,9 @@ class Resources:
             path = os.path.join(self.directory, self.gui, f"{image}.png")
             result[image] = load_image(path, GUI_SCALE)
         return result
+
+    def load_font(self, size):
+        return pygame.font.Font(os.path.join(self.directory,self.gui,self.font), size)
 
 
 class Parser:
