@@ -11,3 +11,8 @@
 ### Установка
  - для установки скачать проект и в терминале ввести ``pip install requirements.txt``
  - [документация ORM-системы](http://docs.peewee-orm.com/en/latest/index.html)
+
+### Запуск
+ - запускать файл ``game_main.py``
+ стоит отметить, что директорией запуска должна быть __главная папка проекта _(Python-OOP-game)___,
+ а не Python-OOP-game/main/gui (можно настроить run configuration в IDE)
