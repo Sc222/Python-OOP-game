@@ -75,10 +75,12 @@ def load_folder_images(path, scale=SCALE):
 
 class Resources:
     player = "player"
+    gui = "gui"
     backgrounds = ["grass", "pond_top", "pond_right", "pond_left", "pond_bottom"]
     terrain = ["house", "pine", "oak", "birch", "flower_purple", "fern", "bush", "invisible"]
     player_anims_name = ["walk_", "idle_", "attack_"]  # все папки должны иметь название ""+right
-    menu_player_anims = ["menu_idle", "menu_transform"]  # все папки должны иметь название ""+right
+    menu_player_anims = ["menu_idle", "menu_transform"]
+    game_gui_images = ["bars", "inventory", "hp_bar", "mana_bar"]
 
     def __init__(self, directory, scale=SCALE):
         self.directory = directory
@@ -119,7 +121,7 @@ class Resources:
     # кнопки лежат в папке gui и имеют название button_name_state (state - normal/pressed/hover)
     def load_button_images(self, name):
         result = {}
-        gui_dir = os.path.join(self.directory, "gui", "button_")
+        gui_dir = os.path.join(self.directory, self.gui, "button_")
         result["normal"] = load_image(f"{gui_dir}{name}_normal.png", GUI_SCALE)
         result["pressed"] = load_image(f"{gui_dir}{name}_pressed.png", GUI_SCALE)
         result["hover"] = load_image(f"{gui_dir}{name}_hover.png", GUI_SCALE)
@@ -127,6 +129,13 @@ class Resources:
 
     def load_menu_background(self):
         return load_image(os.path.join(self.directory, "main_menu_bg.png"), GUI_SCALE)
+
+    def load_game_overlay_images(self):
+        result = {}
+        for image in self.game_gui_images:
+            path = os.path.join(self.directory, self.gui, f"{image}.png")
+            result[image] = load_image(path, GUI_SCALE)
+        return result
 
 
 class Parser:
@@ -140,7 +149,7 @@ class Parser:
         self.TILE_SIZE_HALF *= scale
         self.TERRAIN_SHIFT *= scale
 
-    def parse_map_to_static_draw_objects(self, images, game_map, center_x, center_y, extra_y_offset=0):
+    def map_to_draw_objects(self, images, game_map, center_x, center_y, extra_y_offset=0):
         result_ls = list()
         for map_x, row in enumerate(game_map):
             for map_y, tile in enumerate(row):

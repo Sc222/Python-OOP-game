@@ -1,16 +1,17 @@
 import pygame
 import thorpy
 
+from main.gui import game_main
 from main.gui.constants import FPS, FONT, GAME_NAME
 from main.gui.main_menu_utils import ScrollingBackground, create_button, PlayerMenu
 
 
 class MainMenu:
 
-    def __init__(self, resources, display, clock):
+    def __init__(self, resources, screen, clock):
         self.is_opened = True
         self.resources = resources
-        self.display = display
+        self.screen = screen
         self.clock = clock
         self.player_menu = PlayerMenu((475, 200), resources.load_menu_player())
         self.background_image = resources.load_menu_background()
@@ -29,7 +30,7 @@ class MainMenu:
         self.container = thorpy.Ghost(elements=[title_game, button_play, button_leaderboards, button_exit])
         self.menu = thorpy.Menu(self.container)
         for element in self.menu.get_population():
-            element.surface = display
+            element.surface = screen
 
     def start_transformation(self):
         self.player_menu.start_transformation()
@@ -38,6 +39,8 @@ class MainMenu:
         print("launch game")
         self.is_opened = False
         self.player_menu.stop_transformation()
+        game = game_main.Game(self.resources,self.screen,self.clock)
+        game.launch()
 
     def launch_leaderboards(self):
         # TODO LAUNCH LEADERBOARDS HERE
@@ -61,9 +64,9 @@ class MainMenu:
             self.background_left.update(dt)
             self.background_right.update(dt)
             self.player_menu.update(dt)
-            self.background_left.draw(self.display)
-            self.background_right.draw(self.display)
-            self.player_menu.draw(self.display)
+            self.background_left.draw(self.screen)
+            self.background_right.draw(self.screen)
+            self.player_menu.draw(self.screen)
             self.container.blit()
             self.container.update()
             pygame.display.flip()
