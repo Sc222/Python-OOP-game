@@ -1,12 +1,13 @@
-FONT="D-determination (RUS BY LYAJKA)"
-GAME_NAME="Mega Nerd"
+FONT = "D-determination (RUS BY LYAJKA)"
+GAME_NAME = "Mega Nerd"
+DATA_FOLDER = "../../data"
 FPS = 60
 TERRAIN_SHIFT = -6
 WINDOW_WIDTH = 900
 WINDOW_HEIGHT = 600
 SCALE = 5
-GUI_SCALE=3
-PLAYER_MENU_SCALE=14
+GUI_SCALE = 3
+PLAYER_MENU_SCALE = 14
 TILECOLLIDEWIDTH = 21 * SCALE
 TILEWIDTH = 32 * SCALE  # holds the tile width and height
 TILEHEIGHT = 32 * SCALE
@@ -17,7 +18,7 @@ PLAYER_SIZE = 24 * SCALE
 PLAYER_COLLIDE_WIDTH = 6 * SCALE
 PLAYER_COLLUDE_HEIGHT = 5 * SCALE
 MOVE_COLLIDE_RECT_OFFSET = 2  # cкорость движения по осям умножается на это число и хитбокс сдвигается
-#colors
+# colors
 SKY = (0, 205, 249)
 DEBUG = (255, 0, 64)
 PL = (0, 255, 0)

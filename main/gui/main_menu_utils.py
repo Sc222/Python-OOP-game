@@ -43,7 +43,7 @@ class PlayerMenu(pygame.sprite.Sprite):
     def __init__(self, position, images):  # images is a dictionary of image lists (key is animation name)
         super(PlayerMenu, self).__init__()
         self.curr_state = "menu_idle"
-        size=(images[self.curr_state][0].get_width(),images[self.curr_state][0].get_height())
+        size = (images[self.curr_state][0].get_width(), images[self.curr_state][0].get_height())
         self.rect = pygame.Rect(position, size)
         self.animation_time = 70
         self.current_time = 0
@@ -54,11 +54,11 @@ class PlayerMenu(pygame.sprite.Sprite):
         self.y = self.rect.centery
 
     def is_transformation_finished(self):
-        return self.curr_index == len(self.images[self.curr_state]) - 1 and self.curr_state=="menu_transform"
+        return self.curr_index == len(self.images[self.curr_state]) - 1 and self.curr_state == "menu_transform"
 
     def start_transformation(self):
         self.curr_index = 0
-        self.curr_state="menu_transform"
+        self.curr_state = "menu_transform"
 
     def stop_transformation(self):
         self.curr_index = 0
