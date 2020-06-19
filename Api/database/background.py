@@ -1,5 +1,5 @@
 from peewee import *
-from main.database.level import Level
+from database.level import Level
 
 
 class Background(Model):

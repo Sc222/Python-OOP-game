@@ -1,15 +1,15 @@
 from peewee import SqliteDatabase
 
-from main.database.level_dto import LevelDto
-from main.database.background_info import BackgroundInfo
-from main.database.monster_info import MonsterInfo
-from main.database.leaderboard_record import LeaderboardRecord
-from main.database.player import Player
-from main.database.level import Level
-from main.database.background import Background
-from main.database.monster import Monster
-from main.database.terrain_info import TerrainInfo
-from main.database.terrain import Terrain
+from database.level_dto import LevelDto
+from database.background_info import BackgroundInfo
+from database.monster_info import MonsterInfo
+from database.leaderboard_record import LeaderboardRecord
+from database.player import Player
+from database.level import Level
+from database.background import Background
+from database.monster import Monster
+from database.terrain_info import TerrainInfo
+from database.terrain import Terrain
 
 
 # здесь будут методы для работы с базой данных
