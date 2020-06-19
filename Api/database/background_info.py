@@ -1,7 +1,7 @@
 from peewee import *
+from app import db
 
-
-class BackgroundInfo(Model):
+class BackgroundInfo(db.Model):
     image = TextField()  # путь до картинки (картинки будут храниться локально)
 
     class Meta:

@@ -1,8 +1,9 @@
 from peewee import *
 from database.level import Level
+from app import db
 
 
-class Background(Model):
+class Background(db.Model):
     levelId = ForeignKeyField(Level, backref='backgrounds')
     type = IntegerField()
     x = IntegerField()
