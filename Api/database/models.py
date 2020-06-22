@@ -60,7 +60,7 @@ class Player(db.Model):
             'attack' : self.attack,
             'defence' : self.defence
         })
-    
+
     def __init__(self,nickname,password):
         self.nickname = nickname
         self.password = password
@@ -74,9 +74,16 @@ class Player(db.Model):
 
 class LeaderboardRecord(db.Model):
     id = db.Column(db.Integer,primary_key=True)
-    playerId = db.Column(db.Integer,db.ForeignKey('Player.id'))
+    playerName = db.Column(db.String)
     levelId = db.Column(db.Integer)
     score = db.Column(db.Integer)
+
+    def serialize(self):
+        return {'id' : self.id,
+                'playerName' : self.playerName,
+                'levelId' : self.levelId,
+                'score' : self.score
+                }
 
 class TerrainInfo(db.Model):
     id = db.Column(db.Integer,primary_key=True)
