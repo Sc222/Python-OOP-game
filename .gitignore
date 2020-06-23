@@ -2,3 +2,6 @@
 /.idea/
 /tests/database.db
 Api/venv/
+Client/venv/
+Api/.idea/
+Client/.idea/
