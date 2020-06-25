@@ -1,6 +1,7 @@
 from app import db,login
 from flask_login import UserMixin
 import json
+from werkzeug.security import generate_password_hash, check_password_hash
 
 
 class Background(db.Model):
@@ -48,7 +49,7 @@ class Monster(db.Model):
 class User(UserMixin,db.Model):
     id = db.Column(db.Integer,primary_key=True)
     nickname = db.Column(db.String,unique=True)
-    password = db.Column(db.String)  # хранится не пароль, а его хэш
+    password_hash = db.Column(db.String)  # хранится не пароль, а его хэш
     unlockedLevel = db.Column(db.Integer)  # максимальный разблок. уровень
     hp = db.Column(db.Integer)
     attack = db.Column(db.Integer)
@@ -56,6 +57,12 @@ class User(UserMixin,db.Model):
     playerLevel = db.Column(db.Integer)
     xp = db.Column(db.Integer)
     db.UniqueConstraint('nickname',name='unique_component_commit')
+
+    def set_password(self, password):
+        self.password_hash = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.password_hash, password)
 
     def __str__(self):
         return json.dumps({
