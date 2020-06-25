@@ -1,4 +1,5 @@
-from app import db
+from app import db,login
+from flask_login import UserMixin
 import json
 
 
@@ -41,7 +42,7 @@ class Monster(db.Model):
 
 
 
-class Player(db.Model):
+class User(UserMixin,db.Model):
     id = db.Column(db.Integer,primary_key=True)
     nickname = db.Column(db.String, unique=True)
     password = db.Column(db.String)  # хранится не пароль, а его хэш
@@ -70,6 +71,11 @@ class Player(db.Model):
         self.defence = 50
         self.playerLevel = 1
         self.xp = 0
+
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
 
 
 class LeaderboardRecord(db.Model):
