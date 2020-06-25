@@ -45,14 +45,8 @@ class Monster(db.Model):
     y = db.Column(db.Integer)
 
 
-<<<<<<< HEAD
-
 class User(UserMixin,db.Model):
     id = db.Column(db.Integer,primary_key=True)
-=======
-class Player(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
->>>>>>> ddcd9850f94379fafdf90439ead8cd387f587ceb
     nickname = db.Column(db.String, unique=True)
     password = db.Column(db.String)  # хранится не пароль, а его хэш
     unlockedLevel = db.Column(db.Integer)  # максимальный разблок. уровень
