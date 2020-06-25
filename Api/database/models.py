@@ -47,7 +47,7 @@ class Monster(db.Model):
 
 class User(UserMixin,db.Model):
     id = db.Column(db.Integer,primary_key=True)
-    nickname = db.Column(db.String, unique=True)
+    nickname = db.Column(db.String,unique=True)
     password = db.Column(db.String)  # хранится не пароль, а его хэш
     unlockedLevel = db.Column(db.Integer)  # максимальный разблок. уровень
     hp = db.Column(db.Integer)
@@ -55,6 +55,7 @@ class User(UserMixin,db.Model):
     defence = db.Column(db.Integer)
     playerLevel = db.Column(db.Integer)
     xp = db.Column(db.Integer)
+    db.UniqueConstraint('nickname',name='unique_component_commit')
 
     def __str__(self):
         return json.dumps({
