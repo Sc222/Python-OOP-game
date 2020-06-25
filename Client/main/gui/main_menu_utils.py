@@ -14,16 +14,16 @@ def create_button(images, func):
     return e
 
 
-def render_text(screen, font, pos, text):
-    text = font.render(text, False, MAIN_MENU_HEADER)
+def render_text(screen, font, pos, text, color):
+    text = font.render(text, False, color)
     text_rect = text.get_rect()
     text_rect.move_ip(pos)
     screen.blit(text, text_rect)
 
 
-class ScrollingBackground(pygame.sprite.Sprite):
+class ScrollingBackgroundHorizontal(pygame.sprite.Sprite):
     def __init__(self, image, x, y, scroll_width):
-        super(ScrollingBackground, self).__init__()
+        super(ScrollingBackgroundHorizontal, self).__init__()
         self.image = image
         self.x = x
         self.y = y

@@ -128,8 +128,14 @@ class Resources:
         result["hover"] = load_image(f"{gui_dir}{name}_hover.png", GUI_SCALE)
         return result
 
-    def load_menu_background(self):
+    def load_main_menu_background(self):
         return load_image(os.path.join(self.directory, "main_menu_bg.png"), GUI_SCALE)
+
+    def load_leaderboards_background(self):
+        return load_image(os.path.join(self.directory, "leaderboards_bg.png"), GUI_SCALE)
+
+    def load_leaderboards_menu_background(self):
+        return load_image(os.path.join(self.directory, self.gui,  "leaderboards_menu_bg.png"), GUI_SCALE)
 
     def load_game_overlay_images(self):
         result = {}
