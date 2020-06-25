@@ -1,9 +1,10 @@
-from app import db
+from app import db,login
+from flask_login import UserMixin
 import json
 
 
 class Background(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key = True)
     level_id = db.Column(db.Integer, db.ForeignKey('level.id'))
     x = db.Column(db.Integer)
     y = db.Column(db.Integer)
@@ -44,8 +45,8 @@ class Monster(db.Model):
     y = db.Column(db.Integer)
 
 
-class Player(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
+class User(UserMixin,db.Model):
+    id = db.Column(db.Integer,primary_key=True)
     nickname = db.Column(db.String, unique=True)
     password = db.Column(db.String)  # хранится не пароль, а его хэш
     unlockedLevel = db.Column(db.Integer)  # максимальный разблок. уровень
@@ -73,6 +74,11 @@ class Player(db.Model):
         self.defence = 50
         self.playerLevel = 1
         self.xp = 0
+
+@login.user_loader
+def load_user(id):
+    return User.query.get(int(id))
+
 
 
 class LeaderboardRecord(db.Model):
