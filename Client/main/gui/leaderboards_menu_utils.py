@@ -14,31 +14,31 @@ def create_button(images, func):
     return e
 
 
-def render_text(screen, font, pos, text, color):
-    text = font.render(text, False, color)
+def render_text(screen, font, pos, text):
+    text = font.render(text, False, MAIN_MENU_HEADER)
     text_rect = text.get_rect()
     text_rect.move_ip(pos)
     screen.blit(text, text_rect)
 
 
-class ScrollingBackgroundHorizontal(pygame.sprite.Sprite):
-    def __init__(self, image, x, y, scroll_width):
-        super(ScrollingBackgroundHorizontal, self).__init__()
+class ScrollingBackgroundVertical(pygame.sprite.Sprite):
+    def __init__(self, image, x, y, scroll_height):
+        super(ScrollingBackgroundVertical, self).__init__()
         self.image = image
         self.x = x
         self.y = y
         self.animation_time = 15
         self.current_time = 0
         self.rect = self.image.get_rect()
-        self.scroll_width = scroll_width
+        self.scroll_height = scroll_height
 
     def scroll(self, dt):
         self.current_time += dt
         if self.current_time >= self.animation_time:
             self.current_time = 0
-            self.x -= 1
-            if self.x < -self.scroll_width:
-                self.x = self.scroll_width
+            self.y -= 1
+            if self.y < -self.scroll_height:
+                self.y = self.scroll_height
 
     def update(self, dt):
         self.scroll(dt)

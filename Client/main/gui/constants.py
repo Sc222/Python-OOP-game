@@ -1,4 +1,5 @@
 GAME_NAME = "Mega Nerd"
+LEADERBOARDS = "Leaderboards"
 DATA_FOLDER = "../../data"
 FPS = 60
 TERRAIN_SHIFT = -6
@@ -18,6 +19,7 @@ MOVE_COLLIDE_RECT_OFFSET = 2   # cкорость движения по осям 
 
 # colors
 MAIN_MENU_HEADER = (0, 105, 170)
+WHITE = (255, 255, 255)
 SKY = (0, 205, 249)
 DEBUG = (255, 0, 64)
 PL = (0, 255, 0)

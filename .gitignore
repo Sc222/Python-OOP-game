@@ -5,3 +5,5 @@ Api/venv/
 Client/venv/
 Api/.idea/
 Client/.idea/
+Api/.idea/workspace.xml
+Client/.idea/workspace.xml
