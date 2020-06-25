@@ -2,7 +2,6 @@ from flask import Flask, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
-
 app = Flask(__name__)
 app.config.from_object('config')
 db = SQLAlchemy(app)
@@ -14,6 +13,3 @@ if __name__ == '__main__':
 
 import routes
 from database import models
-
-
-
