@@ -1,6 +1,7 @@
 import pygame
 from main.gui.constants import WINDOW_HEIGHT, WINDOW_WIDTH, GAME_NAME, DATA_FOLDER
 from main.gui.game_utils import Resources
+from main.gui.login_menu import LoginMenu
 from main.gui.main_menu import MainMenu
 from main.server_connector.server_connector import ServerConnector
 
@@ -15,4 +16,5 @@ if ServerConnector.is_logged_in():
     main_menu = MainMenu(resources, screen, clock)
     main_menu.launch()
 else:
-    pass
+    login_menu = LoginMenu(resources, screen, clock)
+    login_menu.launch()
