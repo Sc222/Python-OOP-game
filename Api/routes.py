@@ -16,10 +16,14 @@ def Get_Leaderboard():
         .order_by(models.LeaderboardRecord.score.desc())
     return jsonify([l.serialize() for l in leaderboard_records])
 
-
+#@login_required
 @app.route('/leaderboard/post', methods=['GET', 'POST'])
 @login_required
 def PostLeaderboard_record():
+    print("SADFASDASDASD")
+    if not current_user.is_authenticated:
+        return make_response("User is not logged in", 200)
+
     login = request.args.get('login')
     score = request.args.get('score')
     level = request.args.get('level')
@@ -53,7 +57,8 @@ def getLevel(id):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return make_response("You are already logged in", 200)
+        return make_response("User is already logged in", 200)
+
     login = request.args.get('login')
     password = request.form.get('password')
     if login is None:
@@ -66,7 +71,7 @@ def login():
         return make_response('User is not registered', 400)
 
     if u.check_password(password):
-        login_user(models.User(nickname=login))
+        login_user(u)
     else:
         return make_response('Incorrect password', 400)
     return make_response("Logged in successfully: " + str(login) + str(password), 200)
