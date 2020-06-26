@@ -1,7 +1,7 @@
 from app import app, db
-from database import models, models_DTO
-from database.models_DTO import Background_Dto, LevelDto, Leaderboard_Dto
-from flask import jsonify, g, make_response, request
+from database import models
+from database.models_DTO import Background_Dto, LevelDto, Terrain_Dto
+from flask import jsonify,make_response, request
 from flask_login import current_user, login_required, login_user
 
 
@@ -50,8 +50,9 @@ def PostLeaderboard_record():
 @app.route('/level/<id>', methods=['GET'])
 def getLevel(id):
     dbLevel = models.Level.query.get(id)
-    backgrounds_Dto = [Background_Dto(b.x, b.y, b.info.imageSource).__dict__ for b in dbLevel.backgrounds]
-    return jsonify(LevelDto(backgrounds_Dto, [], []).__dict__)
+    backgrounds_Dto = [Background_Dto(b.x, b.y, b.info.name).__dict__ for b in dbLevel.backgrounds]
+    terrains_Dto = [Terrain_Dto(t.x,t.y,t.info.name).__dict__ for t in dbLevel.terrains]
+    return jsonify(LevelDto(backgrounds_Dto, terrains_Dto, []).__dict__)
 
 
 @app.route('/login', methods=['GET', 'POST'])
