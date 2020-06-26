@@ -2,9 +2,9 @@ import pygame
 import thorpy
 
 from main.gui import game_main, leaderboards_menu
-from main.gui.constants import FPS, GAME_NAME, LEADERBOARDS, MAIN_MENU_HEADER
-from main.gui.leaderboards_menu import LeaderboardsMenu
-from main.gui.main_menu_utils import ScrollingBackgroundHorizontal, create_button, PlayerMenu, render_text
+from main.gui.constants import FPS, GAME_NAME, MAIN_MENU_HEADER
+from main.gui.gui_utils import create_button, render_text
+from main.gui.main_menu_utils import ScrollingBackgroundHorizontal, PlayerMenu
 
 
 class MainMenu:
@@ -17,7 +17,8 @@ class MainMenu:
         self.player_menu = PlayerMenu((475, 200), resources.load_menu_player())
         self.background_image = resources.load_main_menu_background()
         scroll_width = self.background_image.get_width()
-        self.background_left = ScrollingBackgroundHorizontal(self.background_image, scroll_width * (-1), 0, scroll_width)
+        self.background_left = ScrollingBackgroundHorizontal(self.background_image, scroll_width * (-1), 0,
+                                                             scroll_width)
         self.background_right = ScrollingBackgroundHorizontal(self.background_image, 0, 0, scroll_width)
         button_play = create_button(resources.load_button_images("play"), self.start_transformation)
         button_play.set_topleft((50 - 5, 250))
@@ -44,7 +45,7 @@ class MainMenu:
         # TODO LAUNCH LEADERBOARDS HERE
         print("launch leaderboards")
         self.is_opened = False
-        leaderboards_screen = leaderboards_menu.LeaderboardsMenu(self.resources,self.screen, self.clock)
+        leaderboards_screen = leaderboards_menu.LeaderboardsMenu(self.resources, self.screen, self.clock)
         leaderboards_screen.launch()
 
     def quit_game(self):
@@ -71,5 +72,7 @@ class MainMenu:
             self.player_menu.draw(self.screen)
             self.container.blit()
             self.container.update()
+
+            # todo replace with thorpy make text
             render_text(self.screen, font_resource, (115, 50), GAME_NAME, MAIN_MENU_HEADER)
             pygame.display.flip()

@@ -1,24 +1,35 @@
 import pygame
-from thorpy import Clickable
-from thorpy.painting.painters.imageframe import ImageButton
+import thorpy
 
-from main.gui.constants import MAIN_MENU_HEADER
-
-
-def create_button(images, func):
-    e = Clickable("", finish=False)
-    e.user_func = func
-    painter = ImageButton(images["normal"], images["pressed"], images["hover"], force_convert_alpha=True)
-    e.set_painter(painter)
-    e.finish()
-    return e
+from main.gui.constants import WHITE, TRANSPARENT, GUI_SCALE, MONOSPACE_FONT, \
+    LEADERBOARD_INTIAL_FONT_SIZE
 
 
-def render_text(screen, font, pos, text):
-    text = font.render(text, False, MAIN_MENU_HEADER)
-    text_rect = text.get_rect()
-    text_rect.move_ip(pos)
-    screen.blit(text, text_rect)
+def create_leaderboards_element(formatted_leaderboard: str):
+    leaderboard_element_text = thorpy.make_text(formatted_leaderboard)
+    leaderboard_element_text.set_font(MONOSPACE_FONT)
+    leaderboard_element_text.set_font_color(WHITE)
+
+    resize_leaderboard_element_text(leaderboard_element_text)
+
+    leaderboard_element_container = thorpy.Box(elements=[leaderboard_element_text])
+    leaderboard_element_container.set_topleft((92 * GUI_SCALE, 62 * GUI_SCALE))
+    leaderboard_element_container.set_size((132 * GUI_SCALE, 109 * GUI_SCALE))
+    leaderboard_element_container.add_lift()
+    leaderboard_element_container.set_main_color(TRANSPARENT)
+
+    return leaderboard_element_container
+
+
+def resize_leaderboard_element_text(leaderboard_element_text):
+    font_size = LEADERBOARD_INTIAL_FONT_SIZE
+    leaderboard_element_text.set_font_size(LEADERBOARD_INTIAL_FONT_SIZE)
+    leaderboard_element_text.scale_to_title()
+    # масштабирование текста
+    while leaderboard_element_text.get_size()[0] > 125 * GUI_SCALE and font_size > 2:
+        font_size = font_size - 1
+        leaderboard_element_text.set_font_size(font_size)
+        leaderboard_element_text.scale_to_title()
 
 
 class ScrollingBackgroundVertical(pygame.sprite.Sprite):
@@ -45,40 +56,3 @@ class ScrollingBackgroundVertical(pygame.sprite.Sprite):
 
     def draw(self, display):
         display.blit(self.image, (self.x, self.y))
-
-
-class PlayerMenu(pygame.sprite.Sprite):
-
-    def __init__(self, position, images):  # images is a dictionary of image lists (key is animation name)
-        super(PlayerMenu, self).__init__()
-        self.curr_state = "menu_idle"
-        size = (images[self.curr_state][0].get_width(), images[self.curr_state][0].get_height())
-        self.rect = pygame.Rect(position, size)
-        self.animation_time = 70
-        self.current_time = 0
-        self.curr_index = 0
-        self.images = images
-        self.image = images[self.curr_state][self.curr_index]  # 'image' is the current image of the animation.
-        self.x = self.rect.centerx
-        self.y = self.rect.centery
-
-    def is_transformation_finished(self):
-        return self.curr_index == len(self.images[self.curr_state]) - 1 and self.curr_state == "menu_transform"
-
-    def start_transformation(self):
-        self.curr_index = 0
-        self.curr_state = "menu_transform"
-
-    def stop_transformation(self):
-        self.curr_index = 0
-        self.curr_state = "menu_idle"
-
-    def update(self, dt):
-        self.current_time += dt
-        if self.current_time >= self.animation_time:
-            self.current_time = 0
-            self.curr_index = (self.curr_index + 1) % len(self.images[self.curr_state])
-            self.image = self.images[self.curr_state][self.curr_index]
-
-    def draw(self, display):
-        display.blit(self.image, (self.rect.x, self.rect.y))
