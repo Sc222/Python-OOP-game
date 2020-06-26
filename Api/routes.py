@@ -61,19 +61,26 @@ def login():
     if password is None:
         return make_response("Password is not specified", 400)
     u = models.User.query.filter_by(nickname=login).first()
+
+    if u is None:
+        return make_response('User is not registered', 400)
+
     if u.check_password(password):
         login_user(models.User(nickname=login))
     else:
-        return make_response('Incorrect password', 200)
+        return make_response('Incorrect password', 400)
     return make_response("Logged in successfully: " + str(login) + str(password), 200)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return make_response("You are already logged in", 200)
+        return make_response("User is already registered and logged in", 200)
     login = request.args.get('login')
     password = request.form.get('password')
+
+    if models.User.query.filter_by(nickname=login).first() is not None:
+        return make_response("User is already registered", 400)
     user = models.User(login)
     user.set_password(password)
     db.session.add(user)
