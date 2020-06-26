@@ -11,8 +11,8 @@ def Get_Leaderboard():
     if level is None:
         return make_response("Level is not specified", 400)
 
-    leaderboard_records = models.LeaderboardRecord.query\
-        .filter_by(levelId=level)\
+    leaderboard_records = models.LeaderboardRecord.query \
+        .filter_by(levelId=level) \
         .order_by(models.LeaderboardRecord.score.desc())
     return jsonify([l.serialize() for l in leaderboard_records])
 
@@ -32,9 +32,9 @@ def PostLeaderboard_record():
 
     leaderboard_record = models.LeaderboardRecord.query.filter_by(playerName=login, levelId=level).first()
     if leaderboard_record is None:  # Добавление нового рекорда
-        l = models.LeaderboardRecord(playerName=login, score=score,levelId=level)
+        l = models.LeaderboardRecord(playerName=login, score=score, levelId=level)
         db.session.add(l)
-        response_text="added new leaderboard record"
+        response_text = "added new leaderboard record"
     else:  # Обновление существующего рекорда
         leaderboard_record.score = score
         response_text = "updated leaderboard record"
@@ -53,7 +53,7 @@ def getLevel(id):
 @app.route('/login', methods=['GET', 'POST'])
 def login():
     if current_user.is_authenticated:
-        return make_response("zaebis", 200)
+        return make_response("You are already logged in", 200)
     login = request.args.get('login')
     password = request.form.get('password')
     if login is None:
@@ -61,24 +61,21 @@ def login():
     if password is None:
         return make_response("Password is not specified", 400)
     u = models.User.query.filter_by(nickname=login).first()
-    if(u.check_password(password)):
+    if u.check_password(password):
         login_user(models.User(nickname=login))
     else:
-        return make_response('неверный пароль',200)
-    return make_response(str(login)+str(password), 200)
+        return make_response('Incorrect password', 200)
+    return make_response("Logged in successfully: " + str(login) + str(password), 200)
 
 
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
-        return make_response("zaebis", 200)
-        login = request.args.get('login')
-        password = request.form.get('password')
-        user = models.User(login)
-        user.set_password(password)
-        db.session.add(user)
-        db.session.commit()
-        message= 'Congratulations, you are now a registered user!'
-        flash(message)
-        return make_response(message,200)
-    return make_response("ZAEBIS", 200)
+        return make_response("You are already logged in", 200)
+    login = request.args.get('login')
+    password = request.form.get('password')
+    user = models.User(login)
+    user.set_password(password)
+    db.session.add(user)
+    db.session.commit()
+    return make_response("User registered", 200)
