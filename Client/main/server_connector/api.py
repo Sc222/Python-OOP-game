@@ -5,7 +5,11 @@ class Api:
     LOCAL_SERVER_LINK = "http://127.0.0.1:5000/"
     GET_LEADERBOARDS = "leaderboard"
     SAVE_LEADERBOARDS = "leaderboard/post"
-
+    REGISTER_USER = "register"
+    LOGIN_USER = "login"
+    SESSION_COOKIE = "session"
+    COOKIES_FILE = "cookies.txt"
+    COOKIES_LOCATION = "data"
     @staticmethod
     def get_leaderboards(level: int, server_link: str = LOCAL_SERVER_LINK):
         data = {"level": level}
