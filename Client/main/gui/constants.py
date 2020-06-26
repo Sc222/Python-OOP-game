@@ -1,6 +1,7 @@
 GAME_NAME = "Mega Nerd"
 LEADERBOARDS = "Leaderboards"
 DATA_FOLDER = "../../data"
+MONOSPACE_FONT="Determination Mono(RUS BY LYAJK"
 FPS = 60
 TERRAIN_SHIFT = -6
 WINDOW_WIDTH = 900
@@ -16,10 +17,12 @@ PL_SIZE = 24 * SCALE           # pl - player
 PL_COLLIDE_W = 6 * SCALE
 PL_COLLIDE_H = 5 * SCALE
 MOVE_COLLIDE_RECT_OFFSET = 2   # cкорость движения по осям умножается на это число и хитбокс сдвигается
+LEADERBOARD_INTIAL_FONT_SIZE = 26  # первоначальный размер шрифта, далее он масштабируется
 
 # colors
 MAIN_MENU_HEADER = (0, 105, 170)
 WHITE = (255, 255, 255)
+TRANSPARENT = (0, 0, 0, 0)
 SKY = (0, 205, 249)
 DEBUG = (255, 0, 64)
 PL = (0, 255, 0)
