@@ -17,8 +17,8 @@ def Get_Leaderboard():
     return jsonify([l.serialize() for l in leaderboard_records])
 
 
-@login_required
 @app.route('/leaderboard/post', methods=['GET', 'POST'])
+@login_required
 def PostLeaderboard_record():
     login = request.args.get('login')
     score = request.args.get('score')
@@ -56,6 +56,10 @@ def login():
         return make_response("zaebis", 200)
     login = request.args.get('login')
     password = request.form.get('password')
+    if login is None:
+        return make_response("Login is not specified", 400)
+    if password is None:
+        return make_response("Password is not specified", 400)
     u = models.User.query.filter_by(nickname=login).first()
     if(u.check_password(password)):
         login_user(models.User(nickname=login))
