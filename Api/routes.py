@@ -74,7 +74,7 @@ def login():
         login_user(u)
     else:
         return make_response('Incorrect password', 400)
-    return make_response("Logged in successfully: " + str(login) + str(password), 200)
+    return make_response("Logged in successfully as " + login, 200)
 
 
 @app.route('/register', methods=['GET', 'POST'])
