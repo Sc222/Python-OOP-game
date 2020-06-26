@@ -5,6 +5,7 @@ from main.gui.constants import FPS, WHITE, GUI_SCALE
 from main.gui import main_menu
 from main.gui.leaderboards_menu_utils import ScrollingBackgroundVertical
 from main.gui.main_menu_utils import create_button
+from main.server_api.server_api import ServerApi
 
 
 class LeaderboardsMenu:
@@ -21,6 +22,8 @@ class LeaderboardsMenu:
         button_leaderboards = create_button(res.load_button_images("quit_leaderboards"), self.launch_main_menu)
         button_leaderboards.set_topleft((68 * GUI_SCALE, 24 * GUI_SCALE))
 
+
+        #ServerApi.get_leaderboards(ServerApi.LOCAL_SERVER_LINK)
         # todo ЭТИ ДАННЫЕ ИЗ БД
         formatted_leaderboard = tabulate(
             [
