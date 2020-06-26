@@ -50,8 +50,19 @@ class ServerConnector:
         r: requests.Response = requests.post(server_link + Api.LOGIN_USER, params=data, data={"password":password})
         result_msg = "status: " + str(r.status_code.real) + " response:" + r.text
         print(result_msg)
-        ServerConnector.save_cookie(r.cookies[Api.SESSION_COOKIE])
+        if r.status_code.real==200 and r.text=="Logged in successfully as " + login:
+            ServerConnector.save_cookie(r.cookies[Api.SESSION_COOKIE])
         return result_msg
+
+    @staticmethod
+    def is_logged_in(server_link: str = Api.LOCAL_SERVER_LINK):
+        cookies = dict(session=ServerConnector.get_cookie())
+        r: requests.Response = requests.post(server_link + Api.LOGIN_USER, cookies=cookies)
+        result_msg = "status: " + str(r.status_code.real) + " response:" + r.text
+        print(result_msg)
+        if r.status_code.real ==200:
+            return True
+        return False
 
     @staticmethod
     def save_cookie(cookie:str):
@@ -62,8 +73,14 @@ class ServerConnector:
 
     @staticmethod
     def get_cookie():
-        f = open(os.path.join(Api.COOKIES_LOCATION, Api.COOKIES_FILE), 'r')
+        path_to_file = os.path.join(Api.COOKIES_LOCATION, Api.COOKIES_FILE)
+        if not os.path.isfile(path_to_file):
+            f = open(path_to_file, 'w')
+            f.write("")
+            f.close()
+        f = open(path_to_file, 'r')
         cookie = f.readline()
+        f.close()
         print(cookie)
         return cookie
 
