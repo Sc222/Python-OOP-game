@@ -131,11 +131,17 @@ class Resources:
     def load_main_menu_background(self):
         return load_image(os.path.join(self.directory, "main_menu_bg.png"), GUI_SCALE)
 
+    def load_login_background(self):
+        return load_image(os.path.join(self.directory, "login_bg.png"), GUI_SCALE)
+
     def load_leaderboards_background(self):
         return load_image(os.path.join(self.directory, "leaderboards_bg.png"), GUI_SCALE)
 
     def load_leaderboards_menu_background(self):
         return load_image(os.path.join(self.directory, self.gui,  "leaderboards_menu_bg.png"), GUI_SCALE)
+
+    def load_login_menu_background(self):
+        return load_image(os.path.join(self.directory, self.gui, "login_menu_bg.png"), GUI_SCALE)
 
     def load_game_overlay_images(self):
         result = {}

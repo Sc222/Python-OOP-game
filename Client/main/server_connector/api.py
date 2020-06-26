@@ -15,7 +15,6 @@ class Api:
         data = {"level": level}
         r = requests.get(server_link + Api.GET_LEADERBOARDS, params=data)
         # print(r.json())
-        print()
         return r.json()
 
     @staticmethod
