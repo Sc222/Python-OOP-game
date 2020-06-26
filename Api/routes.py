@@ -6,7 +6,7 @@ from flask_login import current_user, login_required, login_user
 
 
 @app.route('/leaderboard', methods=['GET'])
-def Leaderboard():
+def Get_Leaderboard():
     level = request.args.get('level')
     if level is None:
         return make_response("Level is not specified", 400)
@@ -55,9 +55,13 @@ def login():
     if current_user.is_authenticated:
         return make_response("zaebis", 200)
     login = request.args.get('login')
-    password = request.args.get('password')
-    login_user(models.User(nickname=login, password=password))
-    return make_response(str(login), 200)
+    password = request.form.get('password')
+    u = models.User.query.filter_by(nickname=login).first()
+    if(u.check_password(password)):
+        login_user(models.User(nickname=login))
+    else:
+        return make_response('неверный пароль',200)
+    return make_response(str(login)+str(password), 200)
 
 
 @app.route('/register', methods=['GET', 'POST'])

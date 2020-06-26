@@ -73,9 +73,8 @@ class User(UserMixin,db.Model):
             'defence': self.defence
         })
 
-    def __init__(self, nickname, password):
+    def __init__(self, nickname):
         self.nickname = nickname
-        self.password = password
         self.unlockedLevel = 1
         self.hp = 100
         self.attack = 10
