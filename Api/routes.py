@@ -7,7 +7,14 @@ from flask_login import current_user, login_required, login_user
 
 @app.route('/leaderboard', methods=['GET'])
 def Leaderboard():
-    return jsonify([l.serialize() for l in models.LeaderboardRecord.query.all()])
+    level = request.args.get('level')
+    if level is None:
+        return make_response("Level is not specified", 400)
+
+    leaderboard_records = models.LeaderboardRecord.query\
+        .filter_by(levelId=level)\
+        .order_by(models.LeaderboardRecord.score.desc())
+    return jsonify([l.serialize() for l in leaderboard_records])
 
 
 @login_required
@@ -15,10 +22,25 @@ def Leaderboard():
 def PostLeaderboard_record():
     login = request.args.get('login')
     score = request.args.get('score')
-    l = models.LeaderboardRecord(playerName=login, score=score)
-    db.session.add(l)
+    level = request.args.get('level')
+    if login is None:
+        return make_response("Login is not specified", 400)
+    if score is None:
+        return make_response("Score is not specified", 400)
+    if level is None:
+        return make_response("Level is not specified", 400)
+
+    leaderboard_record = models.LeaderboardRecord.query.filter_by(playerName=login, levelId=level).first()
+    if leaderboard_record is None:  # Добавление нового рекорда
+        l = models.LeaderboardRecord(playerName=login, score=score,levelId=level)
+        db.session.add(l)
+        response_text="added new leaderboard record"
+    else:  # Обновление существующего рекорда
+        leaderboard_record.score = score
+        response_text = "updated leaderboard record"
     db.session.commit()
-    response = make_response("zaebok", 200)
+    response = make_response(response_text, 200)
+    return response
 
 
 @app.route('/level/<id>', methods=['GET'])
