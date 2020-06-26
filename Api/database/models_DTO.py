@@ -9,13 +9,22 @@ class Leaderboard_Dto():
 class Background_Dto():
     x = 0
     y = 0
-    imageSource = ''
+    name = ''
 
-    def __init__(self, x, y, imageSource):
+    def __init__(self, x, y, name):
         self.x = x
         self.y = y
-        self.imageSource = imageSource
+        self.name = name
 
+class Terrain_Dto():
+    x = 0
+    y = 0
+    name = ''
+
+    def __init__(self, x, y, name):
+        self.x = x
+        self.y = y
+        self.name = name
 
 class LevelDto:
 

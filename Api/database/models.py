@@ -16,7 +16,8 @@ class Background(db.Model):
 class BackgroundInfo(db.Model):
     __tablename__ = 'background_info'
     id = db.Column(db.Integer, primary_key=True)
-    imageSource = db.Column(db.String)
+    name = db.Column(db.String,unique=True)
+    db.UniqueConstraint('name', name='unique_component_commit')
 
 
 class Level(db.Model):
@@ -30,11 +31,12 @@ class Level(db.Model):
 
 class MonsterInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    image_source = db.Column(db.String)  # путь до  папки со спрайтами (картинки будут храниться локально)
+    name = db.Column(db.String, unique=True) # путь до  папки со спрайтами (картинки будут храниться локально)
     # todo важно!!!(image будет отвечать за ПАПКУ, а в папке будут папки с анимациями attack, die, move и так далее)
     hp = db.Column(db.Integer)
     attack = db.Column(db.Integer)
     defence = db.Column(db.Integer)
+    db.UniqueConstraint('name', name='unique_component_commit')
 
 
 class Monster(db.Model):
@@ -105,7 +107,9 @@ class LeaderboardRecord(db.Model):
 
 class TerrainInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    image = db.Column(db.String)
+    name = db.Column(db.String, unique=True)
+    db.UniqueConstraint('name', name='unique_component_commit')
+
 
 
 class Terrain(db.Model):
