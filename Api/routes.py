@@ -69,11 +69,12 @@ def register():
     if current_user.is_authenticated:
         return make_response("zaebis", 200)
         login = request.args.get('login')
-        password = request.args.get('password')
+        password = request.form.get('password')
         user = models.User(login)
         user.set_password(password)
         db.session.add(user)
         db.session.commit()
-        flash('Congratulations, you are now a registered user!')
-        return redirect(url_for('login'))
+        message= 'Congratulations, you are now a registered user!'
+        flash(message)
+        return make_response(message,200)
     return make_response("ZAEBIS", 200)
