@@ -74,12 +74,13 @@ def load_folder_images(path, scale=SCALE):
 
 
 class Resources:
+    monster = "monster"
     player = "player"
     gui = "gui"
     font = "font.otf"
     backgrounds = ["grass", "pond_top", "pond_right", "pond_left", "pond_bottom"]
     terrain = ["house", "pine", "oak", "birch", "flower_purple", "fern", "bush", "invisible"]
-    player_anims_name = ["walk_", "idle_", "attack_"]  # все папки должны иметь название ""+right
+    creature_anims_name = ["walk_", "idle_", "attack_","take_damage_","die_"]  # все папки должны иметь название ""+right
     menu_player_anims = ["menu_idle", "menu_transform"]
     game_gui_images = ["bars", "inventory", "hp_bar", "mana_bar"]
 
@@ -101,10 +102,10 @@ class Resources:
             result.update({terrain_element:load_image(path, self.scale)})
         return result
 
-    def load_player(self):
+    def load_creature(self,type:str):
         result = {}
-        for anim in self.player_anims_name:
-            path = os.path.join(self.directory, self.player, anim)
+        for anim in self.creature_anims_name:
+            path = os.path.join(self.directory, type, anim)
             images_right = load_folder_images(path + "right", self.scale)
             images_left = [pygame.transform.flip(image, True, False) for image in images_right]
             result[anim + "right"] = images_right
