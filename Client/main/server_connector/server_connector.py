@@ -59,7 +59,7 @@ class ServerConnector:
         result_msg = "status: " + str(r.status_code.real) + " response:" + r.text
         print(result_msg)
         if r.status_code.real == 200 and r.text == "Logged in successfully as " + login:
-            ServerConnector.save_data(r.cookies[Api.SESSION_COOKIE],login)
+            ServerConnector.save_data(r.cookies[Api.SESSION_COOKIE], login)
         return r.status_code.real, r.text
 
     @staticmethod
@@ -73,23 +73,48 @@ class ServerConnector:
         return False
 
     @staticmethod
-    def save_data(cookie: str,login:str):
+    def save_data(cookie: str, login: str):
         f = open(os.path.join(Api.DATA_FILE_LOCATION, Api.DATA_FILE), 'w')
-        print(cookie+" "+login)
+        print(cookie + " " + login)
         f.write(cookie)
-        f.write(login)
+        f.write("\n" + login)
+
         f.close()
 
     @staticmethod
     def get_cookie():
         path_to_file = os.path.join(Api.DATA_FILE_LOCATION, Api.DATA_FILE)
         if not os.path.isfile(path_to_file):
-            f = open(path_to_file, 'w')
-            f.write("")
+            f = open(path_to_file, 'w+')
+            f.write("\n")
             f.close()
+
         f = open(path_to_file, 'r')
-        cookie = f.readline()
-        print(f.readline())
+        lines = f.read().splitlines()
         f.close()
-        print(cookie)
-        return cookie
+        if len(lines) != 2:
+            f = open(path_to_file, 'w+')
+            while len(lines) < 2:
+                lines.append("")
+                f.write("\n")
+            f.close()
+        return lines[0]
+
+    @staticmethod
+    def get_saved_username():
+        path_to_file = os.path.join(Api.DATA_FILE_LOCATION, Api.DATA_FILE)
+        if not os.path.isfile(path_to_file):
+            f = open(path_to_file, 'w+')
+            f.write("\n")
+            f.close()
+
+        f = open(path_to_file, 'r')
+        lines = f.read().splitlines()
+        f.close()
+        if len(lines) != 2:
+            f = open(path_to_file, 'w+')
+            while len(lines) < 2:
+                lines.append("")
+                f.write("\n")
+            f.close()
+        return lines[1]

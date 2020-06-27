@@ -12,6 +12,7 @@ screen = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT), 0, 32)
 resources = Resources(DATA_FOLDER)
 
 #ServerConnector.login("Sc222","Sc222")
+print(ServerConnector.get_saved_username())
 if ServerConnector.is_logged_in():
     main_menu = MainMenu(resources, screen, clock)
     main_menu.launch()
