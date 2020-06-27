@@ -1,19 +1,34 @@
+import json
 import os
 
 import requests
 from tabulate import tabulate
+
+from main.gui.DTO_models import map_obj_from_json, monster_obj_from_json, level_from_json
 
 
 class ServerConnector:
     LOCAL_SERVER_LINK = "http://127.0.0.1:5000/"
     GET_LEADERBOARDS = "leaderboard"
     GET_USER = "user"
+    GET_LEVEL = "level/"
     SAVE_LEADERBOARDS = "leaderboard/post"
     REGISTER_USER = "register"
     LOGIN_USER = "login"
     SESSION_COOKIE = "session"
     DATA_FILE = "data.txt"
     DATA_FILE_LOCATION = "data"
+
+    @staticmethod
+    def get_level(level:int, server_link: str = LOCAL_SERVER_LINK):
+        level_response = requests.get(server_link+ServerConnector.GET_LEVEL+str(level))
+        level_dict = json.loads(level_response.text)
+        backgrounds = [map_obj_from_json(o['x'], o['y'], o['name']) for o in level_dict['backgrounds']]
+        terrains = [map_obj_from_json(o['x'], o['y'], o['name']) for o in level_dict['terrains']]
+        monsters = [monster_obj_from_json(o['x'], o['y'], o['name'], o['hp'], o['attack'], o['defense'])
+                    for o in level_dict['monsters']]
+        level = level_from_json(backgrounds, monsters, terrains)
+        return level
 
     @staticmethod
     def get_leaderboards_formatted(level: int, server_link: str = LOCAL_SERVER_LINK):

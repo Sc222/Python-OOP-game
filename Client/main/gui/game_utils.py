@@ -74,7 +74,8 @@ def load_folder_images(path, scale=SCALE):
 
 
 class Resources:
-    monster = "monster"
+    monster_mushroom = "monster_mushroom"
+    creatures=["monster_mushroom","monster_goblin"]
     player = "player"
     gui = "gui"
     font = "font.otf"
@@ -100,6 +101,13 @@ class Resources:
         for terrain_element in self.terrain:
             path = os.path.join(self.directory, terrain_element) + ".png"
             result.update({terrain_element:load_image(path, self.scale)})
+        return result
+
+    def load_creatures(self):
+        result = {}
+        for creature in self.creatures:
+            creature_resources = self.load_creature(creature)
+            result.update({creature:creature_resources})
         return result
 
     def load_creature(self,type:str):
@@ -200,4 +208,16 @@ class Parser:
                 centered_x = x_shift + (map_obj.x - map_obj.y) * self.TILE_SIZE_HALF
                 centered_y = y_shift + (map_obj.x + map_obj.y) * 0.5 * self.TILE_SIZE_HALF
                 result_ls.append(StaticDrawObject(tile_image, centered_x, centered_y, extra_y_offset * self.scale))
+        return result_ls
+
+
+    def monsters_to_draw_objects(self, images, monsters, center_x, center_y):
+        result_ls = list()
+        for monster in monsters:
+                monster_images=images[monster.name]
+                x_shift = center_x - self.TILE_SIZE_HALF
+                y_shift = center_y * 0.5 - self.TILE_SIZE
+                centered_x = x_shift + (monster.x - monster.y) * self.TILE_SIZE_HALF
+                centered_y = y_shift + (monster.x + monster.y) * 0.5 * self.TILE_SIZE_HALF
+                result_ls.append(StaticDrawObject(monster_images, centered_x, centered_y,0))
         return result_ls
