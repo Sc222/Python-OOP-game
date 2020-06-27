@@ -3,6 +3,7 @@ import os
 import requests
 from tabulate import tabulate
 
+
 class ServerConnector:
     LOCAL_SERVER_LINK = "http://127.0.0.1:5000/"
     GET_LEADERBOARDS = "leaderboard"
@@ -14,15 +15,18 @@ class ServerConnector:
     DATA_FILE = "data.txt"
     DATA_FILE_LOCATION = "data"
 
-
     @staticmethod
     def get_leaderboards_formatted(level: int, server_link: str = LOCAL_SERVER_LINK):
         leaderboards = ServerConnector.get_leaderboards(level, server_link)
         if len(leaderboards) == 0:
             leaderboards.append(["No records", "at the", "moment"])
+
         formatted_leaderboard = tabulate(leaderboards,
                                          ["NAME", "LEVEL", "SCORE"],
-                                         tablefmt="simple")
+                                         stralign='left',
+                                         numalign="left"
+                                         )
+        print(formatted_leaderboard)
         return formatted_leaderboard
 
     @staticmethod
@@ -38,7 +42,7 @@ class ServerConnector:
     @staticmethod
     def get_user(name: str, server_link: str = LOCAL_SERVER_LINK):
         cookies = dict(session=ServerConnector.get_cookie())
-        r: requests.Response = requests.get(server_link + ServerConnector.GET_USER+"/"+name,cookies=cookies)
+        r: requests.Response = requests.get(server_link + ServerConnector.GET_USER + "/" + name, cookies=cookies)
         print(r.text)
         return r.json()[0]
 
@@ -46,7 +50,8 @@ class ServerConnector:
     def save_leaderboard(login: str, score: int, level: int, server_link: str = LOCAL_SERVER_LINK):
         data = {"login": login, "score": score, "level": level}
         cookies = dict(session=ServerConnector.get_cookie())
-        r: requests.Response = requests.post(server_link + ServerConnector.SAVE_LEADERBOARDS, params=data, cookies=cookies)
+        r: requests.Response = requests.post(server_link + ServerConnector.SAVE_LEADERBOARDS, params=data,
+                                             cookies=cookies)
         result_msg = "status: " + str(r.status_code.real) + " response:" + r.text
         print(result_msg)
         return result_msg
@@ -59,7 +64,8 @@ class ServerConnector:
             return 400, "Enter password"
 
         data = {"login": login}
-        r: requests.Response = requests.post(server_link + ServerConnector.REGISTER_USER, params=data, data={"password": password})
+        r: requests.Response = requests.post(server_link + ServerConnector.REGISTER_USER, params=data,
+                                             data={"password": password})
         result_msg = "status: " + str(r.status_code.real) + " response:" + r.text
         print(result_msg)
         return r.status_code.real, r.text
@@ -71,7 +77,8 @@ class ServerConnector:
         if password == "":
             return 400, "Enter password"
         data = {"login": login}
-        r: requests.Response = requests.post(server_link + ServerConnector.LOGIN_USER, params=data, data={"password": password})
+        r: requests.Response = requests.post(server_link + ServerConnector.LOGIN_USER, params=data,
+                                             data={"password": password})
         result_msg = "status: " + str(r.status_code.real) + " response:" + r.text
         print(result_msg)
         if r.status_code.real == 200 and r.text == "Logged in successfully as " + login:

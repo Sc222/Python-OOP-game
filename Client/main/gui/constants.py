@@ -34,5 +34,6 @@ PL = (0, 255, 0)
 TR = (0, 0, 255)
 
 #no internet actions
-ACTION_ENTRY="entry"
-ACTION_GET_USER="get_user"
+ACTION_ENTRY="Can't login"
+ACTION_GET_LEADERBOARDS="Can't get leaderboards"
+ACTION_GET_USER="Can't get user information"

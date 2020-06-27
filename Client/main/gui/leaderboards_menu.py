@@ -1,17 +1,20 @@
 import pygame
 import thorpy
 from tabulate import tabulate
-from main.gui.constants import FPS, GUI_SCALE
+from main.gui.constants import FPS, GUI_SCALE, ACTION_GET_LEADERBOARDS
 from main.gui import main_menu
 from main.gui.gui_utils import create_button
 from main.gui.leaderboards_menu_utils import ScrollingBackgroundVertical, create_leaderboards_element, \
     resize_leaderboard_element_text
+from main.gui.server_unreachable_menu import ServerUnreachableMenu
 from main.server_connector.server_connector import ServerConnector
+from main.server_connector.server_errors_handler import ServerErrorsHandler
 
 
 class LeaderboardsMenu:
 
-    def __init__(self, res, screen, clock):
+    def __init__(self, res, screen, clock, formatted_leaderboards = None):
+        self.container=None
         self.is_opened = True
         self.res = res
         self.screen = screen
@@ -33,10 +36,12 @@ class LeaderboardsMenu:
         button_lvl_three = create_button(res.load_button_images("lvl_3"), self.change_to_level_three)
         button_lvl_three.set_topleft((61 * GUI_SCALE, 124 * GUI_SCALE))
 
-        formatted_leaderboard=ServerConnector.get_leaderboards_formatted(1)
-
-        # leaderboards element
-        self.leaderboards_element = create_leaderboards_element(formatted_leaderboard)
+        # get from server or from constructor arg
+        if formatted_leaderboards is None:
+            self.leaderboards_element = create_leaderboards_element("\n")
+            self.show_leaderboard_level(1)
+        else:
+            self.leaderboards_element = create_leaderboards_element(formatted_leaderboards)
 
         # leaderboards bg
         leaderboards_bg = thorpy.Background()
@@ -48,8 +53,8 @@ class LeaderboardsMenu:
             elements=[button_leaderboards, button_lvl_one, button_lvl_two, button_lvl_three, leaderboards_bg,
                       self.leaderboards_element])
         self.menu = thorpy.Menu(self.container)
-        for leaderboard_records_element in self.menu.get_population():
-            leaderboard_records_element.surface = screen
+        for element in self.menu.get_population():
+            element.surface = screen
 
     def launch_main_menu(self):
         self.is_opened = False
@@ -57,22 +62,30 @@ class LeaderboardsMenu:
         menu.launch()
 
     def change_to_level_one(self):
-        self.change_leaderboard_level(1)
+        self.show_leaderboard_level(1)
 
     def change_to_level_two(self):
-        self.change_leaderboard_level(2)
+        self.show_leaderboard_level(2)
 
     def change_to_level_three(self):
-        self.change_leaderboard_level(3)
+        self.show_leaderboard_level(3)
 
-    def change_leaderboard_level(self, level: int):
+    def show_leaderboard_level(self, level: int):
         print("change level: " + str(level))
-        formatted_leaderboard=ServerConnector.get_leaderboards_formatted(level)
-        element= self.leaderboards_element.get_elements()[0]
-        element.set_text(formatted_leaderboard)
-        resize_leaderboard_element_text(element)
-
-
+        self.is_opened, formatted_leaderboard=ServerErrorsHandler.try_get_leaderboards_formatted(level)
+        if formatted_leaderboard is None:
+            no_internet_menu = ServerUnreachableMenu(self.res, self.screen, self.clock, ACTION_GET_LEADERBOARDS,level)
+            no_internet_menu.launch()
+        else:
+            if not self.container is None:
+                self.container.remove_elements([self.leaderboards_element])
+                self.leaderboards_element = create_leaderboards_element(formatted_leaderboard)
+                self.leaderboards_element.surface=self.screen
+                self.container.add_element(self.leaderboards_element)
+                self.menu.remove_from_population(self.container)
+                self.menu.add_to_population(self.container)
+            else:
+                self.leaderboards_element = create_leaderboards_element(formatted_leaderboard)
 
     def launch(self):
         while self.is_opened:

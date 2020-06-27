@@ -13,6 +13,15 @@ class ServerErrorsHandler:
             return True, user
 
     @staticmethod
+    def try_get_leaderboards_formatted(level: int, server_link: str = ServerConnector.LOCAL_SERVER_LINK):
+        try:
+            leaderboards = ServerConnector.get_leaderboards_formatted(level, server_link)
+        except Exception:
+            return False, None
+        else:
+            return True, leaderboards
+
+    @staticmethod
     def try_is_logged_in(server_link: str = ServerConnector.LOCAL_SERVER_LINK):
         try:
             is_logged_in = ServerConnector.is_logged_in(server_link)

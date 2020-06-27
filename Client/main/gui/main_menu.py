@@ -5,14 +5,14 @@ from main.gui import game_main, leaderboards_menu, gui_utils
 from main.gui.constants import FPS, GAME_NAME, MAIN_MENU_HEADER, WHITE, RED, RED_DARK, GREEN, ACTION_GET_USER
 from main.gui.gui_utils import create_button, render_text
 from main.gui.main_menu_utils import ScrollingBackgroundHorizontal, PlayerMenu
-from main.gui.no_internet_menu import NoInternetMenu
+from main.gui.server_unreachable_menu import ServerUnreachableMenu
 from main.server_connector.server_connector import ServerConnector
 from main.server_connector.server_errors_handler import ServerErrorsHandler
 
 
 class MainMenu:
 
-    def __init__(self, resources, screen, clock):
+    def __init__(self, resources, screen, clock, user = None):
         self.is_opened = True
         self.resources = resources
         self.screen = screen
@@ -39,17 +39,24 @@ class MainMenu:
                                                 self.text_name,
                                                 self.text_level])
 
-        # try to get user from server
-        self.try_load_user(clock, resources, screen)
+        # try to get user from server ot constructor args
+        self.try_load_user(user)
 
         self.menu = thorpy.Menu(self.container)
         for element in self.menu.get_population():
             element.surface = screen
 
-    def try_load_user(self, clock, resources, screen):
+    def try_load_user(self, user):
+        if user is not None:
+            self.text_name.set_text(user["nickname"])
+            self.text_level.set_text("Level " + str(user["playerLevel"]))
+            self.text_name.set_center_pos((684, 230))
+            self.text_level.set_center_pos((684, 275))
+            return
+
         self.is_opened, user = ServerErrorsHandler.try_get_user()
         if user is None:
-            no_internet_menu = NoInternetMenu(resources, screen, clock, ACTION_GET_USER)
+            no_internet_menu = ServerUnreachableMenu(self.resources, self.screen, self.clock, ACTION_GET_USER)
             no_internet_menu.launch()
         else:
             self.text_name.set_text(user["nickname"])
