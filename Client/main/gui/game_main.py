@@ -2,7 +2,7 @@ import os
 import pygame
 import requests
 import  json
-from  main.gui.DTO_models import level_from_json,map_obj_from_json
+from  main.gui.DTO_models import level_from_json,map_obj_from_json, monster_obj_from_json
 from pygame.rect import Rect
 from main.gui import main_menu
 from main.gui.constants import *
@@ -49,7 +49,9 @@ class Game:
         level_dict = json.loads(level_response.text)
         backgrounds = [map_obj_from_json(o['x'],o['y'],o['name']) for o in level_dict['backgrounds']]
         terrains = [map_obj_from_json(o['x'],o['y'],o['name']) for o in level_dict['terrains']]
-        level = level_from_json(backgrounds,[],terrains)
+        monsters = [monster_obj_from_json(o['x'],o['y'],o['name'],o['hp'],o['attack'],o['defemce'])
+                    for o in level_dict['monsters']]
+        level = level_from_json(backgrounds,monsters,terrains)
         #map_bg = open(os.path.join(self.res.directory, "demo", "background.txt"), "r").read().split()
         #map_terrain = open(os.path.join(self.res.directory, "demo", "terrain.txt"), "r").read().split()
         parser = Parser()
