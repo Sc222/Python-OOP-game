@@ -8,8 +8,8 @@ class Api:
     REGISTER_USER = "register"
     LOGIN_USER = "login"
     SESSION_COOKIE = "session"
-    COOKIES_FILE = "cookies.txt"
-    COOKIES_LOCATION = "data"
+    DATA_FILE = "data.txt"
+    DATA_FILE_LOCATION = "data"
     @staticmethod
     def get_leaderboards(level: int, server_link: str = LOCAL_SERVER_LINK):
         data = {"level": level}
