@@ -22,6 +22,7 @@ LEADERBOARD_INTIAL_FONT_SIZE = 26  # первоначальный размер �
 # colors
 MAIN_MENU_HEADER = (0, 105, 170)
 WHITE = (255, 255, 255)
+RED = (234, 0, 60)
 TRANSPARENT = (0, 0, 0, 0)
 SKY = (0, 205, 249)
 DEBUG = (255, 0, 64)

@@ -128,6 +128,12 @@ class Resources:
         result["hover"] = load_image(f"{gui_dir}{name}_hover.png", GUI_SCALE)
         return result
 
+    def load_inserter_bg_normal(self):
+        return load_image(os.path.join(self.directory,self.gui, "inserter_bg_normal.png"), GUI_SCALE)
+
+    def load_inserter_bg_active(self):
+        return load_image(os.path.join(self.directory,self.gui, "inserter_bg_active.png"), GUI_SCALE)
+
     def load_main_menu_background(self):
         return load_image(os.path.join(self.directory, "main_menu_bg.png"), GUI_SCALE)
 
