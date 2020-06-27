@@ -19,7 +19,7 @@ class Game:
         self.c_x = self.display.get_rect().centerx
         self.c_y = self.display.get_rect().centery
 
-        # todo игрок всегда в центре экрана (вроде бы...)
+        # todo игрок всегда в центре экрана
         self.playerSprite = PlayerSprite(
             (self.c_x - PL_SIZE / 2, self.c_y - PL_SIZE / 2), (PL_SIZE, PL_SIZE), res.load_player())
         player_collide_rect = Rect((self.c_x - PL_COLLIDE_W / 2,
@@ -89,7 +89,7 @@ class Game:
 
         # todo draw clouds
         # todo player should be drawed in priority before far objects and after close objects
-        # todo (использовать ordered render из примера)
+        # todo (использовать ordered render)
         # TODO МЕНЮ ПАУЗЫ
 
         self.playerSprite.draw(self.display)
