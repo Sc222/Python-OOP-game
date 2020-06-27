@@ -48,7 +48,6 @@ def post_leaderboard_record():
 
 
 @app.route('/user/<name>', methods=['GET'])
-@login_required
 def get_user(name):
     u = models.User.query.filter_by(nickname=name).first()
     if u is None:
