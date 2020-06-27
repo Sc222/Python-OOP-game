@@ -21,22 +21,16 @@ def get_leaderboard():
 @app.route('/leaderboard/post', methods=['GET', 'POST'])
 @login_required
 def post_leaderboard_record():
-    if not current_user.is_authenticated:
-        return make_response("User is not logged in", 200)
-
-    login = request.args.get('login')
     score = request.args.get('score')
     level = request.args.get('level')
-    if login is None:
-        return make_response("Login is not specified", 400)
     if score is None:
         return make_response("Score is not specified", 400)
     if level is None:
         return make_response("Level is not specified", 400)
-
-    leaderboard_record = models.LeaderboardRecord.query.filter_by(playerName=login, levelId=level).first()
+    u = current_user
+    leaderboard_record = models.LeaderboardRecord.query.filter_by(playerName=u.nickname, levelId=level).first()
     if leaderboard_record is None:  # Добавление нового рекорда
-        l = models.LeaderboardRecord(playerName=login, score=score, levelId=level)
+        l = models.LeaderboardRecord(playerName=u.nickname, score=score, levelId=level)
         db.session.add(l)
         response_text = "added new leaderboard record"
     else:  # Обновление существующего рекорда
@@ -47,11 +41,13 @@ def post_leaderboard_record():
     return response
 
 
-@app.route('/user/<name>', methods=['GET'])
-def get_user(name):
-    u = models.User.query.filter_by(nickname=name).first()
-    if u is None:
-        return jsonify({"error":"user does not exist"})
+@app.route('/user', methods=['GET'])
+@login_required
+def get_user():
+    # u = models.User.query.filter_by(nickname=name).first()
+    # if u is None:
+    #     return jsonify({"error":"user does not exist"})
+    u = current_user
     user_dto = [User_Dto(u.nickname, u.unlockedLevel, u.hp, u.attack,u.defence,u.playerLevel,u.xp).__dict__ ]
     return jsonify(user_dto)
 

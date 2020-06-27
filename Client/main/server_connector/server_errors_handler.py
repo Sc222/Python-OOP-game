@@ -6,7 +6,7 @@ class ServerErrorsHandler:
     @staticmethod
     def try_get_user(server_link: str = ServerConnector.LOCAL_SERVER_LINK):
         try:
-            user = ServerConnector.get_user(ServerConnector.get_saved_username(), server_link)
+            user = ServerConnector.get_user(server_link)
         except Exception:
             return False, None
         else:

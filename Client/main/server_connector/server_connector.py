@@ -40,15 +40,15 @@ class ServerConnector:
         return result
 
     @staticmethod
-    def get_user(name: str, server_link: str = LOCAL_SERVER_LINK):
+    def get_user(server_link: str = LOCAL_SERVER_LINK):
         cookies = dict(session=ServerConnector.get_cookie())
-        r: requests.Response = requests.get(server_link + ServerConnector.GET_USER + "/" + name, cookies=cookies)
+        r: requests.Response = requests.get(server_link + ServerConnector.GET_USER, cookies=cookies)
         print(r.text)
         return r.json()[0]
 
     @staticmethod
-    def save_leaderboard(login: str, score: int, level: int, server_link: str = LOCAL_SERVER_LINK):
-        data = {"login": login, "score": score, "level": level}
+    def save_leaderboard(score: int, level: int, server_link: str = LOCAL_SERVER_LINK):
+        data = {"score": score, "level": level}
         cookies = dict(session=ServerConnector.get_cookie())
         r: requests.Response = requests.post(server_link + ServerConnector.SAVE_LEADERBOARDS, params=data,
                                              cookies=cookies)
@@ -96,7 +96,7 @@ class ServerConnector:
         return False
 
     @staticmethod
-    def save_data(cookie: str, login: str):
+    def save_data(cookie: str, login: str=""):
         f = open(os.path.join(ServerConnector.DATA_FILE_LOCATION, ServerConnector.DATA_FILE), 'w')
         print(cookie + " " + login)
         f.write(cookie)
@@ -122,22 +122,3 @@ class ServerConnector:
                 f.write("\n")
             f.close()
         return lines[0]
-
-    @staticmethod
-    def get_saved_username():
-        path_to_file = os.path.join(ServerConnector.DATA_FILE_LOCATION, ServerConnector.DATA_FILE)
-        if not os.path.isfile(path_to_file):
-            f = open(path_to_file, 'w+')
-            f.write("\n")
-            f.close()
-
-        f = open(path_to_file, 'r')
-        lines = f.read().splitlines()
-        f.close()
-        if len(lines) != 2:
-            f = open(path_to_file, 'w+')
-            while len(lines) < 2:
-                lines.append("")
-                f.write("\n")
-            f.close()
-        return lines[1]
