@@ -88,17 +88,17 @@ class Resources:
         self.scale = scale
 
     def load_backgrounds(self):
-        result = []
+        result = {}
         for background in self.backgrounds:
             path = os.path.join(self.directory, background) + ".png"
-            result.append(load_image(path, self.scale))
+            result.update({background:load_image(path, self.scale)})
         return result
 
     def load_terrain(self):
-        result = []
+        result = {}
         for terrain_element in self.terrain:
             path = os.path.join(self.directory, terrain_element) + ".png"
-            result.append(load_image(path, self.scale))
+            result.update({terrain_element:load_image(path, self.scale)})
         return result
 
     def load_player(self):
@@ -186,4 +186,15 @@ class Parser:
                     centered_x = x_shift + (map_x - map_y) * self.TILE_SIZE_HALF
                     centered_y = y_shift + (map_x + map_y) * 0.5 * self.TILE_SIZE_HALF
                     result_ls.append(StaticDrawObject(tile_image, centered_x, centered_y, extra_y_offset * self.scale))
+        return result_ls
+
+    def map_to_draw_objects_from_server(self, images, game_map, center_x, center_y, extra_y_offset=0):
+        result_ls = list()
+        for map_obj in game_map:
+                tile_image=images[map_obj.name]
+                x_shift = center_x - self.TILE_SIZE_HALF
+                y_shift = center_y * 0.5 - self.TILE_SIZE
+                centered_x = x_shift + (map_obj.x - map_obj.y) * self.TILE_SIZE_HALF
+                centered_y = y_shift + (map_obj.x + map_obj.y) * 0.5 * self.TILE_SIZE_HALF
+                result_ls.append(StaticDrawObject(tile_image, centered_x, centered_y, extra_y_offset * self.scale))
         return result_ls

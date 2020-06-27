@@ -1,5 +1,8 @@
 import os
 import pygame
+import requests
+import  json
+from  main.gui.DTO_models import level_from_json,map_obj_from_json
 from pygame.rect import Rect
 from main.gui import main_menu
 from main.gui.constants import *
@@ -42,12 +45,19 @@ class Game:
         self.player.mana = 17
 
         # todo это временно, в финальной версии уровень будет грузиться из базы данных
-        map_bg = open(os.path.join(self.res.directory, "demo", "background.txt"), "r").read().split()
-        map_terrain = open(os.path.join(self.res.directory, "demo", "terrain.txt"), "r").read().split()
+        level_response = requests.get('http://127.0.0.1:5000/level/1');
+        level_dict = json.loads(level_response.text)
+        backgrounds = [map_obj_from_json(o['x'],o['y'],o['name']) for o in level_dict['backgrounds']]
+        terrains = [map_obj_from_json(o['x'],o['y'],o['name']) for o in level_dict['terrains']]
+        level = level_from_json(backgrounds,[],terrains)
+        #map_bg = open(os.path.join(self.res.directory, "demo", "background.txt"), "r").read().split()
+        #map_terrain = open(os.path.join(self.res.directory, "demo", "terrain.txt"), "r").read().split()
         parser = Parser()
-        self.background_draw_ls = parser.map_to_draw_objects(res.load_backgrounds(), map_bg, self.c_x, self.c_y)
-        self.terrain_draw_ls = parser.map_to_draw_objects(res.load_terrain(), map_terrain, self.c_x, self.c_y,
-                                                          TERRAIN_SHIFT)
+        self.background_draw_ls = parser.map_to_draw_objects_from_server(res.load_backgrounds(),level.backgrounds,self.c_x,self.c_y)
+        self.terrain_draw_ls = parser.map_to_draw_objects_from_server(res.load_terrain(), level.terrains, self.c_x, self.c_y,TERRAIN_SHIFT)
+        #self.background_draw_ls = parser.map_to_draw_objects(res.load_backgrounds(), map_bg, self.c_x, self.c_y)
+        #self.terrain_draw_ls = parser.map_to_draw_objects(res.load_terrain(), map_terrain, self.c_x, self.c_y,
+                                                          #TERRAIN_SHIFT)
 
     def launch_main_menu(self):
         self.is_opened = False
