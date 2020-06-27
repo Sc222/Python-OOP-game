@@ -1,9 +1,9 @@
 from enum import Enum
 import pygame
 from main.gui.constants import MOVE_COLLIDE_RECT_OFFSET, SCALE, \
-    MONSTER_ATTACK_DELTA_Y, MONSTER_ATTACK_DELTA_X, RED
-from main.gui.game_utils import Camera
-from main.gui.player import Player
+    MONSTER_ATTACK_DELTA_Y, MONSTER_ATTACK_DELTA_X
+from main.gui.game.game_utils import Camera
+from main.gui.game.player import Player
 
 
 class CreatureState(Enum):
@@ -136,14 +136,15 @@ class Monster:
                 self.state = CreatureState.idle
 
     def update_attack_status(self):
-        if (self.state == CreatureState.attack or self.state == CreatureState.take_damage) and self.monsterSprite.is_animation_end():
+        if (
+                self.state == CreatureState.attack or self.state == CreatureState.take_damage) and self.monsterSprite.is_animation_end():
             self.state = CreatureState.idle
 
     def state_str(self):
         return self.state.name + "_" + self.direction.name
 
     def update(self, dt):
-        if self.state==CreatureState.die and self.monsterSprite.is_animation_end():
+        if self.state == CreatureState.die and self.monsterSprite.is_animation_end():
             return
         self.update_attack_status()
         self.monsterSprite.upd(dt, self.state_str())

@@ -1,18 +1,19 @@
 import pygame
 import thorpy
 
-from main.gui import game_main, leaderboards_menu, gui_utils
-from main.gui.constants import FPS, GAME_NAME, MAIN_MENU_HEADER, WHITE, RED, RED_DARK, GREEN, ACTION_GET_USER
-from main.gui.gui_utils import create_button, render_text
-from main.gui.main_menu_utils import ScrollingBackgroundHorizontal, PlayerMenu
-from main.gui.server_unreachable_menu import ServerUnreachableMenu
-from main.server_connector.server_connector import ServerConnector
+from main.gui import gui_utils
+from main.gui.game import game_main
+from main.gui.constants import FPS, GAME_NAME, MAIN_MENU_HEADER, RED_DARK, GREEN, ACTION_GET_USER
+from main.gui.gui_utils import create_button
+from main.gui.leaderboards_menu.leaderboards_menu import LeaderboardsMenu
+from main.gui.main_menu.main_menu_utils import ScrollingBackgroundHorizontal, PlayerMenu
+from main.gui.server_unreachable_menu.server_unreachable_menu import ServerUnreachableMenu
 from main.server_connector.server_errors_handler import ServerErrorsHandler
 
 
 class MainMenu:
 
-    def __init__(self, resources, screen, clock, user = None):
+    def __init__(self, resources, screen, clock, user=None):
         self.is_opened = True
         self.resources = resources
         self.screen = screen
@@ -78,7 +79,7 @@ class MainMenu:
 
     def launch_leaderboards(self):
         self.is_opened = False
-        leaderboards_screen = leaderboards_menu.LeaderboardsMenu(self.resources, self.screen, self.clock)
+        leaderboards_screen = LeaderboardsMenu(self.resources, self.screen, self.clock)
         leaderboards_screen.launch()
 
     def quit_game(self):

@@ -71,12 +71,12 @@ class Player:
         self.velocity.y = 0
 
     def get_attack_rect(self):
-        direction_multiplier=0
-        if self.direction.name=="left":
-            direction_multiplier=-1
+        direction_multiplier = 0
+        if self.direction.name == "left":
+            direction_multiplier = -1
         if self.direction.name == "right":
-            direction_multiplier=1
-        return self.collide_rect.move(direction_multiplier*7 * SCALE, -6 * SCALE)
+            direction_multiplier = 1
+        return self.collide_rect.move(direction_multiplier * 7 * SCALE, -6 * SCALE)
 
     def perform_movement(self, mouse_pos, visible_terrain_ls):
         if self.state != CreatureState.attack:
@@ -95,10 +95,10 @@ class Player:
                     collide_x = move_rect_x.colliderect(terrain.get_taken_place_rect(SCALE))
                     collide_y = move_rect_y.colliderect(terrain.get_taken_place_rect(SCALE))
                     if collide_x:
-                        #print("collides x")
+                        # print("collides x")
                         self.velocity.x = 0
                     if collide_y:
-                        #print("collides y")
+                        # print("collides y")
                         self.velocity.y = 0
                     if collide_x and collide_y:
                         self.state = CreatureState.idle

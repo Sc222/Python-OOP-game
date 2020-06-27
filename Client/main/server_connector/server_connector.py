@@ -4,7 +4,7 @@ import os
 import requests
 from tabulate import tabulate
 
-from main.gui.DTO_models import map_obj_from_json, monster_obj_from_json, level_from_json
+from main.gui.game.DTO_models import map_obj_from_json, monster_obj_from_json, level_from_json
 
 
 class ServerConnector:
@@ -20,8 +20,8 @@ class ServerConnector:
     DATA_FILE_LOCATION = "data"
 
     @staticmethod
-    def get_level(level:int, server_link: str = LOCAL_SERVER_LINK):
-        level_response = requests.get(server_link+ServerConnector.GET_LEVEL+str(level))
+    def get_level(level: int, server_link: str = LOCAL_SERVER_LINK):
+        level_response = requests.get(server_link + ServerConnector.GET_LEVEL + str(level))
         level_dict = json.loads(level_response.text)
         backgrounds = [map_obj_from_json(o['x'], o['y'], o['name']) for o in level_dict['backgrounds']]
         terrains = [map_obj_from_json(o['x'], o['y'], o['name']) for o in level_dict['terrains']]
@@ -111,7 +111,7 @@ class ServerConnector:
         return False
 
     @staticmethod
-    def save_data(cookie: str, login: str=""):
+    def save_data(cookie: str, login: str = ""):
         f = open(os.path.join(ServerConnector.DATA_FILE_LOCATION, ServerConnector.DATA_FILE), 'w')
         print(cookie + " " + login)
         f.write(cookie)

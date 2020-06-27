@@ -75,13 +75,14 @@ def load_folder_images(path, scale=SCALE):
 
 class Resources:
     monster_mushroom = "monster_mushroom"
-    creatures=["monster_mushroom","monster_goblin"]
+    creatures = ["monster_mushroom", "monster_goblin"]
     player = "player"
     gui = "gui"
     font = "font.otf"
     backgrounds = ["grass", "pond_top", "pond_right", "pond_left", "pond_bottom"]
     terrain = ["house", "pine", "oak", "birch", "flower_purple", "fern", "bush", "invisible"]
-    creature_anims_name = ["walk_", "idle_", "attack_","take_damage_","die_"]  # все папки должны иметь название ""+right
+    creature_anims_name = ["walk_", "idle_", "attack_", "take_damage_",
+                           "die_"]  # все папки должны иметь название ""+right
     menu_player_anims = ["menu_idle", "menu_transform"]
     game_gui_images = ["bars", "inventory", "hp_bar", "mana_bar"]
 
@@ -93,24 +94,24 @@ class Resources:
         result = {}
         for background in self.backgrounds:
             path = os.path.join(self.directory, background) + ".png"
-            result.update({background:load_image(path, self.scale)})
+            result.update({background: load_image(path, self.scale)})
         return result
 
     def load_terrain(self):
         result = {}
         for terrain_element in self.terrain:
             path = os.path.join(self.directory, terrain_element) + ".png"
-            result.update({terrain_element:load_image(path, self.scale)})
+            result.update({terrain_element: load_image(path, self.scale)})
         return result
 
     def load_creatures(self):
         result = {}
         for creature in self.creatures:
             creature_resources = self.load_creature(creature)
-            result.update({creature:creature_resources})
+            result.update({creature: creature_resources})
         return result
 
-    def load_creature(self,type:str):
+    def load_creature(self, type: str):
         result = {}
         for anim in self.creature_anims_name:
             path = os.path.join(self.directory, type, anim)
@@ -138,10 +139,10 @@ class Resources:
         return result
 
     def load_inserter_bg_normal(self):
-        return load_image(os.path.join(self.directory,self.gui, "inserter_bg_normal.png"), GUI_SCALE)
+        return load_image(os.path.join(self.directory, self.gui, "inserter_bg_normal.png"), GUI_SCALE)
 
     def load_inserter_bg_active(self):
-        return load_image(os.path.join(self.directory,self.gui, "inserter_bg_active.png"), GUI_SCALE)
+        return load_image(os.path.join(self.directory, self.gui, "inserter_bg_active.png"), GUI_SCALE)
 
     def load_main_menu_background(self):
         return load_image(os.path.join(self.directory, "main_menu_bg.png"), GUI_SCALE)
@@ -156,7 +157,7 @@ class Resources:
         return load_image(os.path.join(self.directory, "leaderboards_bg.png"), GUI_SCALE)
 
     def load_leaderboards_menu_background(self):
-        return load_image(os.path.join(self.directory, self.gui,  "leaderboards_menu_bg.png"), GUI_SCALE)
+        return load_image(os.path.join(self.directory, self.gui, "leaderboards_menu_bg.png"), GUI_SCALE)
 
     def load_login_menu_background(self):
         return load_image(os.path.join(self.directory, self.gui, "login_menu_bg.png"), GUI_SCALE)
@@ -202,22 +203,21 @@ class Parser:
     def map_to_draw_objects_from_server(self, images, game_map, center_x, center_y, extra_y_offset=0):
         result_ls = list()
         for map_obj in game_map:
-                tile_image=images[map_obj.name]
-                x_shift = center_x - self.TILE_SIZE_HALF
-                y_shift = center_y * 0.5 - self.TILE_SIZE
-                centered_x = x_shift + (map_obj.x - map_obj.y) * self.TILE_SIZE_HALF
-                centered_y = y_shift + (map_obj.x + map_obj.y) * 0.5 * self.TILE_SIZE_HALF
-                result_ls.append(StaticDrawObject(tile_image, centered_x, centered_y, extra_y_offset * self.scale))
+            tile_image = images[map_obj.name]
+            x_shift = center_x - self.TILE_SIZE_HALF
+            y_shift = center_y * 0.5 - self.TILE_SIZE
+            centered_x = x_shift + (map_obj.x - map_obj.y) * self.TILE_SIZE_HALF
+            centered_y = y_shift + (map_obj.x + map_obj.y) * 0.5 * self.TILE_SIZE_HALF
+            result_ls.append(StaticDrawObject(tile_image, centered_x, centered_y, extra_y_offset * self.scale))
         return result_ls
-
 
     def monsters_to_draw_objects(self, images, monsters, center_x, center_y):
         result_ls = list()
         for monster in monsters:
-                monster_images=images[monster.name]
-                x_shift = center_x - self.TILE_SIZE_HALF
-                y_shift = center_y * 0.5 - self.TILE_SIZE
-                centered_x = x_shift + (monster.x - monster.y) * self.TILE_SIZE_HALF
-                centered_y = y_shift + (monster.x + monster.y) * 0.5 * self.TILE_SIZE_HALF
-                result_ls.append(StaticDrawObject(monster_images, centered_x, centered_y,0))
+            monster_images = images[monster.name]
+            x_shift = center_x - self.TILE_SIZE_HALF
+            y_shift = center_y * 0.5 - self.TILE_SIZE
+            centered_x = x_shift + (monster.x - monster.y) * self.TILE_SIZE_HALF
+            centered_y = y_shift + (monster.x + monster.y) * 0.5 * self.TILE_SIZE_HALF
+            result_ls.append(StaticDrawObject(monster_images, centered_x, centered_y, 0))
         return result_ls

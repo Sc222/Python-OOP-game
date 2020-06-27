@@ -1,8 +1,4 @@
 import pygame
-from thorpy import Clickable
-from thorpy.painting.painters.imageframe import ImageButton
-
-from main.gui.constants import MAIN_MENU_HEADER
 
 
 class ScrollingBackgroundHorizontal(pygame.sprite.Sprite):

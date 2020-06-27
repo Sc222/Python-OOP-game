@@ -31,13 +31,15 @@ def create_inserter(res):
     inserter.finish()
     return inserter
 
-def create_text(text:str,pos,font_color,font_size,font=MONOSPACE_FONT):
+
+def create_text(text: str, pos, font_color, font_size, font=MONOSPACE_FONT):
     text = thorpy.make_text(text)
     text.set_topleft(pos)
     text.set_font(font)
     text.set_font_color(font_color)
     text.set_font_size(font_size)
     return text
+
 
 def render_text(screen, font, pos, text, color):
     text = font.render(text, False, color)

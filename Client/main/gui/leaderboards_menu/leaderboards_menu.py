@@ -1,20 +1,17 @@
 import pygame
 import thorpy
-from tabulate import tabulate
 from main.gui.constants import FPS, GUI_SCALE, ACTION_GET_LEADERBOARDS
 from main.gui import main_menu
 from main.gui.gui_utils import create_button
-from main.gui.leaderboards_menu_utils import ScrollingBackgroundVertical, create_leaderboards_element, \
-    resize_leaderboard_element_text
-from main.gui.server_unreachable_menu import ServerUnreachableMenu
-from main.server_connector.server_connector import ServerConnector
+from main.gui.leaderboards_menu.leaderboards_menu_utils import ScrollingBackgroundVertical, create_leaderboards_element
+from main.gui.server_unreachable_menu.server_unreachable_menu import ServerUnreachableMenu
 from main.server_connector.server_errors_handler import ServerErrorsHandler
 
 
 class LeaderboardsMenu:
 
-    def __init__(self, res, screen, clock, formatted_leaderboards = None):
-        self.container=None
+    def __init__(self, res, screen, clock, formatted_leaderboards=None):
+        self.container = None
         self.is_opened = True
         self.res = res
         self.screen = screen
@@ -58,7 +55,7 @@ class LeaderboardsMenu:
 
     def launch_main_menu(self):
         self.is_opened = False
-        menu = main_menu.MainMenu(self.res, self.screen, self.clock)
+        menu = main_menu.main_menu.MainMenu(self.res, self.screen, self.clock)
         menu.launch()
 
     def change_to_level_one(self):
@@ -72,15 +69,15 @@ class LeaderboardsMenu:
 
     def show_leaderboard_level(self, level: int):
         print("change level: " + str(level))
-        self.is_opened, formatted_leaderboard=ServerErrorsHandler.try_get_leaderboards_formatted(level)
+        self.is_opened, formatted_leaderboard = ServerErrorsHandler.try_get_leaderboards_formatted(level)
         if formatted_leaderboard is None:
-            no_internet_menu = ServerUnreachableMenu(self.res, self.screen, self.clock, ACTION_GET_LEADERBOARDS,level)
+            no_internet_menu = ServerUnreachableMenu(self.res, self.screen, self.clock, ACTION_GET_LEADERBOARDS, level)
             no_internet_menu.launch()
         else:
             if not self.container is None:
                 self.container.remove_elements([self.leaderboards_element])
                 self.leaderboards_element = create_leaderboards_element(formatted_leaderboard)
-                self.leaderboards_element.surface=self.screen
+                self.leaderboards_element.surface = self.screen
                 self.container.add_element(self.leaderboards_element)
                 self.menu.remove_from_population(self.container)
                 self.menu.add_to_population(self.container)

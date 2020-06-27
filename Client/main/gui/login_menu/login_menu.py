@@ -1,17 +1,11 @@
 import pygame
 import thorpy
-from thorpy import Inserter
-from thorpy.elements._inserterutils._insertwriter import _InsertWriter
-from thorpy.miscgui import painterstyle, functions
 
-from thorpy.painting.painters.imageframe import ImageButton
-from thorpy.painting.painters.painter import Painter
-
-from main.gui import game_main, leaderboards_menu, gui_utils
-from main.gui.constants import FPS, GAME_NAME, MAIN_MENU_HEADER, GUI_SCALE, MONOSPACE_FONT, TRANSPARENT, WHITE, RED
-from main.gui.gui_utils import create_button, render_text
-from main.gui.main_menu import MainMenu
-from main.gui.main_menu_utils import ScrollingBackgroundHorizontal, PlayerMenu
+from main.gui import gui_utils
+from main.gui.constants import FPS, GUI_SCALE, WHITE, RED
+from main.gui.gui_utils import create_button
+from main.gui.main_menu.main_menu import MainMenu
+from main.gui.main_menu.main_menu_utils import ScrollingBackgroundHorizontal
 from main.server_connector.server_connector import ServerConnector
 
 
@@ -38,7 +32,7 @@ class LoginMenu:
         button_register.set_topleft((149 * GUI_SCALE, 146 * GUI_SCALE))
 
         text_username = gui_utils.create_text("Username:", (110 * GUI_SCALE, 65 * GUI_SCALE), WHITE, 10 * GUI_SCALE)
-        text_password = gui_utils.create_text("Password:",(110 * GUI_SCALE, 102 * GUI_SCALE),WHITE,10*GUI_SCALE)
+        text_password = gui_utils.create_text("Password:", (110 * GUI_SCALE, 102 * GUI_SCALE), WHITE, 10 * GUI_SCALE)
         self.text_error = gui_utils.create_text("", (108 * GUI_SCALE, 135 * GUI_SCALE), RED, 8 * GUI_SCALE)
 
         self.inserter_username = gui_utils.create_inserter(res)
@@ -54,7 +48,7 @@ class LoginMenu:
         login_bg.set_size(size=(150 * GUI_SCALE, 121 * GUI_SCALE))
         login_bg.set_image(res.load_login_menu_background())
 
-        self.container = thorpy.Ghost(elements=[login_bg,button_exit_login,button_login,button_register,
+        self.container = thorpy.Ghost(elements=[login_bg, button_exit_login, button_login, button_register,
                                                 text_username,
                                                 text_password,
                                                 self.text_error,
@@ -71,8 +65,8 @@ class LoginMenu:
     def login(self):
         username = self.inserter_username.get_value()
         password = self.inserter_password.get_value()
-        print("login: "+username+" "+password)
-        res = ServerConnector.login(username,password)
+        print("login: " + username + " " + password)
+        res = ServerConnector.login(username, password)
         if res[0] != 200:
             self.text_error.set_font_color(RED)
             self.text_error.set_text(res[1])

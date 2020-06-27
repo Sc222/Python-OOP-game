@@ -1,13 +1,12 @@
-
-
 class map_obj_from_json():
-    def __init__(self,x,y,name):
-        self.x=x
-        self.y=y
-        self.name=name
+    def __init__(self, x, y, name):
+        self.x = x
+        self.y = y
+        self.name = name
+
 
 class monster_obj_from_json():
-    def __init__(self,x,y,name,hp,attack,defence):
+    def __init__(self, x, y, name, hp, attack, defence):
         self.x = x
         self.y = y
         self.name = name
@@ -15,8 +14,9 @@ class monster_obj_from_json():
         self.attack = attack
         self.defence = defence
 
+
 class level_from_json():
-    def __init__(self,backgrounds,monsters,terrains):
+    def __init__(self, backgrounds, monsters, terrains):
         self.backgrounds = backgrounds
         self.monsters = monsters
         self.terrains = terrains
