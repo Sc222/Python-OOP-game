@@ -21,12 +21,18 @@ LEADERBOARD_INTIAL_FONT_SIZE = 26  # первоначальный размер �
 
 # colors
 MAIN_MENU_HEADER = (0, 105, 170)
+YELLOW_LIGHT = (246,202,159)
 WHITE = (255, 255, 255)
 RED = (234, 0, 60)
 RED_DARK = (196, 36, 48)
+RED_CONTRAST = (244, 0, 12)
 GREEN = (30, 111, 80)
 TRANSPARENT = (0, 0, 0, 0)
 SKY = (0, 205, 249)
 DEBUG = (255, 0, 64)
 PL = (0, 255, 0)
 TR = (0, 0, 255)
+
+#no internet actions
+ACTION_ENTRY="entry"
+ACTION_GET_USER="get_user"

@@ -140,6 +140,9 @@ class Resources:
     def load_login_background(self):
         return load_image(os.path.join(self.directory, "login_bg.png"), GUI_SCALE)
 
+    def load_no_internet_background(self):
+        return load_image(os.path.join(self.directory, "no_internet_bg.png"), GUI_SCALE)
+
     def load_leaderboards_background(self):
         return load_image(os.path.join(self.directory, "leaderboards_bg.png"), GUI_SCALE)
 

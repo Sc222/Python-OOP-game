@@ -2,10 +2,12 @@ import pygame
 import thorpy
 
 from main.gui import game_main, leaderboards_menu, gui_utils
-from main.gui.constants import FPS, GAME_NAME, MAIN_MENU_HEADER, WHITE, RED, RED_DARK, GREEN
+from main.gui.constants import FPS, GAME_NAME, MAIN_MENU_HEADER, WHITE, RED, RED_DARK, GREEN, ACTION_GET_USER
 from main.gui.gui_utils import create_button, render_text
 from main.gui.main_menu_utils import ScrollingBackgroundHorizontal, PlayerMenu
+from main.gui.no_internet_menu import NoInternetMenu
 from main.server_connector.server_connector import ServerConnector
+from main.server_connector.server_errors_handler import ServerErrorsHandler
 
 
 class MainMenu:
@@ -19,17 +21,9 @@ class MainMenu:
         self.background_image = resources.load_main_menu_background()
         scroll_width = self.background_image.get_width()
 
-        a=ServerConnector.get_user(ServerConnector.get_saved_username())
-        print(a)
-
+        self.text_name = gui_utils.create_text("", (0, 0), RED_DARK, 60)
+        self.text_level = gui_utils.create_text("", (0, 0), GREEN, 35)
         text_game_title = gui_utils.create_text(GAME_NAME, (115, 15), MAIN_MENU_HEADER, 150)
-
-        self.text_player_name = gui_utils.create_text(a["nickname"],(0,0),RED_DARK,60)
-        self.text_player_name.set_center_pos((684,230))
-
-        self.text_level_name = gui_utils.create_text("Level "+str(a["playerLevel"]), (0, 0), GREEN, 35)
-        self.text_level_name.set_center_pos((684, 275))
-
 
         self.background_left = ScrollingBackgroundHorizontal(self.background_image, scroll_width * (-1), 0,
                                                              scroll_width)
@@ -41,16 +35,31 @@ class MainMenu:
         button_exit = create_button(resources.load_button_images("exit"), self.quit_game)
         button_exit.set_topleft((200 - 5, 450 + 5 * 2))
         self.container = thorpy.Ghost(elements=[button_play, button_leaderboards,
-                                                button_exit,text_game_title,
-                                                self.text_player_name,
-                                                self.text_level_name])
+                                                button_exit, text_game_title,
+                                                self.text_name,
+                                                self.text_level])
+
+        # try to get user from server
+        self.try_load_user(clock, resources, screen)
+
         self.menu = thorpy.Menu(self.container)
         for element in self.menu.get_population():
             element.surface = screen
 
+    def try_load_user(self, clock, resources, screen):
+        self.is_opened, user = ServerErrorsHandler.try_get_user()
+        if user is None:
+            no_internet_menu = NoInternetMenu(resources, screen, clock, ACTION_GET_USER)
+            no_internet_menu.launch()
+        else:
+            self.text_name.set_text(user["nickname"])
+            self.text_level.set_text("Level " + str(user["playerLevel"]))
+            self.text_name.set_center_pos((684, 230))
+            self.text_level.set_center_pos((684, 275))
+
     def start_transformation(self):
-        self.text_player_name.set_text("")
-        self.text_level_name.set_text("")
+        self.text_name.set_text("")
+        self.text_level.set_text("")
         self.player_menu.start_transformation()
 
     def launch_game(self):
@@ -61,19 +70,14 @@ class MainMenu:
         game.launch()
 
     def launch_leaderboards(self):
-        # TODO LAUNCH LEADERBOARDS HERE
-        print("launch leaderboards")
         self.is_opened = False
         leaderboards_screen = leaderboards_menu.LeaderboardsMenu(self.resources, self.screen, self.clock)
         leaderboards_screen.launch()
 
     def quit_game(self):
-        # TODO QUIT GAME HERE
-        print("quit game")
         pygame.quit()
 
     def launch(self):
-        font_resource = self.resources.load_font(150)
         while self.is_opened:
             dt = self.clock.tick(FPS)
             for event in pygame.event.get():
@@ -91,6 +95,4 @@ class MainMenu:
             self.player_menu.draw(self.screen)
             self.container.blit()
             self.container.update()
-
-            # todo replace with thorpy make text
             pygame.display.flip()
