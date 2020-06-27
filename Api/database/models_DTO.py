@@ -1,10 +1,19 @@
+class User_Dto():
+    def __init__(self, nickname, unlockedLevel, hp, attack,defence,playerLevel,xp):
+        self.nickname = nickname
+        self.unlockedLevel = unlockedLevel
+        self.hp = hp
+        self.attack = attack
+        self.defence = defence
+        self.playerLevel = playerLevel
+        self.xp = xp
+
 class Leaderboard_Dto():
     def __init__(self, id, playerId, levelId, score):
         self.id = id
         self.playerId = playerId
         self.levelId = levelId
         self.score = score
-
 
 class Background_Dto():
     x = 0

@@ -1,6 +1,6 @@
 from app import app, db
 from database import models
-from database.models_DTO import Background_Dto, LevelDto, Terrain_Dto
+from database.models_DTO import Background_Dto, LevelDto, Terrain_Dto, User_Dto
 from flask import jsonify, make_response, request
 from flask_login import current_user, login_required, login_user
 
@@ -47,10 +47,13 @@ def post_leaderboard_record():
     return response
 
 
-@app.route('/user', methods=['GET'])
+@app.route('/user/<name>', methods=['GET'])
 def get_user(name):
-    user = models.User.query.get(name)
-    return jsonify(user.__dict__)
+    u = models.User.query.filter_by(nickname=name).first()
+    if u is None:
+        return jsonify({"error":"user does not exist"})
+    user_dto = [User_Dto(u.nickname, u.unlockedLevel, u.hp, u.attack,u.defence,u.playerLevel,u.xp).__dict__ ]
+    return jsonify(user_dto)
 
 
 @app.route('/level/<id>', methods=['GET'])
@@ -58,7 +61,7 @@ def get_level(id):
     db_level = models.Level.query.get(id)
     backgrounds_dto = [Background_Dto(b.x, b.y, b.info.name).__dict__ for b in db_level.backgrounds]
     terrains_dto = [Terrain_Dto(t.x, t.y, t.info.name).__dict__ for t in db_level.terrains]
-    return jsonify(LevelDto(backgrounds_dto, terrains_dto, []).__dict__)
+    return jsonify(LevelDto(backgrounds_dto,  [],terrains_dto,).__dict__)
 
 
 @app.route('/login', methods=['GET', 'POST'])
