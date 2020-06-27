@@ -35,6 +35,16 @@ class Terrain_Dto():
         self.y = y
         self.name = name
 
+class Monster_Dto():
+    def __init__(self,x,y,name,hp,attack,defense):
+        self.x = x
+        self.y = y
+        self.name = name
+        self.hp = hp
+        self.attack = attack
+        self.defense = defense
+
+
 class LevelDto:
 
     def __init__(self, backgrounds, monsters, terrains):

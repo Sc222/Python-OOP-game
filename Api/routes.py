@@ -1,7 +1,7 @@
 from app import app, db
 from database import models
 import  json
-from database.models_DTO import Background_Dto, LevelDto, Terrain_Dto, User_Dto
+from database.models_DTO import Background_Dto, LevelDto, Terrain_Dto, User_Dto, Monster_Dto
 from flask import jsonify, make_response, request
 from flask_login import current_user, login_required, login_user
 
@@ -62,7 +62,8 @@ def get_level(id):
 
     backgrounds_dto = [Background_Dto(b.x, b.y, b.info.name).__dict__ for b in db_level.backgrounds]
     terrains_dto = [Terrain_Dto(t.x, t.y, t.info.name).__dict__ for t in db_level.terrains]
-    return jsonify(LevelDto(backgrounds=backgrounds_dto,terrains=terrains_dto,monsters=[]).__dict__)
+    monsters_dto = [Monster_Dto(m.x,m.y,m.info.name,m.info.hp,m.info.attack,m.info.defence).__dict__ for m in db_level.monsters]
+    return jsonify(LevelDto(backgrounds=backgrounds_dto,terrains=terrains_dto,monsters=monsters_dto).__dict__)
 
 
 @app.route('/login', methods=['GET', 'POST'])

@@ -14,10 +14,16 @@ def create_terrainInfo():
     db.session.commit()
 
 def create_monsterInfo():
-    monster_info = [models.MonsterInfo(name="skeleton",hp=50,attack=35,defence=10),
-                    models.MonsterInfo(name="goblin",hp=100,attack=50,defence=25)]
+    monster_info = [models.MonsterInfo(name="monster_mushroom",hp=50,attack=35,defence=10),
+                    models.MonsterInfo(name="monster_goblin",hp=100,attack=50,defence=25)]
     db.session.add_all(monster_info)
     db.session.commit()
+def create_Monsters1():
+    monsters = [models.Monster(levelId=1,infoId=1,x=5,y=5),
+                models.Monster(levelId=1,infoId=2,x=6,y=6)]
+    db.session.add_all(monsters)
+    db.session.commit()
+
 
 def create_level1():
     l1 = models.Level(sizeX=9,sizeY=9)
@@ -57,6 +63,5 @@ def create_terrain1():
     db.session.add_all(terrains)
     db.session.commit()
 
-
-create_backgrounds1()
-create_terrain1()
+create_monsterInfo()
+create_Monsters1()
