@@ -58,3 +58,8 @@ def create_terrain1():
     db.session.commit()
 
 create_level1()
+create_monsterInfo()
+create_terrainInfo()
+create_backgroundInfo()
+create_backgrounds1()
+create_backgrounds1()

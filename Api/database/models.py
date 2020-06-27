@@ -31,7 +31,8 @@ class Level(db.Model):
 
 class MonsterInfo(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String, unique=True) # путь до  папки со спрайтами (картинки будут храниться локально)
+    name = db.Column(db.String, unique=True)
+# путь до  папки со спрайтами (картинки будут храниться локально)
     # todo важно!!!(image будет отвечать за ПАПКУ, а в папке будут папки с анимациями attack, die, move и так далее)
     hp = db.Column(db.Integer)
     attack = db.Column(db.Integer)
