@@ -1,12 +1,12 @@
 from app import app, db
 from database import models
 from database.models_DTO import Background_Dto, LevelDto, Terrain_Dto
-from flask import jsonify,make_response, request
+from flask import jsonify, make_response, request
 from flask_login import current_user, login_required, login_user
 
 
 @app.route('/leaderboard', methods=['GET'])
-def Get_Leaderboard():
+def get_leaderboard():
     level = request.args.get('level')
     if level is None:
         return make_response("Level is not specified", 400)
@@ -16,11 +16,11 @@ def Get_Leaderboard():
         .order_by(models.LeaderboardRecord.score.desc())
     return jsonify([l.serialize() for l in leaderboard_records])
 
-#@login_required
+
+# @login_required
 @app.route('/leaderboard/post', methods=['GET', 'POST'])
 @login_required
-def PostLeaderboard_record():
-    print("SADFASDASDASD")
+def post_leaderboard_record():
     if not current_user.is_authenticated:
         return make_response("User is not logged in", 200)
 
@@ -47,12 +47,18 @@ def PostLeaderboard_record():
     return response
 
 
+@app.route('/user', methods=['GET'])
+def get_user(name):
+    user = models.User.query.get(name)
+    return jsonify(user.__dict__)
+
+
 @app.route('/level/<id>', methods=['GET'])
-def getLevel(id):
-    dbLevel = models.Level.query.get(id)
-    backgrounds_Dto = [Background_Dto(b.x, b.y, b.info.name).__dict__ for b in dbLevel.backgrounds]
-    terrains_Dto = [Terrain_Dto(t.x,t.y,t.info.name).__dict__ for t in dbLevel.terrains]
-    return jsonify(LevelDto(backgrounds_Dto, terrains_Dto, []).__dict__)
+def get_level(id):
+    db_level = models.Level.query.get(id)
+    backgrounds_dto = [Background_Dto(b.x, b.y, b.info.name).__dict__ for b in db_level.backgrounds]
+    terrains_dto = [Terrain_Dto(t.x, t.y, t.info.name).__dict__ for t in db_level.terrains]
+    return jsonify(LevelDto(backgrounds_dto, terrains_dto, []).__dict__)
 
 
 @app.route('/login', methods=['GET', 'POST'])
