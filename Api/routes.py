@@ -48,6 +48,7 @@ def post_leaderboard_record():
 
 
 @app.route('/user/<name>', methods=['GET'])
+@login_required
 def get_user(name):
     u = models.User.query.filter_by(nickname=name).first()
     if u is None:
@@ -58,7 +59,11 @@ def get_user(name):
 
 @app.route('/level/<id>', methods=['GET'])
 def get_level(id):
-    db_level = models.Level.query.get(id)
+    db_level = models.Level.query.get(int(id))
+
+    print(id)
+    print(db_level)
+
     backgrounds_dto = [Background_Dto(b.x, b.y, b.info.name).__dict__ for b in db_level.backgrounds]
     terrains_dto = [Terrain_Dto(t.x, t.y, t.info.name).__dict__ for t in db_level.terrains]
     return jsonify(LevelDto(backgrounds_dto,  [],terrains_dto,).__dict__)
