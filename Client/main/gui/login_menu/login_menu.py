@@ -73,8 +73,8 @@ class LoginMenu:
         else:
             self.text_error.set_text("")
             self.is_opened = False
-            main_menu = main_menu.MainMenu(self.res, self.screen, self.clock)
-            main_menu.launch()
+            menu = main_menu.MainMenu(self.res, self.screen, self.clock)
+            menu.launch()
 
     def register(self):
         username = self.inserter_username.get_value()
