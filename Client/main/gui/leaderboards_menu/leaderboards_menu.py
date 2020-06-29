@@ -1,7 +1,7 @@
 import pygame
 import thorpy
 from main.gui.constants import FPS, GUI_SCALE, ACTION_GET_LEADERBOARDS
-from main.gui.main_menu.main_menu import MainMenu
+from main.gui.main_menu import main_menu
 from main.gui.gui_utils import create_button
 from main.gui.leaderboards_menu.leaderboards_menu_utils import ScrollingBackgroundVertical, create_leaderboards_element
 from main.gui.server_unreachable_menu.server_unreachable_menu import ServerUnreachableMenu
@@ -55,7 +55,7 @@ class LeaderboardsMenu:
 
     def launch_main_menu(self):
         self.is_opened = False
-        menu = MainMenu(self.res, self.screen, self.clock)
+        menu = main_menu.MainMenu(self.res, self.screen, self.clock)
         menu.launch()
 
     def change_to_level_one(self):

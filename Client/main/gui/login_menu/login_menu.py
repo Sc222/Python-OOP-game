@@ -4,7 +4,7 @@ import thorpy
 from main.gui import gui_utils
 from main.gui.constants import FPS, GUI_SCALE, WHITE, RED
 from main.gui.gui_utils import create_button
-from main.gui.main_menu.main_menu import MainMenu
+from main.gui.main_menu import main_menu
 from main.gui.main_menu.main_menu_utils import ScrollingBackgroundHorizontal
 from main.server_connector.server_connector import ServerConnector
 
@@ -73,7 +73,7 @@ class LoginMenu:
         else:
             self.text_error.set_text("")
             self.is_opened = False
-            main_menu = MainMenu(self.res, self.screen, self.clock)
+            main_menu = main_menu.MainMenu(self.res, self.screen, self.clock)
             main_menu.launch()
 
     def register(self):

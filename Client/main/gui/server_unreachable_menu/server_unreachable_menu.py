@@ -2,9 +2,9 @@ import pygame
 import thorpy
 
 from main.gui import gui_utils
-from main.gui.leaderboards_menu.leaderboards_menu import LeaderboardsMenu
-from main.gui.main_menu.main_menu import MainMenu
-from main.gui.login_menu.login_menu import LoginMenu
+from main.gui.leaderboards_menu import leaderboards_menu
+from main.gui.main_menu import main_menu
+from main.gui.login_menu import login_menu
 from main.gui.constants import FPS, GUI_SCALE, YELLOW_LIGHT, ACTION_ENTRY, ACTION_GET_USER, RED_CONTRAST, \
     ACTION_GET_LEADERBOARDS
 from main.gui.gui_utils import create_button
@@ -59,7 +59,7 @@ class ServerUnreachableMenu:
         (is_success, user) = ServerErrorsHandler.try_get_user()
         if is_success:
             self.is_opened = False
-            menu = MainMenu(self.res, self.screen, self.clock, user)
+            menu = main_menu.MainMenu(self.res, self.screen, self.clock, user)
             menu.launch()
         else:
             self.text_error.set_text(ACTION_GET_USER)
@@ -69,7 +69,7 @@ class ServerUnreachableMenu:
         (is_success, formatted_leaderboards) = ServerErrorsHandler.try_get_leaderboards_formatted(self.action_arg)
         if is_success:
             self.is_opened = False
-            leaderboards = LeaderboardsMenu(self.res, self.screen, self.clock, formatted_leaderboards)
+            leaderboards = leaderboards_menu.LeaderboardsMenu(self.res, self.screen, self.clock, formatted_leaderboards)
             leaderboards.launch()
         else:
             self.text_error.set_text(ACTION_GET_LEADERBOARDS)
@@ -80,10 +80,10 @@ class ServerUnreachableMenu:
         if is_success:
             self.is_opened = False
             if is_logged_in:
-                menu = MainMenu(self.res, self.screen, self.clock)
+                menu = main_menu.MainMenu(self.res, self.screen, self.clock)
                 menu.launch()
             else:
-                login = LoginMenu(self.res, self.screen, self.clock)
+                login = login_menu.LoginMenu(self.res, self.screen, self.clock)
                 login.launch()
         else:
             self.text_error.set_text(ACTION_ENTRY)
