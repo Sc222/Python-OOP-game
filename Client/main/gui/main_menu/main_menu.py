@@ -53,6 +53,7 @@ class MainMenu:
             self.text_level.set_text("Level " + str(user["playerLevel"]))
             self.text_name.set_center_pos((684, 230))
             self.text_level.set_center_pos((684, 275))
+            self.user=user
             return
 
         self.is_opened, user = ServerErrorsHandler.try_get_user()

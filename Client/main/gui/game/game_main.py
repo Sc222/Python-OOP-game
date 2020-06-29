@@ -123,7 +123,7 @@ class Game:
         for terrain in filter(self.camera.is_visible, self.terrain_draw_ls):
             terrain.draw(self.display)
             # todo debug draw
-            pygame.draw.rect(self.display, TR, terrain.get_taken_place_rect(SCALE), 5)
+            #pygame.draw.rect(self.display, TR, terrain.get_taken_place_rect(SCALE), 5)
 
         # todo draw clouds
         # todo player should be drawed in priority before far objects and after close objects
@@ -134,8 +134,8 @@ class Game:
 
         self.monsterSprite.draw(self.display, self.camera)
         atk_rect = self.player.get_attack_rect()
-        pygame.draw.rect(self.display, PL, atk_rect, 5)
-        pygame.draw.rect(self.display, DEBUG, self.monster.get_hit_rect(self.camera), 5)
+        #pygame.draw.rect(self.display, PL, atk_rect, 5)
+        #pygame.draw.rect(self.display, DEBUG, self.monster.get_hit_rect(self.camera), 5)
 
         self.gui.draw(self.display, self.player.hp, self.player.mana, None)  # todo store items somewhere
         self.screen.blit(self.display, (0, 0))
