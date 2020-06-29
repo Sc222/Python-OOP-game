@@ -1,7 +1,7 @@
-/venv/
+#/venv/
 /.idea/
 /tests/database.db
-Api/venv/
+# Api/venv/
 Client/venv/
 Api/.idea/
 Client/.idea/
