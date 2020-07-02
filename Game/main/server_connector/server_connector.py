@@ -16,8 +16,8 @@ class ServerConnector:
     REGISTER_USER = "register"
     LOGIN_USER = "login"
     SESSION_COOKIE = "session"
-    DATA_FILE = "data.txt"
-    DATA_FILE_LOCATION = "data"
+    DATA_FILE = "resources.txt"
+    DATA_FILE_LOCATION = "resources"
 
     @staticmethod
     def get_level(level: int, server_link: str = LOCAL_SERVER_LINK):

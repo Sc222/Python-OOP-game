@@ -1,6 +1,6 @@
 GAME_NAME = "Mega Nerd"
 LEADERBOARDS = "Leaderboards"
-DATA_FOLDER = "../../data"
+DATA_FOLDER = "../../resources"
 MONOSPACE_FONT = "Determination Mono(RUS BY LYAJK"
 FPS = 60
 TERRAIN_SHIFT = -6
