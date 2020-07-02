@@ -1,3 +1,5 @@
+import os
+
 import pygame
 from pygame.rect import Rect
 from main.gui import main_menu
@@ -8,7 +10,9 @@ from main.gui.game.monster import MonsterSprite, Monster
 from main.gui.game.player import PlayerSprite, Player
 from main.server_connector.server_connector import ServerConnector
 
-
+#TODO !!! CHECK OBJECTS AND MAP BORDERS COLLISION USING COORDINATES, NOT RECTANGLES
+#todo spawn next lvl teleporter and generate map, make lots of locations and boss in the end
+#todo (like risk of rain but isometric)
 class Game:
 
     def __init__(self, res, screen, clock):
@@ -21,7 +25,7 @@ class Game:
         self.c_y = self.display.get_rect().centery
 
         # todo debug size for render demo
-        # self.camera = Camera(0, 0, Rect(300, 200, 300, 200))
+        #self.camera = Camera(0, 0, Rect(300, 200, 300, 200))
         self.camera = Camera(0, 0, Rect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT))
 
         # todo игрок всегда в центре экрана
@@ -32,7 +36,7 @@ class Game:
                                     PL_COLLIDE_W,
                                     PL_COLLIDE_H))
         # todo get from bd, pass as constructor params
-        self.player = Player("sc222", 10, 20, 20, 30, 5, 1, 0, self.playerSprite, player_collide_rect)
+        self.player = Player("sc222", 10, 20, 20, 30, 6, 1, 0, self.playerSprite, player_collide_rect)
 
         # todo store items somewhere
         self.gui = GameOverlay(self.res.load_game_overlay_images(), self.player.hp, self.player.mana, self.c_x,
@@ -65,9 +69,8 @@ class Game:
         self.monster = Monster("mushroom", 100, 20, 20, 30, 3, 1, 0, self.monsterSprite, monster_collide_rect,
                                self.camera)
 
-        # map_bg = open(os.path.join(self.res.directory, "demo", "background.txt"), "r").read().split()
-        # map_terrain = open(os.path.join(self.res.directory, "demo", "terrain.txt"), "r").read().split()
         parser = Parser()
+        #todo load level from server
         self.background_draw_ls = parser.map_to_draw_objects_from_server(res.load_backgrounds(), level.backgrounds,
                                                                          self.c_x, self.c_y)
         self.terrain_draw_ls = parser.map_to_draw_objects_from_server(res.load_terrain(), level.terrains, self.c_x,
@@ -75,9 +78,13 @@ class Game:
 
         # TODO MONSTERS TO DRAW OBJECTS
         self.monsters_draw_ls = parser.monsters_to_draw_objects(res.load_creatures(), level.monsters, self.c_x,
+
                                                                 self.c_y)
-        # self.background_draw_ls = parser.map_to_draw_objects(res.load_backgrounds(), map_bg, self.c_x, self.c_y)
-        # self.terrain_draw_ls = parser.map_to_draw_objects(res.load_terrain(), map_terrain, self.c_x, self.c_y,
+        #todo load level from text file
+        # map_bg = open(os.path.join(self.res.directory, "demo", "background.txt"), "r").read().split()
+        # map_terrain = open(os.path.join(self.res.directory, "demo", "terrain.txt"), "r").read().split()
+        # self.background_draw_ls = parser.map_to_draw_objects(res.load_backgrounds_text(), map_bg, self.c_x, self.c_y)
+        # self.terrain_draw_ls = parser.map_to_draw_objects(res.load_terrain_text(), map_terrain, self.c_x, self.c_y,
         # TERRAIN_SHIFT)
 
     def launch_main_menu(self):
@@ -123,7 +130,7 @@ class Game:
         for terrain in filter(self.camera.is_visible, self.terrain_draw_ls):
             terrain.draw(self.display)
             # todo debug draw
-            #pygame.draw.rect(self.display, TR, terrain.get_taken_place_rect(SCALE), 5)
+            # pygame.draw.rect(self.display, TR, terrain.get_taken_place_rect(SCALE), 5)
 
         # todo draw clouds
         # todo player should be drawed in priority before far objects and after close objects
@@ -134,8 +141,8 @@ class Game:
 
         self.monsterSprite.draw(self.display, self.camera)
         atk_rect = self.player.get_attack_rect()
-        #pygame.draw.rect(self.display, PL, atk_rect, 5)
-        #pygame.draw.rect(self.display, DEBUG, self.monster.get_hit_rect(self.camera), 5)
+        pygame.draw.rect(self.display, PL, atk_rect, 5)
+        pygame.draw.rect(self.display, DEBUG, self.monster.get_hit_rect(self.camera), 5)
 
         self.gui.draw(self.display, self.player.hp, self.player.mana, None)  # todo store items somewhere
         self.screen.blit(self.display, (0, 0))

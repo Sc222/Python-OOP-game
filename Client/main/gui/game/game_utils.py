@@ -90,6 +90,20 @@ class Resources:
         self.directory = directory
         self.scale = scale
 
+    def load_backgrounds_text(self):
+        result = []
+        for background in self.backgrounds:
+            path = os.path.join(self.directory, background) + ".png"
+            result.append(load_image(path, self.scale))
+        return result
+
+    def load_terrain_text(self):
+        result = []
+        for terrain_element in self.terrain:
+            path = os.path.join(self.directory, terrain_element) + ".png"
+            result.append(load_image(path, self.scale))
+        return result
+
     def load_backgrounds(self):
         result = {}
         for background in self.backgrounds:

@@ -78,7 +78,7 @@ class Monster:
 
     def check_hit(self, player: Player, camera: Camera):
         print(self.state)
-        if self.state == CreatureState.take_damage:
+        if self.state == CreatureState.take_damage or self.state == CreatureState.die:
             print("AAAAAAAAA")
             return
         hit_rect = self.get_hit_rect(camera)
@@ -93,6 +93,7 @@ class Monster:
         self.hp = self.hp - attack
         self.state = CreatureState.take_damage
         if self.hp <= 0:
+            #self.monsterSprite.curr_index=0
             self.state = CreatureState.die
 
     def perform_attack(self):
@@ -145,6 +146,7 @@ class Monster:
 
     def update(self, dt):
         if self.state == CreatureState.die and self.monsterSprite.is_animation_end():
+            #self.monsterSprite.upd(dt, self.state_str())
             return
         self.update_attack_status()
         self.monsterSprite.upd(dt, self.state_str())
