@@ -1,3 +1,10 @@
-/venv/
+#/venv/
 /.idea/
 /tests/database.db
+# Api/venv/
+Client/venv/
+Api/.idea/
+Client/.idea/
+Api/.idea/workspace.xml
+Client/.idea/workspace.xml
+Api/__pycache__/routes.cpython-37.pyc
