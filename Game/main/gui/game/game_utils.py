@@ -201,8 +201,8 @@ class Parser:
     def map_to_draw_objects(self, images, game_map, center_x, center_y, extra_y_offset=0):
         result_ls = list()
         for map_x, row in enumerate(game_map):
-            print(map_x)
-            print(row)
+            #print(map_x)
+            #print(row)
             for map_y, tile in enumerate(row):
                 tile = int(tile)
                 if tile != 0:
