@@ -46,12 +46,12 @@ class Game:
         self.player.hp = 7
         self.player.mana = 17
 
-        level = ServerConnector.get_level(1)
+        #level = ServerConnector.get_level(1)
 
         # TODO !!!CREATE MONSTERS!!!
-        print(level.monsters)
-        for monster in level.monsters:
-            print(monster.name)
+        #print(level.monsters)
+        #for monster in level.monsters:
+        #    print(monster.name)
         # TODO пример спавна, это нужно вынести в метод
         monster_x = 5
         monster_y = 5
@@ -71,21 +71,21 @@ class Game:
 
         parser = Parser()
         #todo load level from server
-        self.background_draw_ls = parser.map_to_draw_objects_from_server(res.load_backgrounds(), level.backgrounds,
-                                                                         self.c_x, self.c_y)
-        self.terrain_draw_ls = parser.map_to_draw_objects_from_server(res.load_terrain(), level.terrains, self.c_x,
-                                                                      self.c_y, TERRAIN_SHIFT)
+        #self.background_draw_ls = parser.map_to_draw_objects_from_server(res.load_backgrounds(), level.backgrounds,
+        #                                                                 self.c_x, self.c_y)
+        #self.terrain_draw_ls = parser.map_to_draw_objects_from_server(res.load_terrain(), level.terrains, self.c_x,
+        #                                                              self.c_y, TERRAIN_SHIFT)
 
         # TODO MONSTERS TO DRAW OBJECTS
-        self.monsters_draw_ls = parser.monsters_to_draw_objects(res.load_creatures(), level.monsters, self.c_x,
-
-                                                                self.c_y)
+        #self.monsters_draw_ls = parser.monsters_to_draw_objects(res.load_creatures(), level.monsters, self.c_x,
+        #
+        #                                                        self.c_y)
         #todo load level from text file
-        # map_bg = open(os.path.join(self.res.directory, "demo", "background.txt"), "r").read().split()
-        # map_terrain = open(os.path.join(self.res.directory, "demo", "terrain.txt"), "r").read().split()
-        # self.background_draw_ls = parser.map_to_draw_objects(res.load_backgrounds_text(), map_bg, self.c_x, self.c_y)
-        # self.terrain_draw_ls = parser.map_to_draw_objects(res.load_terrain_text(), map_terrain, self.c_x, self.c_y,
-        # TERRAIN_SHIFT)
+        map_bg = open(os.path.join(self.res.directory, "demo", "background.txt"), "r").read().split()
+        map_terrain = open(os.path.join(self.res.directory, "demo", "terrain.txt"), "r").read().split()
+        self.background_draw_ls = parser.map_to_draw_objects(res.load_backgrounds_text(), map_bg, self.c_x, self.c_y)
+        self.terrain_draw_ls = parser.map_to_draw_objects(res.load_terrain_text(), map_terrain, self.c_x, self.c_y,
+        TERRAIN_SHIFT)
 
     def launch_main_menu(self):
         self.is_opened = False

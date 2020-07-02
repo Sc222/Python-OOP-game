@@ -41,7 +41,7 @@ class MainMenu:
                                                 self.text_level])
 
         # try to get user from server ot constructor args
-        self.try_load_user(user)
+        # self.try_load_user(user)
 
         self.menu = thorpy.Menu(self.container)
         for element in self.menu.get_population():
