@@ -4,11 +4,12 @@ import pygame
 from pygame.rect import Rect
 from main.gui import main_menu
 from main.gui.constants import *
-from main.gui.game.game_utils import Parser, Camera, Resources
+from main.gui.game.camera import Camera
+from main.gui.game.game_utils import Resources
 from main.gui.game.gui_overlay import GameOverlay
+from main.gui.game.map_parser import MapParser
 from main.gui.game.monster import MonsterSprite, Monster
 from main.gui.game.player import PlayerSprite, Player
-from main.server_connector.server_connector import ServerConnector
 
 
 # TODO !!! CHECK OBJECTS AND MAP BORDERS COLLISION USING COORDINATES, NOT RECTANGLES
@@ -26,7 +27,7 @@ class Game:
         self.c_y = self.display.get_rect().centery
 
         player_x = -0
-        player_y = -1
+        player_y = -10
         x_shift = WINDOW_W_HALF - PL_SIZE_HALF-5*SCALE   # '''self.c_x -'''
         y_shift = WINDOW_H_HALF - PL_SIZE_HALF+1*SCALE# '''self.c_y * 0.5'''
         centered_x = x_shift + (player_x - player_y) * TILE_SIZE_HALF
@@ -74,10 +75,8 @@ class Game:
         monster_collide_rect = self.monsterSprite.rect.inflate(-70 * SCALE, -40 * SCALE)
         monster_collide_rect.move_ip(0, self.monsterSprite.rect.height / 2 - monster_collide_rect.height - 5 * SCALE)
 
-        self.monster = Monster("mushroom", 100, 20, 20, 30, 3, 1, 0, self.monsterSprite, monster_collide_rect,
-                               self.camera)
+        self.monster = Monster("mushroom", 100, 20, 20, 30, 3, 1, 0, self.monsterSprite, monster_collide_rect)
 
-        parser = Parser()
         # todo load level from server
         # self.background_draw_ls = parser.map_to_draw_objects_from_server(res.load_backgrounds(), level.backgrounds,
         #                                                                 self.c_x, self.c_y)
@@ -91,8 +90,8 @@ class Game:
         # todo load level from text file
         map_bg = open(os.path.join(self.res.directory, "demo", "background.txt"), "r").read().split()
         map_terrain = open(os.path.join(self.res.directory, "demo", "terrain.txt"), "r").read().split()
-        self.background_draw_ls = parser.map_to_draw_objects(res.load_backgrounds_text(), map_bg)
-        self.terrain_draw_ls = parser.map_to_draw_objects(res.load_terrain_text(), map_terrain)
+        self.background_draw_ls = MapParser.map_to_draw_objects(res.load_backgrounds_text(), map_bg)
+        self.terrain_draw_ls = MapParser.map_to_draw_objects(res.load_terrain_text(), map_terrain)
 
     def launch_main_menu(self):
         self.is_opened = False
@@ -161,6 +160,6 @@ class Game:
         while self.is_opened:
             dt = self.clock.tick(FPS)
             self.process_input()
-            #self.update(dt)
+            self.update(dt)
             self.draw()
             pygame.display.flip()

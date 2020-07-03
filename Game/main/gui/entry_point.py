@@ -1,10 +1,8 @@
 import pygame
-from main.gui.constants import WINDOW_HEIGHT, WINDOW_WIDTH, GAME_NAME, RESOURCES_FOLDER, ACTION_ENTRY
+
+from main.gui.constants import WINDOW_HEIGHT, WINDOW_WIDTH, GAME_NAME, RESOURCES_FOLDER
 from main.gui.game.game_utils import Resources
-from main.gui.login_menu.login_menu import LoginMenu
 from main.gui.main_menu.main_menu import MainMenu
-from main.gui.server_unreachable_menu.server_unreachable_menu import ServerUnreachableMenu
-from main.server_connector.server_errors_handler import ServerErrorsHandler
 
 clock = pygame.time.Clock()
 pygame.init()

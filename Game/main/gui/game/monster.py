@@ -2,7 +2,7 @@ from enum import Enum
 import pygame
 from main.gui.constants import MOVE_COLLIDE_RECT_OFFSET, SCALE, \
     MONSTER_ATTACK_DELTA_Y, MONSTER_ATTACK_DELTA_X
-from main.gui.game.game_utils import Camera
+from main.gui.game.camera import Camera
 from main.gui.game.player import Player
 
 
@@ -53,7 +53,7 @@ class MonsterSprite(pygame.sprite.Sprite):
 
 # здесь игровая логика
 class Monster:
-    def __init__(self, nickname, hp, mana, attack, defence, speed, level, xp, sprite, collide_rect, camera: Camera):
+    def __init__(self, nickname, hp, mana, attack, defence, speed, level, xp, sprite, collide_rect):
         self.nickname = nickname
         self.hp = hp
         self.mana = mana
@@ -121,8 +121,8 @@ class Monster:
                 for terrain in visible_terrain_ls:
                     move_rect_x = tmp_collide_rect.move(self.velocity.x * MOVE_COLLIDE_RECT_OFFSET, 0)
                     move_rect_y = tmp_collide_rect.move(0, self.velocity.y * MOVE_COLLIDE_RECT_OFFSET)
-                    collide_x = move_rect_x.colliderect(terrain.get_taken_place_rect(SCALE))
-                    collide_y = move_rect_y.colliderect(terrain.get_taken_place_rect(SCALE))
+                    collide_x = move_rect_x.colliderect(terrain.get_taken_place_rect())
+                    collide_y = move_rect_y.colliderect(terrain.get_taken_place_rect())
                     if collide_x:
                         # print("collides x")
                         self.velocity.x = 0

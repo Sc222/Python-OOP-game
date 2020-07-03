@@ -92,8 +92,8 @@ class Player:
                 for terrain in visible_terrain_ls:
                     move_rect_x = self.collide_rect.move(self.velocity.x * MOVE_COLLIDE_RECT_OFFSET, 0)
                     move_rect_y = self.collide_rect.move(0, self.velocity.y * MOVE_COLLIDE_RECT_OFFSET)
-                    collide_x = move_rect_x.colliderect(terrain.get_taken_place_rect(SCALE))
-                    collide_y = move_rect_y.colliderect(terrain.get_taken_place_rect(SCALE))
+                    collide_x = move_rect_x.colliderect(terrain.get_taken_place_rect())
+                    collide_y = move_rect_y.colliderect(terrain.get_taken_place_rect())
                     if collide_x:
                         # print("collides x")
                         self.velocity.x = 0
