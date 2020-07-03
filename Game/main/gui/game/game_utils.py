@@ -9,11 +9,10 @@ from main.gui.constants import SCALE, GUI_SCALE, PLAYER_MENU_SCALE
 
 
 class StaticDrawObject:
-    def __init__(self, image, start_x, start_y, y_offset):
+    def __init__(self, image, start_x, start_y):
         self.image = image  # устанавливаем имя
         self.start_x = start_x
         self.start_y = start_y
-        self.y_offset = y_offset
         self.draw_x = start_x
         self.draw_y = start_y
 
@@ -30,7 +29,7 @@ class StaticDrawObject:
         return visibility_rect
 
     def draw(self, display):
-        display.blit(self.image, (self.draw_x, self.draw_y + self.y_offset))
+        display.blit(self.image, (self.draw_x, self.draw_y))
 
     def update(self, camera):
         self.draw_x = self.start_x + camera.x_shift
@@ -198,20 +197,17 @@ class Parser:
         self.TILE_SIZE_HALF *= scale
         self.TERRAIN_SHIFT *= scale
 
-    def map_to_draw_objects(self, images, game_map, center_x, center_y, extra_y_offset=0):
+    def map_to_draw_objects(self, images, game_map):
         result_ls = list()
+        print(game_map)
         for map_x, row in enumerate(game_map):
-            #print(map_x)
-            #print(row)
             for map_y, tile in enumerate(row):
                 tile = int(tile)
                 if tile != 0:
                     tile_image = images[tile - 1]
-                    x_shift = center_x - self.TILE_SIZE_HALF
-                    y_shift = center_y * 0.5 - self.TILE_SIZE
-                    centered_x = x_shift + (map_x - map_y) * self.TILE_SIZE_HALF
-                    centered_y = y_shift + (map_x + map_y) * 0.5 * self.TILE_SIZE_HALF
-                    result_ls.append(StaticDrawObject(tile_image, centered_x, centered_y, extra_y_offset * self.scale))
+                    centered_x = (map_x - map_y) * self.TILE_SIZE_HALF
+                    centered_y = (map_x + map_y) * 0.5 * self.TILE_SIZE_HALF
+                    result_ls.append(StaticDrawObject(tile_image, centered_x, centered_y))
         return result_ls
 
     def map_to_draw_objects_from_server(self, images, game_map, center_x, center_y, extra_y_offset=0):

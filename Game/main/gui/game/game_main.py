@@ -25,15 +25,21 @@ class Game:
         self.c_x = self.display.get_rect().centerx
         self.c_y = self.display.get_rect().centery
 
+        player_x = -0
+        player_y = -1
+        x_shift = WINDOW_W_HALF - PL_SIZE_HALF-5*SCALE   # '''self.c_x -'''
+        y_shift = WINDOW_H_HALF - PL_SIZE_HALF+1*SCALE# '''self.c_y * 0.5'''
+        centered_x = x_shift + (player_x - player_y) * TILE_SIZE_HALF
+        centered_y = y_shift + (player_x + player_y) * 0.5 * TILE_SIZE_HALF
         # todo debug size for render demo
         # self.camera = Camera(0, 0, Rect(300, 200, 300, 200))
-        self.camera = Camera(0, 0, Rect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT))
+        self.camera = Camera(centered_x, centered_y, Rect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT))
 
         # todo игрок всегда в центре экрана
         self.playerSprite = PlayerSprite(
-            (self.c_x - PL_SIZE / 2, self.c_y - PL_SIZE / 2), (PL_SIZE, PL_SIZE), res.load_creature(Resources.player))
+            (self.c_x - PL_SIZE_HALF, self.c_y - PL_SIZE_HALF), (PL_SIZE, PL_SIZE), res.load_creature(Resources.player))
         player_collide_rect = Rect((self.c_x - PL_COLLIDE_W / 2,
-                                    self.c_y - PL_COLLIDE_H / 2 + PL_SIZE / 2 - 5 * SCALE,
+                                    self.c_y - PL_COLLIDE_H / 2 + PL_SIZE_HALF - 5 * SCALE,
                                     PL_COLLIDE_W,
                                     PL_COLLIDE_H))
         # todo get from bd, pass as constructor params
@@ -57,7 +63,7 @@ class Game:
         # todo working map coordinates -> screen coordinates
         monster_x = 0
         monster_y = 0
-        x_shift = self.c_x - M_WIDTH / 2  # '''self.c_x -'''
+        x_shift = - M_WIDTH / 2  # '''self.c_x -'''
         y_shift = - M_HEIGHT/2+CREATURE_SHIFT  # '''self.c_y * 0.5'''
         centered_x = x_shift + (monster_x - monster_y) * TILE_SIZE_HALF
         centered_y = y_shift + (monster_x + monster_y) * 0.5 * TILE_SIZE_HALF
@@ -85,9 +91,8 @@ class Game:
         # todo load level from text file
         map_bg = open(os.path.join(self.res.directory, "demo", "background.txt"), "r").read().split()
         map_terrain = open(os.path.join(self.res.directory, "demo", "terrain.txt"), "r").read().split()
-        self.background_draw_ls = parser.map_to_draw_objects(res.load_backgrounds_text(), map_bg, self.c_x, self.c_y)
-        self.terrain_draw_ls = parser.map_to_draw_objects(res.load_terrain_text(), map_terrain, self.c_x, self.c_y,
-                                                          TERRAIN_SHIFT)
+        self.background_draw_ls = parser.map_to_draw_objects(res.load_backgrounds_text(), map_bg)
+        self.terrain_draw_ls = parser.map_to_draw_objects(res.load_terrain_text(), map_terrain)
 
     def launch_main_menu(self):
         self.is_opened = False
@@ -150,9 +155,12 @@ class Game:
         self.screen.blit(self.display, (0, 0))
 
     def launch(self):
+        self.update(self.clock.tick(FPS))
+        self.draw()
+        pygame.display.flip()
         while self.is_opened:
             dt = self.clock.tick(FPS)
             self.process_input()
-            # self.update(dt)
+            #self.update(dt)
             self.draw()
             pygame.display.flip()
