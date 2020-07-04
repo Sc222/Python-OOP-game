@@ -5,8 +5,10 @@ from main.gui.game.static_entity import StaticEntity
 class MapParser:
 
     @staticmethod
-    def map_to_draw_objects(images, game_map):
-        result_ls = list()
+    def map_to_draw_objects(images, game_map,SHIFT_Y=0):
+        #print(len(game_map))
+        #print(len(game_map[0]))
+        res = {}
         print(game_map)
         for map_x, row in enumerate(game_map):
             for map_y, tile in enumerate(row):
@@ -14,9 +16,9 @@ class MapParser:
                 if tile != 0:
                     tile_image = images[tile - 1]
                     x = (map_x - map_y) * TILE_SIZE_HALF
-                    y = (map_x + map_y) * 0.5 * TILE_SIZE_HALF
-                    result_ls.append(StaticEntity(tile_image, x, y))
-        return result_ls
+                    y = (map_x + map_y) * 0.5 * TILE_SIZE_HALF+SHIFT_Y
+                    res[(map_x,map_y)]=StaticEntity(tile_image, x, y)
+        return res
 
     @staticmethod
     def map_to_draw_objects_from_server(images, game_map, center_x, center_y):

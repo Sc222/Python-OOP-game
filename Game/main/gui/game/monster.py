@@ -118,19 +118,21 @@ class Monster:
                 self.velocity *= self.speed
                 tmp_collide_rect = self.get_collide_rect(camera)
                 self.direction = CreatureDirection.right if self.velocity.x > 0 else CreatureDirection.left
-                for terrain in visible_terrain_ls:
-                    move_rect_x = tmp_collide_rect.move(self.velocity.x * MOVE_COLLIDE_RECT_OFFSET, 0)
-                    move_rect_y = tmp_collide_rect.move(0, self.velocity.y * MOVE_COLLIDE_RECT_OFFSET)
-                    collide_x = move_rect_x.colliderect(terrain.get_taken_place_rect())
-                    collide_y = move_rect_y.colliderect(terrain.get_taken_place_rect())
-                    if collide_x:
-                        # print("collides x")
-                        self.velocity.x = 0
-                    if collide_y:
-                        # print("collides y")
-                        self.velocity.y = 0
-                    if collide_x and collide_y:
-                        self.state = CreatureState.idle
+
+                # todo replace with just checking coordinates and dictionary of points/terrain
+                # for terrain in visible_terrain_ls:
+                #     move_rect_x = tmp_collide_rect.move(self.velocity.x * MOVE_COLLIDE_RECT_OFFSET, 0)
+                #     move_rect_y = tmp_collide_rect.move(0, self.velocity.y * MOVE_COLLIDE_RECT_OFFSET)
+                #     collide_x = move_rect_x.colliderect(terrain.get_taken_place_rect(camera))
+                #     collide_y = move_rect_y.colliderect(terrain.get_taken_place_rect(camera))
+                #     if collide_x:
+                #         # print("collides x")
+                #         self.velocity.x = 0
+                #     if collide_y:
+                #         # print("collides y")
+                #         self.velocity.y = 0
+                #     if collide_x and collide_y:
+                #         self.state = CreatureState.idle
                 self.monsterSprite.rect.move_ip(self.velocity.x, self.velocity.y)
                 self.collide_rect.move_ip(self.velocity.x, self.velocity.y)
             else:

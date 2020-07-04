@@ -26,15 +26,11 @@ class Game:
         self.c_x = self.display.get_rect().centerx
         self.c_y = self.display.get_rect().centery
 
-        player_x = -0
-        player_y = -10
-        x_shift = WINDOW_W_HALF - PL_SIZE_HALF-5*SCALE   # '''self.c_x -'''
-        y_shift = WINDOW_H_HALF - PL_SIZE_HALF+1*SCALE# '''self.c_y * 0.5'''
-        centered_x = x_shift + (player_x - player_y) * TILE_SIZE_HALF
-        centered_y = y_shift + (player_x + player_y) * 0.5 * TILE_SIZE_HALF
+
+
         # todo debug size for render demo
         # self.camera = Camera(0, 0, Rect(300, 200, 300, 200))
-        self.camera = Camera(centered_x, centered_y, Rect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT))
+        self.camera = Camera(*Player.map_coordinates_to_camera_position(1,1), Rect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT))
 
         # todo игрок всегда в центре экрана
         self.playerSprite = PlayerSprite(
@@ -91,15 +87,16 @@ class Game:
         map_bg = open(os.path.join(self.res.directory, "demo", "background.txt"), "r").read().split()
         map_terrain = open(os.path.join(self.res.directory, "demo", "terrain.txt"), "r").read().split()
         self.background_draw_ls = MapParser.map_to_draw_objects(res.load_backgrounds_text(), map_bg)
-        self.terrain_draw_ls = MapParser.map_to_draw_objects(res.load_terrain_text(), map_terrain)
+        self.terrain_draw_ls = MapParser.map_to_draw_objects(res.load_terrain_text(), map_terrain,TERRAIN_SHIFT)
 
     def launch_main_menu(self):
         self.is_opened = False
         menu = main_menu.main_menu.MainMenu(self.res, self.screen, self.clock)
         menu.launch()
 
-    def process_input(self):
-        self.player.perform_movement(pygame.mouse.get_pos(), filter(self.camera.is_visible, self.terrain_draw_ls))
+    def process_input(self,camera):
+        terrain_around = Game.get_area_around_player(self.terrain_draw_ls, *self.player.camera_pos_to_map_pos(self.camera), 8, 8, 100,100)
+        self.player.perform_movement(pygame.mouse.get_pos(),camera,terrain_around,100,100)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -122,19 +119,28 @@ class Game:
         # TODO CHECK HIT FOR MONSTERS AND PLAYERS
         self.monster.check_hit(self.player, self.camera)
 
-        for background in self.background_draw_ls:
-            background.update(self.camera)
-        for terrain in self.terrain_draw_ls:
-            terrain.update(self.camera)
+        #for background in self.background_draw_ls:
+        #    background.update(self.camera)
+        #for terrain in self.terrain_draw_ls:
+        #    terrain.update(self.camera)
 
     def draw(self):
         self.display.fill(SKY)
 
-        for background in filter(self.camera.is_visible, self.background_draw_ls):
-            background.draw(self.display)
+        #todo !!! PERFORMANCE make 2d list and select rectangle around player
+        #bg_around = self.get_area_around_player(self.background_draw_ls,self.player.)
+        #print(self.player.camera_pos_to_map_pos(self.camera))
+        self.background_draw_ls.values()
+        for background in Game.get_area_around_player(self.background_draw_ls, *self.player.camera_pos_to_map_pos(self.camera),8,8,100,100).values():
+            background.draw(self.display,self.camera)
 
-        for terrain in filter(self.camera.is_visible, self.terrain_draw_ls):
-            terrain.draw(self.display)
+        for terrain in Game.get_area_around_player(self.terrain_draw_ls,
+                                                      *self.player.camera_pos_to_map_pos(self.camera), 8, 8, 100,
+                                                      100).values():
+            terrain.draw(self.display, self.camera)
+
+        #for terrain in filter(self.camera.is_visible, self.terrain_draw_ls):
+        #    terrain.draw(self.display,self.camera)
             # todo debug draw
             # pygame.draw.rect(self.display, TR, terrain.get_taken_place_rect(SCALE), 5)
 
@@ -159,7 +165,31 @@ class Game:
         pygame.display.flip()
         while self.is_opened:
             dt = self.clock.tick(FPS)
-            self.process_input()
+            ##todo make variables: terrain_around and bg_around
+            self.process_input(self.camera)
             self.update(dt)
             self.draw()
             pygame.display.flip()
+
+    @staticmethod
+    def get_area_around_player(map, player_x, player_y, x_radius, y_radius, width, height):
+        left = 0 if player_x - x_radius < 0 else player_x - x_radius
+        left = width - 1 if player_x - x_radius >= width else left
+
+        right = 0 if player_x + x_radius < 0 else player_x + x_radius
+        right = width - 1 if player_x + x_radius >= width else right
+
+        bottom = 0 if player_y - y_radius < 0 else player_y - y_radius
+        bottom = height - 1 if player_y - y_radius >= height else bottom
+
+        top = 0 if player_y + y_radius < 0 else player_y + y_radius
+        top = height - 1 if player_y + y_radius >= height else top
+
+        res = {}
+        for p_x in range(round(left), round(right) + 1):
+            for p_y in range(round(bottom), round(top) + 1):
+                if (p_x, p_y) in map:
+                    res[(p_x, p_y)] = map[(p_x, p_y)]
+        # return map[x-1:x+1,y-1:y+1] will work only with numpy arrays
+        return res
+
