@@ -3,21 +3,26 @@ from main.gui.game.static_entity import StaticEntity
 
 
 class MapParser:
+    @staticmethod
+    def can_walk_on(tile, is_terrain):
+        if is_terrain:
+            return not tile == 1
+        return True
 
     @staticmethod
-    def map_to_draw_objects(images, game_map,SHIFT_Y=0):
+    def map_to_draw_objects(images, game_map,width,height,SHIFT_Y=0,is_terrain=False):
         #print(len(game_map))
         #print(len(game_map[0]))
         res = {}
         print(game_map)
-        for map_x, row in enumerate(game_map):
-            for map_y, tile in enumerate(row):
-                tile = int(tile)
+        for map_x in range(width):
+            for map_y in range(height):
+                tile = int(game_map[map_x,map_y])
                 if tile != 0:
                     tile_image = images[tile - 1]
                     x = (map_x - map_y) * TILE_SIZE_HALF
                     y = (map_x + map_y) * 0.5 * TILE_SIZE_HALF+SHIFT_Y
-                    res[(map_x,map_y)]=StaticEntity(tile_image, x, y)
+                    res[(map_x,map_y)]=StaticEntity(tile_image, x, y, MapParser.can_walk_on(tile,is_terrain))
         return res
 
     @staticmethod

@@ -12,8 +12,10 @@ class Resources:
     player = "player"
     gui = "gui"
     font = "font.otf"
-    backgrounds = ["grass", "pond_top", "pond_right", "pond_left", "pond_bottom"]
-    terrain = ["house", "pine", "oak", "birch", "flower_purple", "fern", "bush", "invisible"]
+
+    #todo replace with dict
+    backgrounds = ["water","sand","grass","dark_grass", "pond_top", "pond_right", "pond_left", "pond_bottom"]
+    terrain = ["invisible","house", "oak", "birch", "flower_purple", "bush","pine", "fern"]
     creature_anims_name = ["walk_", "idle_", "attack_", "take_damage_",
                            "die_"]  # все папки должны иметь название ""+right
     menu_player_anims = ["menu_idle", "menu_transform"]

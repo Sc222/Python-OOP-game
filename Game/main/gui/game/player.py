@@ -132,7 +132,7 @@ class Player:
                 move_rect_y = self.collide_rect.move(0, self.velocity.y * MOVE_COLLIDE_RECT_OFFSET)
                 #print(terrain_around)
 
-                # check collision with terrain objects
+                # check collision with terrain objects that have hitboxes
                 collide_x=map_pos_x_move in terrain_around and move_rect_x.colliderect(terrain_around[map_pos_x_move].get_taken_place_rect(camera))
                 collide_y=map_pos_y_move in terrain_around and move_rect_y.colliderect(terrain_around[map_pos_y_move].get_taken_place_rect(camera))
                 if collide_x:
@@ -141,6 +141,18 @@ class Player:
                     self.velocity.y = 0
                 if collide_x and collide_y:
                     self.state = CreatureState.idle
+
+                # check collision with terrain objects that player can't stand on (mountains and water)
+                collide_x = map_pos_x_move in terrain_around and not terrain_around[map_pos_x_move].can_walk_on
+                collide_y = map_pos_y_move in terrain_around and not terrain_around[map_pos_y_move].can_walk_on
+                if collide_x:
+                    self.velocity.x = 0
+                if collide_y:
+                    self.velocity.y = 0
+                if collide_x and collide_y:
+                    self.state = CreatureState.idle
+
+
 
                 #check map borders
                 collide_x = map_pos_x_move[0] < 0 or map_pos_x_move[0] >= width  or map_pos_x_move[1] < 0 or map_pos_x_move[1] >= height

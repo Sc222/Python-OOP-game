@@ -2,6 +2,8 @@ import os
 
 import pygame
 from pygame.rect import Rect
+
+from main.generators.forest.main_generator import ForestLocationGenerator
 from main.gui import main_menu
 from main.gui.constants import *
 from main.gui.game.camera import Camera
@@ -26,11 +28,10 @@ class Game:
         self.c_x = self.display.get_rect().centerx
         self.c_y = self.display.get_rect().centery
 
-
-
         # todo debug size for render demo
         # self.camera = Camera(0, 0, Rect(300, 200, 300, 200))
-        self.camera = Camera(*Player.map_coordinates_to_camera_position(1,1), Rect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT))
+        self.camera = Camera(*Player.map_coordinates_to_camera_position(180, 416),
+                             Rect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT))
 
         # todo игрок всегда в центре экрана
         self.playerSprite = PlayerSprite(
@@ -58,10 +59,10 @@ class Game:
         #    print(monster.name)
         # TODO пример спавна, это нужно вынести в метод
         # todo working map coordinates -> screen coordinates
-        monster_x = 0
-        monster_y = 0
+        monster_x = 30
+        monster_y = 30
         x_shift = - M_WIDTH / 2  # '''self.c_x -'''
-        y_shift = - M_HEIGHT/2+CREATURE_SHIFT  # '''self.c_y * 0.5'''
+        y_shift = - M_HEIGHT / 2 + CREATURE_SHIFT  # '''self.c_y * 0.5'''
         centered_x = x_shift + (monster_x - monster_y) * TILE_SIZE_HALF
         centered_y = y_shift + (monster_x + monster_y) * 0.5 * TILE_SIZE_HALF
 
@@ -84,19 +85,28 @@ class Game:
         #
         #                                                        self.c_y)
         # todo load level from text file
-        map_bg = open(os.path.join(self.res.directory, "demo", "background.txt"), "r").read().split()
-        map_terrain = open(os.path.join(self.res.directory, "demo", "terrain.txt"), "r").read().split()
-        self.background_draw_ls = MapParser.map_to_draw_objects(res.load_backgrounds_text(), map_bg)
-        self.terrain_draw_ls = MapParser.map_to_draw_objects(res.load_terrain_text(), map_terrain,TERRAIN_SHIFT)
+        # map_bg = open(os.path.join(self.res.directory, "demo", "background.txt"), "r").read().split()
+        # map_terrain = open(os.path.join(self.res.directory, "demo", "terrain.txt"), "r").read().split()
+        width = 1000
+        height = 1000
+        generator = ForestLocationGenerator(width, height)
+        generator.generate()
+        width=generator.x_size
+        height=generator.y_size
+        self.background_draw_ls = MapParser.map_to_draw_objects(res.load_backgrounds_text(), generator.background,
+                                                                width, height)
+        self.terrain_draw_ls = MapParser.map_to_draw_objects(res.load_terrain_text(), generator.terrain, width, height,
+                                                             TERRAIN_SHIFT, True)
 
     def launch_main_menu(self):
         self.is_opened = False
         menu = main_menu.main_menu.MainMenu(self.res, self.screen, self.clock)
         menu.launch()
 
-    def process_input(self,camera):
-        terrain_around = Game.get_area_around_player(self.terrain_draw_ls, *self.player.camera_pos_to_map_pos(self.camera), 8, 8, 100,100)
-        self.player.perform_movement(pygame.mouse.get_pos(),camera,terrain_around,100,100)
+    def process_input(self, camera):
+        terrain_around = Game.get_area_around_player(self.terrain_draw_ls,
+                                                     *self.player.camera_pos_to_map_pos(self.camera), 8, 8, 100, 100)
+        self.player.perform_movement(pygame.mouse.get_pos(), camera, terrain_around, 100, 100)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -119,30 +129,32 @@ class Game:
         # TODO CHECK HIT FOR MONSTERS AND PLAYERS
         self.monster.check_hit(self.player, self.camera)
 
-        #for background in self.background_draw_ls:
+        # for background in self.background_draw_ls:
         #    background.update(self.camera)
-        #for terrain in self.terrain_draw_ls:
+        # for terrain in self.terrain_draw_ls:
         #    terrain.update(self.camera)
 
     def draw(self):
         self.display.fill(SKY)
 
-        #todo !!! PERFORMANCE make 2d list and select rectangle around player
-        #bg_around = self.get_area_around_player(self.background_draw_ls,self.player.)
-        #print(self.player.camera_pos_to_map_pos(self.camera))
+        # todo !!! PERFORMANCE make 2d list and select rectangle around player
+        # bg_around = self.get_area_around_player(self.background_draw_ls,self.player.)
+        # print(self.player.camera_pos_to_map_pos(self.camera))
         self.background_draw_ls.values()
-        for background in Game.get_area_around_player(self.background_draw_ls, *self.player.camera_pos_to_map_pos(self.camera),8,8,100,100).values():
-            background.draw(self.display,self.camera)
-
-        for terrain in Game.get_area_around_player(self.terrain_draw_ls,
+        for background in Game.get_area_around_player(self.background_draw_ls,
                                                       *self.player.camera_pos_to_map_pos(self.camera), 8, 8, 100,
                                                       100).values():
+            background.draw(self.display, self.camera)
+
+        for terrain in Game.get_area_around_player(self.terrain_draw_ls,
+                                                   *self.player.camera_pos_to_map_pos(self.camera), 8, 8, 100,
+                                                   100).values():
             terrain.draw(self.display, self.camera)
 
-        #for terrain in filter(self.camera.is_visible, self.terrain_draw_ls):
+        # for terrain in filter(self.camera.is_visible, self.terrain_draw_ls):
         #    terrain.draw(self.display,self.camera)
-            # todo debug draw
-            # pygame.draw.rect(self.display, TR, terrain.get_taken_place_rect(SCALE), 5)
+        # todo debug draw
+        # pygame.draw.rect(self.display, TR, terrain.get_taken_place_rect(SCALE), 5)
 
         # todo draw clouds
         # todo player should be drawed in priority before far objects and after close objects
@@ -192,4 +204,3 @@ class Game:
                     res[(p_x, p_y)] = map[(p_x, p_y)]
         # return map[x-1:x+1,y-1:y+1] will work only with numpy arrays
         return res
-

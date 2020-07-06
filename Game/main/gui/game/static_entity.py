@@ -4,12 +4,13 @@ from main.gui.constants import SCALE
 
 
 class StaticEntity:
-    def __init__(self, image, start_x, start_y):
+    def __init__(self, image, start_x, start_y,can_walk_on):
         self.image = image  # устанавливаем имя
         self.start_x = start_x
         self.start_y = start_y
         self.draw_x = start_x
         self.draw_y = start_y
+        self.can_walk_on=can_walk_on
 
     # для отрисовки видимых объектов (не учитывает сдвиг по y, учитывает положение камеры)
     def get_visibility_rect(self, camera):
