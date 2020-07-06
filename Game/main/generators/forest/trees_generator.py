@@ -11,14 +11,14 @@ class ForestTreesGenerator:
     PERLIN_PERSISTENCE = 0.5
     PERLIN_LACUNARITY = 2.1
     MAX_BASE = 1000000
-    SCALE = 50  # todo find better value if works bad
     GRASS_COLOR = [34 / 255, 139 / 255, 34 / 255]
     TREE_COLOR = [0 / 255, 100 / 255, 0 / 255]
+    SCALE_COEFF = 1
 
-    def __init__(self, width, height, scale=SCALE):
+    def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.scale = scale
+        self.scale = max(width,height)*self.SCALE_COEFF
 
     def place_trees(self, background, terrain, random_base=None):
         if random_base is None:
@@ -30,7 +30,7 @@ class ForestTreesGenerator:
             for y in range(self.height):
                 nx = x / self.width - 0.5
                 ny = y / self.height - 0.5
-                blue_noise[x][y] = pnoise2(self.SCALE * nx, self.SCALE * ny,
+                blue_noise[x][y] = pnoise2(self.scale * nx, self.scale * ny,
                                            octaves=self.PERLIN_OCTAVES,
                                            persistence=self.PERLIN_PERSISTENCE,
                                            lacunarity=self.PERLIN_LACUNARITY,

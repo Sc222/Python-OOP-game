@@ -17,4 +17,6 @@ class Camera:
     def is_visible(self, draw_object: StaticEntity):
         return self.visible_rect.colliderect(draw_object.get_visibility_rect(self))
 
-    #todo is_visible for monsters
+    def set_new_pos(self, x, y):
+        self.x_shift = x
+        self.y_shift = y

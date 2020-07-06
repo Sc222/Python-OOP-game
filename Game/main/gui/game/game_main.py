@@ -19,7 +19,6 @@ from main.gui.game.player import PlayerSprite, Player
 # todo (like risk of rain but isometric)
 
 
-
 class Game:
 
     def __init__(self, res, screen, clock):
@@ -31,14 +30,12 @@ class Game:
         self.c_x = self.display.get_rect().centerx
         self.c_y = self.display.get_rect().centery
 
-        # todo debug size for render demo
-        # self.camera = Camera(0, 0, Rect(300, 200, 300, 200))
-        self.camera = Camera(*Player.map_coordinates_to_camera_position(180, 416),
-                             Rect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT))
-
         # todo игрок всегда в центре экрана
+        self.camera = Camera(*Player.map_coordinates_to_camera_position(30, 30),
+                             Rect(0, 0, WINDOW_WIDTH, WINDOW_HEIGHT))
         self.playerSprite = PlayerSprite(
-            (self.c_x - PL_SIZE_HALF, self.c_y - PL_SIZE_HALF), (PL_SIZE, PL_SIZE), res.load_creature(ResourcesLoader.player))
+            (self.c_x - PL_SIZE_HALF, self.c_y - PL_SIZE_HALF), (PL_SIZE, PL_SIZE),
+            res.load_creature(ResourcesLoader.player))
         player_collide_rect = Rect((self.c_x - PL_COLLIDE_W / 2,
                                     self.c_y - PL_COLLIDE_H / 2 + PL_SIZE_HALF - 5 * SCALE,
                                     PL_COLLIDE_W,
@@ -90,15 +87,16 @@ class Game:
         # todo load level from text file
         # map_bg = open(os.path.join(self.res.directory, "demo", "background.txt"), "r").read().split()
         # map_terrain = open(os.path.join(self.res.directory, "demo", "terrain.txt"), "r").read().split()
-        width = 1000
-        height = 1000
+        width = 200
+        height = 200
         generator = ForestLocationGenerator(width, height)
         generator.generate()
-        width=generator.x_size
-        height=generator.y_size
+        self.width = generator.x_size
+        self.height = generator.y_size
+        self.camera.set_new_pos(*Player.map_coordinates_to_camera_position(*generator.spawn_player()))
         self.background_draw_ls = MapParser.map_to_draw_objects(res.load_backgrounds_text(), generator.background,
-                                                                width, height)
-        self.terrain_draw_ls = MapParser.map_to_draw_objects(res.load_terrain_text(), generator.terrain, width, height,
+                                                                self.width, self.height)
+        self.terrain_draw_ls = MapParser.map_to_draw_objects(res.load_terrain_text(), generator.terrain, self.width, self.height,
                                                              TERRAIN_SHIFT, True)
 
     def launch_main_menu(self):
@@ -108,8 +106,8 @@ class Game:
 
     def process_input(self, camera):
         terrain_around = Game.get_area_around_player(self.terrain_draw_ls,
-                                                     *self.player.camera_pos_to_map_pos(self.camera), 8, 8, 100, 100)
-        self.player.perform_movement(pygame.mouse.get_pos(), camera, terrain_around, 100, 100)
+                                                     *self.player.camera_pos_to_map_pos(self.camera), 8, 8, self.width, self.height)
+        self.player.perform_movement(pygame.mouse.get_pos(), camera, terrain_around,self.width, self.height)
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -130,7 +128,7 @@ class Game:
         self.monster.update(dt)
 
         # TODO CHECK HIT FOR MONSTERS AND PLAYERS
-        self.monster.check_hit(self.player, self.camera)
+        #self.monster.check_hit(self.player, self.camera)
 
         # for background in self.background_draw_ls:
         #    background.update(self.camera)
@@ -143,15 +141,15 @@ class Game:
         # todo !!! PERFORMANCE make 2d list and select rectangle around player
         # bg_around = self.get_area_around_player(self.background_draw_ls,self.player.)
         # print(self.player.camera_pos_to_map_pos(self.camera))
-        self.background_draw_ls.values()
+        #self.background_draw_ls.values()
         for background in Game.get_area_around_player(self.background_draw_ls,
-                                                      *self.player.camera_pos_to_map_pos(self.camera), 8, 8, 100,
-                                                      100).values():
+                                                      *self.player.camera_pos_to_map_pos(self.camera), 8, 8, self.width,
+                                                      self.height).values():
             background.draw(self.display, self.camera)
 
         for terrain in Game.get_area_around_player(self.terrain_draw_ls,
-                                                   *self.player.camera_pos_to_map_pos(self.camera), 8, 8, 100,
-                                                   100).values():
+                                                   *self.player.camera_pos_to_map_pos(self.camera), 8, 8, self.width,
+                                                   self.height).values():
             terrain.draw(self.display, self.camera)
 
         # for terrain in filter(self.camera.is_visible, self.terrain_draw_ls):
