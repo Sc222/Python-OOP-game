@@ -19,7 +19,7 @@ class ForestIslandGenerator:
 
     GRAD_SHRINK = 2.5
 
-    MAX_BASE = 12000000
+    MAX_BASE = 1000000
 
     WATER_SPACING = 1  # amount of water cells around island
 
@@ -143,8 +143,8 @@ class ForestIslandGenerator:
                                                 octaves=self.PERLIN_OCTAVES,
                                                 persistence=self.PERLIN_PERSISTENCE,
                                                 lacunarity=self.PERLIN_LACUNARITY,
-                                                repeatx=self.MAX_BASE,
-                                                repeaty=self.MAX_BASE,
+                                                repeatx=self.width,
+                                                repeaty=self.height,
                                                 base=random_base)
         center_x, center_y = self.width // 2, self.height // 2
 

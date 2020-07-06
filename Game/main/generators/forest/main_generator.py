@@ -16,7 +16,7 @@ class ForestLocationGenerator:
         self.terrain = {}
 
     def generate(self):
-        self.generate_island()
+        self.generate_island(random_base=1,water_spacing=3)
         self.place_trees()
 
     def spawn_player(self):

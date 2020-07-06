@@ -10,7 +10,7 @@ class ForestTreesGenerator:
     PERLIN_OCTAVES = 6
     PERLIN_PERSISTENCE = 0.5
     PERLIN_LACUNARITY = 2.1
-    MAX_BASE = 12000000
+    MAX_BASE = 1000000
     SCALE = 50  # todo find better value if works bad
     GRASS_COLOR = [34 / 255, 139 / 255, 34 / 255]
     TREE_COLOR = [0 / 255, 100 / 255, 0 / 255]
@@ -26,7 +26,6 @@ class ForestTreesGenerator:
         res = {}
         res.update(terrain)
         blue_noise = np.zeros((self.width, self.height))
-        # trees_map = np.zeros(blue_noise.shape + (3,))
         for x in range(self.width):
             for y in range(self.height):
                 nx = x / self.width - 0.5
@@ -35,8 +34,8 @@ class ForestTreesGenerator:
                                            octaves=self.PERLIN_OCTAVES,
                                            persistence=self.PERLIN_PERSISTENCE,
                                            lacunarity=self.PERLIN_LACUNARITY,
-                                           repeatx=self.MAX_BASE,
-                                           repeaty=self.MAX_BASE,
+                                           repeatx=self.width,
+                                           repeaty=self.height,
                                            base=random_base)
 
         for x in range(self.width):
