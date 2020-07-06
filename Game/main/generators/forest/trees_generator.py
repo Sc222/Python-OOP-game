@@ -6,6 +6,7 @@ from noise import pnoise2
 from main.generators.forest import constants
 
 
+# TODO GENERATE TREES USING POISSION DISC SAMPLING ALGORYTHM
 class ForestTreesGenerator:
     PERLIN_OCTAVES = 6
     PERLIN_PERSISTENCE = 0.5
@@ -18,7 +19,7 @@ class ForestTreesGenerator:
     def __init__(self, width, height):
         self.width = width
         self.height = height
-        self.scale = max(width,height)*self.SCALE_COEFF
+        self.scale = max(width, height) * self.SCALE_COEFF
 
     def place_trees(self, background, terrain, random_base=None):
         if random_base is None:
@@ -42,7 +43,7 @@ class ForestTreesGenerator:
             for y in range(self.height):
                 max = 0
                 radius = constants.TREE_RADIUS_BY_BG[background[(x, y)]]
-                if radius is None:  # skip water location
+                if radius is None:
                     continue
                 for y_n in range(y - radius, y + radius + 1):
                     for x_n in range(x - radius, x + radius + 1):
@@ -50,7 +51,6 @@ class ForestTreesGenerator:
                             e = blue_noise[x_n][y_n]
                             if e > max:
                                 max = e
-                if blue_noise[x][y] == max and background[(x,y)] is not constants.BG_WATER:
+                if blue_noise[x][y] == max and background[(x, y)] is not constants.BG_WATER:
                     res[(x, y)] = random.choice(constants.TREES_BY_BG[background[(x, y)]])
         return res
-        # plt.imsave(os.path.join("output", "trees", f"base:{base} scale: {SCALE}.png"), trees_map)

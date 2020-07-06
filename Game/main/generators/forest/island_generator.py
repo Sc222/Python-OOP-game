@@ -3,7 +3,6 @@ import random
 
 import noise
 import numpy as np
-# import matplotlib.pyplot as plt
 
 from main.generators.forest import constants
 
@@ -130,7 +129,6 @@ class ForestIslandGenerator:
                 res[(x + new_width + water_spacing, y)] = constants.BG_WATER
         return res
 
-    # freeplaces - array of points where player / monsters can be spawned
     def generate_island(self, random_base=None):
         if random_base is None:
             random_base = random.randint(0, self.MAX_BASE)

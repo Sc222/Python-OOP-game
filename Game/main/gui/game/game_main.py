@@ -87,10 +87,10 @@ class Game:
         # todo load level from text file
         # map_bg = open(os.path.join(self.res.directory, "demo", "background.txt"), "r").read().split()
         # map_terrain = open(os.path.join(self.res.directory, "demo", "terrain.txt"), "r").read().split()
-        width = 200
-        height = 200
+        width = 100
+        height = 20
         generator = ForestLocationGenerator(width, height)
-        generator.generate()
+        generator.generate(1)
         self.width = generator.x_size
         self.height = generator.y_size
         self.camera.set_new_pos(*Player.map_coordinates_to_camera_position(*generator.spawn_player()))
