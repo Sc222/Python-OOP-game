@@ -7,7 +7,7 @@ from main.generators.forest.main_generator import ForestLocationGenerator
 from main.gui import main_menu
 from main.gui.constants import *
 from main.gui.game.camera import Camera
-from main.gui.game.game_utils import Resources
+from main.resources.resources_loader import ResourcesLoader
 from main.gui.game.gui_overlay import GameOverlay
 from main.gui.game.map_parser import MapParser
 from main.gui.game.monster import MonsterSprite, Monster
@@ -17,6 +17,9 @@ from main.gui.game.player import PlayerSprite, Player
 # TODO !!! CHECK OBJECTS AND MAP BORDERS COLLISION USING COORDINATES, NOT RECTANGLES
 # todo spawn next lvl teleporter and generate map, make lots of locations and boss in the end
 # todo (like risk of rain but isometric)
+
+
+
 class Game:
 
     def __init__(self, res, screen, clock):
@@ -35,7 +38,7 @@ class Game:
 
         # todo игрок всегда в центре экрана
         self.playerSprite = PlayerSprite(
-            (self.c_x - PL_SIZE_HALF, self.c_y - PL_SIZE_HALF), (PL_SIZE, PL_SIZE), res.load_creature(Resources.player))
+            (self.c_x - PL_SIZE_HALF, self.c_y - PL_SIZE_HALF), (PL_SIZE, PL_SIZE), res.load_creature(ResourcesLoader.player))
         player_collide_rect = Rect((self.c_x - PL_COLLIDE_W / 2,
                                     self.c_y - PL_COLLIDE_H / 2 + PL_SIZE_HALF - 5 * SCALE,
                                     PL_COLLIDE_W,
@@ -67,7 +70,7 @@ class Game:
         centered_y = y_shift + (monster_x + monster_y) * 0.5 * TILE_SIZE_HALF
 
         self.monsterSprite = MonsterSprite(
-            (centered_x, centered_y), (M_WIDTH, M_HEIGHT), res.load_creature(Resources.monster_mushroom))
+            (centered_x, centered_y), (M_WIDTH, M_HEIGHT), res.load_creature(ResourcesLoader.monster_mushroom))
 
         monster_collide_rect = self.monsterSprite.rect.inflate(-70 * SCALE, -40 * SCALE)
         monster_collide_rect.move_ip(0, self.monsterSprite.rect.height / 2 - monster_collide_rect.height - 5 * SCALE)
