@@ -3,6 +3,7 @@ import random
 
 from main.generators.forest import island_generator, constants
 from main.generators.forest import trees_generator
+from main.generators.forest.ponds_generator import PondsGenerator
 
 
 class ForestLocationGenerator:
@@ -21,9 +22,11 @@ class ForestLocationGenerator:
     def generate(self, island_random_base=None):
         self.generate_island(island_random_base, water_spacing=3)
         self.place_trees()
-        self.generate_ponds()
-        #todo !!!generate ponds!!!
         self.update_free_places()
+        self.generate_ponds()
+        self.update_free_places()
+        #todo !!!generate ponds!!!
+
 
     # call only when free_places were updated
     # location is same thing as background element
@@ -71,6 +74,8 @@ class ForestLocationGenerator:
         f.close()
 
     def generate_ponds(self):
+        #generator = PondsGenerator(self.x_size, self.y_size,self.free_places)
+        #generator.generate_ponds()
         pass
 
     def update_free_places(self):

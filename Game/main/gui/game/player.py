@@ -1,9 +1,9 @@
 from enum import Enum
-import pygame
-from pygame.rect import Rect
 
-from main.gui.constants import MOUSE_IDLE_DELTA, MOVE_COLLIDE_RECT_OFFSET, SCALE, WINDOW_W_HALF, PL_SIZE_HALF, \
-    WINDOW_H_HALF, TILE_SIZE_HALF, PL_X_SHIFT, PL_Y_SHIFT, TILE_SIZE, PL_Y_SHIFT_DOUBLE
+import pygame
+
+from main.gui.constants import MOUSE_IDLE_DELTA, SCALE, TILE_SIZE_HALF, PL_X_SHIFT, PL_Y_SHIFT, TILE_SIZE, \
+    PL_Y_SHIFT_DOUBLE
 from main.gui.game.camera import Camera
 
 
@@ -106,7 +106,7 @@ class Player:
             direction_multiplier = 1
         return self.collide_rect.move(direction_multiplier * 7 * SCALE, -6 * SCALE)
 
-    def perform_movement(self, mouse_pos,camera,terrain_around,width, height):
+    def perform_movement(self, mouse_pos, camera, terrain_around, width, height):
         if self.state != CreatureState.attack:
             dx = self.playerSprite.rect.centerx - mouse_pos[0]
             dy = self.playerSprite.rect.centery - mouse_pos[1]
@@ -118,46 +118,35 @@ class Player:
                 self.velocity *= self.speed
                 self.direction = CreatureDirection.right if self.velocity.x > 0 else CreatureDirection.left
 
-                # move_rect_x:Rect = self.collide_rect.move(self.velocity.x * MOVE_COLLIDE_RECT_OFFSET, 0)
-                # move_rect_y:Rect= self.collide_rect.move(0, self.velocity.y * MOVE_COLLIDE_RECT_OFFSET)
-                # move_rect_x.collidepoint()
-                # move_rect_y.collidepoint()
-                #print(Player.camera_pos_to_map_pos(camera))
-                #print("velocity x and y", self.velocity.x, self.velocity.y)
-                #print("moved: ", Player.camera_pos_to_map_pos(camera, self.velocity.x, self.velocity.y))
-
-                map_pos_x_move = Player.camera_pos_to_map_pos_round(camera, x_movement= self.velocity.x*2)
-                map_pos_y_move = Player.camera_pos_to_map_pos_round(camera, y_movement=self.velocity.y*2)
-                move_rect_x = self.collide_rect.move(self.velocity.x * MOVE_COLLIDE_RECT_OFFSET, 0)
-                move_rect_y = self.collide_rect.move(0, self.velocity.y * MOVE_COLLIDE_RECT_OFFSET)
-                #print(terrain_around)
+                map_pos_x_move = Player.camera_pos_to_map_pos_round(camera, x_movement=self.velocity.x * 2)
+                map_pos_y_move = Player.camera_pos_to_map_pos_round(camera, y_movement=self.velocity.y * 2)
 
                 # check collision with terrain objects that have hitboxes
-                collide_x=map_pos_x_move in terrain_around and move_rect_x.colliderect(terrain_around[map_pos_x_move].get_taken_place_rect(camera))
-                collide_y=map_pos_y_move in terrain_around and move_rect_y.colliderect(terrain_around[map_pos_y_move].get_taken_place_rect(camera))
-                if collide_x:
-                    self.velocity.x = 0
-                if collide_y:
-                    self.velocity.y = 0
-                if collide_x and collide_y:
-                    self.state = CreatureState.idle
+                # move_rect_x = self.collide_rect.move(self.velocity.x * MOVE_COLLIDE_RECT_OFFSET, 0)
+                # move_rect_y = self.collide_rect.move(0, self.velocity.y * MOVE_COLLIDE_RECT_OFFSET)
+                # collide_x=map_pos_x_move in terrain_around and move_rect_x.colliderect(terrain_around[map_pos_x_move].get_taken_place_rect(camera))
+                # collide_y=map_pos_y_move in terrain_around and move_rect_y.colliderect(terrain_around[map_pos_y_move].get_taken_place_rect(camera))
+                # if collide_x:
+                #     self.velocity.x = 0
+                # if collide_y:
+                #     self.velocity.y = 0
+                # if collide_x and collide_y:
+                #     self.state = CreatureState.idle
 
                 # check collision with terrain objects that player can't stand on (mountains and water)
-                collide_x = map_pos_x_move in terrain_around and not terrain_around[map_pos_x_move].can_walk_on
-                collide_y = map_pos_y_move in terrain_around and not terrain_around[map_pos_y_move].can_walk_on
-                if collide_x:
-                    self.velocity.x = 0
-                if collide_y:
-                    self.velocity.y = 0
-                if collide_x and collide_y:
-                    self.state = CreatureState.idle
+                collide_terrain_x = map_pos_x_move in terrain_around and not terrain_around[map_pos_x_move].can_walk_on
+                collide_terrain_y = map_pos_y_move in terrain_around and not terrain_around[map_pos_y_move].can_walk_on
 
+                # check map borders
+                collide_borders_x = map_pos_x_move[0] < 0 or map_pos_x_move[0] >= width or map_pos_x_move[1] < 0 or \
+                                    map_pos_x_move[1] >= height
+                collide_borders_y = map_pos_y_move[0] < 0 or map_pos_y_move[0] >= width or map_pos_y_move[1] < 0 or \
+                                    map_pos_y_move[1] >= height
 
+                # final collide
+                collide_x = collide_terrain_x or collide_borders_x
+                collide_y = collide_terrain_y or collide_borders_y
 
-                #check map borders
-                collide_x = map_pos_x_move[0] < 0 or map_pos_x_move[0] >= width  or map_pos_x_move[1] < 0 or map_pos_x_move[1] >= height
-                collide_y =map_pos_y_move[0] < 0 or map_pos_y_move[0] >= width or map_pos_y_move[1] < 0 or map_pos_y_move[1] >= height
-                print(map_pos_x_move," ",map_pos_y_move)
                 if collide_x:
                     self.velocity.x = 0
                 if collide_y:
