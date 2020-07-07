@@ -122,7 +122,7 @@ class Game:
 
     def update(self, dt):
         player_pos = (self.player.collide_rect.centerx, self.player.collide_rect.centery)
-        self.monster.perform_movement(player_pos, filter(self.camera.is_visible, self.terrain_draw_ls), self.camera)
+        #self.monster.perform_movement(player_pos, filter(self.camera.is_visible, self.terrain_draw_ls), self.camera)
         self.camera.update(-self.player.velocity.x, -self.player.velocity.y)
         self.player.update(dt)
         self.monster.update(dt)

@@ -11,7 +11,7 @@ class MapParser:
         return True
 
     @staticmethod
-    def map_to_draw_objects(images, game_map, width, height, SHIFT_Y=0, is_terrain=False):
+    def map_to_draw_objects(images, game_map, width, height, shift_y=0, is_terrain=False):
         res = {}
         print(game_map)
         for map_x in range(width):
@@ -20,6 +20,6 @@ class MapParser:
                 if tile != 0:
                     tile_image = images[tile - 1]
                     x = (map_x - map_y) * TILE_SIZE_HALF
-                    y = (map_x + map_y) * 0.5 * TILE_SIZE_HALF + SHIFT_Y
+                    y = (map_x + map_y) * 0.5 * TILE_SIZE_HALF + shift_y
                     res[(map_x, map_y)] = StaticEntity(tile_image, x, y, MapParser.can_walk_on(tile, is_terrain))
         return res

@@ -1,7 +1,5 @@
 from pygame.rect import Rect
 
-from main.gui.game.static_entity import StaticEntity
-
 
 class Camera:
 
@@ -13,9 +11,6 @@ class Camera:
     def update(self, x_movement: int, y_movement: int):
         self.x_shift += x_movement
         self.y_shift += y_movement
-
-    def is_visible(self, draw_object: StaticEntity):
-        return self.visible_rect.colliderect(draw_object.get_visibility_rect(self))
 
     def set_new_pos(self, x, y):
         self.x_shift = x
