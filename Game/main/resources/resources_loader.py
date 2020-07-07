@@ -32,10 +32,14 @@ class ResourcesLoader:
         TR_CACTUS_FL: "cactus_flower",
         TR_OAK: "oak",
         TR_BIRCH: "birch",
-        TR_PINE: "pine",
-        TR_BUSH: "bush",
-        TR_FERN: "fern",
         TR_HOUSE: "house",
+        TR_BUSH: "bush",
+        TR_BERRY_BUSH: "berry_bush",
+        TR_FERN: "fern",
+        TR_STUMP: "stump",
+        TR_PINE: "pine",
+        TR_STONE: "stone",
+        TR_LOG: "log"
     }
     creature_anims_name = ["walk_", "idle_", "attack_", "take_damage_",
                            "die_"]  # все папки должны иметь название ""+right
