@@ -4,7 +4,7 @@ import random
 import noise
 import numpy as np
 
-from main.generators.forest import constants
+from main.resources.tiles_constants import *
 
 
 class ForestIslandGenerator:
@@ -53,10 +53,10 @@ class ForestIslandGenerator:
         res = {}
         for x in range(island_w):
             for y in range(island_h):
-                if bg[(x, y)] == constants.BG_WATER:
-                    val = constants.TERRAIN_INVISIBLE_WALL
+                if bg[(x, y)] == BG_WATER:
+                    val = TR_INVISIBLE
                 else:
-                    val = constants.TERRAIN_EMPTY
+                    val = TR_EMPTY
                 res[(x, y)] = val
         return res
 
@@ -65,13 +65,13 @@ class ForestIslandGenerator:
         for x in range(self.width):
             for y in range(self.height):
                 if world[x][y] < self.WATER_THRESHOLD:
-                    val = constants.BG_WATER
+                    val = BG_WATER
                 elif world[x][y] < self.BEACH_THRESHOLD:
-                    val = constants.BG_SAND
+                    val = BG_SAND
                 elif world[x][y] < self.FOREST_THRESHOLD:
-                    val = constants.BG_GRASS
+                    val = BG_GRASS
                 else:
-                    val = constants.BG_DARK_GRASS
+                    val = BG_DK_GRASS
                 res[(x, y)] = val
         return res
 
@@ -89,7 +89,7 @@ class ForestIslandGenerator:
             tmp = {}
             for x in range(self.width):
                 tmp[(x, y - skipped_rows)] = map[(x, y)]
-                if map[x, y] != constants.BG_WATER:
+                if map[x, y] != BG_WATER:
                     is_only_water = False
             if not is_only_water:
                 res.update(tmp)
@@ -105,7 +105,7 @@ class ForestIslandGenerator:
             tmp = {}
             for y in range(new_height):
                 tmp[(x - skipped_cols, y)] = map[(x, y)]
-                if map[x, y] != constants.BG_WATER:
+                if map[x, y] != BG_WATER:
                     is_only_water = False
             if not is_only_water:
                 res.update(tmp)
@@ -121,12 +121,12 @@ class ForestIslandGenerator:
 
         for x in range(0, new_width + water_spacing * 2):
             for y in range(0, water_spacing):
-                res[(x, y)] = constants.BG_WATER
-                res[(x, y + new_height + water_spacing)] = constants.BG_WATER
+                res[(x, y)] = BG_WATER
+                res[(x, y + new_height + water_spacing)] = BG_WATER
         for y in range(0, new_height + water_spacing * 2):
             for x in range(0, water_spacing):
-                res[(x, y)] = constants.BG_WATER
-                res[(x + new_width + water_spacing, y)] = constants.BG_WATER
+                res[(x, y)] = BG_WATER
+                res[(x + new_width + water_spacing, y)] = BG_WATER
         return res
 
     def generate_island(self, random_base=None):

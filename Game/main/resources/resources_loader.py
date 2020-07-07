@@ -4,6 +4,7 @@ import re
 import pygame
 
 from main.gui.constants import SCALE, GUI_SCALE, PLAYER_MENU_SCALE
+from main.resources.tiles_constants import *
 
 
 class ResourcesLoader:
@@ -13,9 +14,29 @@ class ResourcesLoader:
     gui = "gui"
     font = "font.otf"
 
-    #todo replace with dict
-    backgrounds = ["water","sand","grass","dark_grass", "pond_top", "pond_right", "pond_left", "pond_bottom"]
-    terrain = ["invisible","house", "oak", "birch", "flower_purple", "bush","pine", "fern"]
+    # dict keys are file names
+    backgrounds = {
+        BG_WATER: "water",
+        BG_SAND: "sand",
+        BG_GRASS: "grass",
+        BG_DK_GRASS: "dark_grass"
+        # todo ponds
+        # "pond_top",
+        # "pond_right",
+        # "pond_left",
+        # "pond_bottom"
+    }
+    terrain = {
+        TR_INVISIBLE: "invisible",
+        TR_CACTUS: "cactus",
+        TR_CACTUS_FL: "cactus_flower",
+        TR_OAK: "oak",
+        TR_BIRCH: "birch",
+        TR_PINE: "pine",
+        TR_BUSH: "bush",
+        TR_FERN: "fern",
+        TR_HOUSE: "house",
+    }
     creature_anims_name = ["walk_", "idle_", "attack_", "take_damage_",
                            "die_"]  # все папки должны иметь название ""+right
     menu_player_anims = ["menu_idle", "menu_transform"]
@@ -25,17 +46,17 @@ class ResourcesLoader:
         self.directory = directory
 
     def load_backgrounds_text(self):
-        result = []
-        for background in self.backgrounds:
-            path = os.path.join(self.directory, background) + ".png"
-            result.append(self.load_image(path))
+        result = {}
+        for key, value in self.backgrounds.items():
+            path = os.path.join(self.directory, value) + ".png"
+            result[key] = self.load_image(path)
         return result
 
     def load_terrain_text(self):
-        result = []
-        for terrain_element in self.terrain:
-            path = os.path.join(self.directory, terrain_element) + ".png"
-            result.append(self.load_image(path))
+        result = {}
+        for key, value in self.terrain.items():
+            path = os.path.join(self.directory, value) + ".png"
+            result[key] = self.load_image(path)
         return result
 
     def load_backgrounds(self):

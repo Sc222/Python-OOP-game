@@ -1,7 +1,8 @@
 # one large island with beach, forest and taiga forest
 import random
 
-from main.generators.forest import island_generator, constants
+from main.resources.tiles_constants import *
+from main.generators.forest import island_generator
 from main.generators.forest import trees_generator
 from main.generators.forest.ponds_generator import PondsGenerator
 
@@ -25,14 +26,13 @@ class ForestLocationGenerator:
         self.update_free_places()
         self.generate_ponds()
         self.update_free_places()
-        #todo !!!generate ponds!!!
-
+        # todo !!!generate ponds!!!
 
     # call only when free_places were updated
     # location is same thing as background element
     def spawn_player(self, location=None):
         if location is None:
-            location = random.choice(constants.SPAWN_LOCATIONS)
+            location = random.choice(SPAWN_LOCATIONS)
         return random.choice(self.free_places[location])
 
     def generate_island(self, random_base=None, water_spacing=island_generator.ForestIslandGenerator.WATER_SPACING):
@@ -74,15 +74,15 @@ class ForestLocationGenerator:
         f.close()
 
     def generate_ponds(self):
-        #generator = PondsGenerator(self.x_size, self.y_size,self.free_places)
-        #generator.generate_ponds()
+        # generator = PondsGenerator(self.x_size, self.y_size,self.free_places)
+        # generator.generate_ponds()
         pass
 
     def update_free_places(self):
         for x in range(self.x_size):
             for y in range(self.y_size):
-                if self.terrain[(x, y)] == constants.TERRAIN_EMPTY:
+                if self.terrain[(x, y)] == TR_EMPTY:
                     if not self.background[(x, y)] in self.free_places:
-                        self.free_places[self.background[(x, y)]]=[]
+                        self.free_places[self.background[(x, y)]] = []
                     else:
                         self.free_places[self.background[(x, y)]].append((x, y))

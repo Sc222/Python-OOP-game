@@ -3,7 +3,7 @@ import random
 import numpy as np
 from noise import pnoise2
 
-from main.generators.forest import constants
+from main.resources.tiles_constants import *
 
 
 # TODO GENERATE TREES USING POISSION DISC SAMPLING ALGORYTHM
@@ -42,7 +42,7 @@ class ForestTreesGenerator:
         for x in range(self.width):
             for y in range(self.height):
                 max = 0
-                radius = constants.TREE_RADIUS_BY_BG[background[(x, y)]]
+                radius = TREE_RADIUS_BY_BG[background[(x, y)]]
                 if radius is None:
                     continue
                 for y_n in range(y - radius, y + radius + 1):
@@ -51,6 +51,6 @@ class ForestTreesGenerator:
                             e = blue_noise[x_n][y_n]
                             if e > max:
                                 max = e
-                if blue_noise[x][y] == max and background[(x, y)] is not constants.BG_WATER:
-                    res[(x, y)] = random.choice(constants.TREES_BY_BG[background[(x, y)]])
+                if blue_noise[x][y] == max and background[(x, y)] is not BG_WATER:
+                    res[(x, y)] = random.choice(TREES_BY_BG[background[(x, y)]])
         return res
