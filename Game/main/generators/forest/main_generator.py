@@ -16,16 +16,21 @@ class ForestLocationGenerator:
         self.teleport_y = -1
         self.background = {}
         self.terrain = {}
-        self.free_places = []  # array of points where player / monsters can be spawned
+        self.free_places = {}  # dictionary of free map points BY BACKGROUND (sand, forest, etc)
 
     def generate(self, island_random_base=None):
         self.generate_island(island_random_base, water_spacing=3)
         self.place_trees()
-        self.update_free_places_array()
+        self.generate_ponds()
+        #todo !!!generate ponds!!!
+        self.update_free_places()
 
     # call only when free_places were updated
-    def spawn_player(self):
-        return random.choice(self.free_places)
+    # location is same thing as background element
+    def spawn_player(self, location=None):
+        if location is None:
+            location = random.choice(constants.SPAWN_LOCATIONS)
+        return random.choice(self.free_places[location])
 
     def generate_island(self, random_base=None, water_spacing=island_generator.ForestIslandGenerator.WATER_SPACING):
         generator = island_generator.ForestIslandGenerator(self.x_size, self.y_size, max(self.y_size, self.x_size))
@@ -65,9 +70,14 @@ class ForestLocationGenerator:
             f.write(row)
         f.close()
 
-    def update_free_places_array(self):
-        self.free_places = []
+    def generate_ponds(self):
+        pass
+
+    def update_free_places(self):
         for x in range(self.x_size):
             for y in range(self.y_size):
                 if self.terrain[(x, y)] == constants.TERRAIN_EMPTY:
-                    self.free_places.append((x, y))
+                    if not self.background[(x, y)] in self.free_places:
+                        self.free_places[self.background[(x, y)]]=[]
+                    else:
+                        self.free_places[self.background[(x, y)]].append((x, y))
